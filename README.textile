@@ -1,0 +1,9 @@
+h1. Gokya 2 The Super Gokya
+
+h2. huh?
+
+This is a music player
+
+h2. Dependencies
+
+* pygame
