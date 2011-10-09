@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="png">
+    <file>media/tanooki.png</file>
+  </qresource>
+</RCC>
