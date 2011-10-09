@@ -30,9 +30,9 @@ def play_tanooki_way(music_file, channels):
     ##pygame.mixer.music.stop()
     #pygame.mixer.quit()
     #pygame.mixer.quit()
-    while pygame.mixer.music.get_busy():
-        # check if playback has finished
-        clock.tick(30)
+    #while pygame.mixer.music.get_busy():
+    #    # check if playback has finished
+    #    clock.tick(30)
     #pygame.mixer.music.stop()
 
 
