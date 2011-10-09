@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pygame, pygame.mixer
 import pygame._view
 import time 
@@ -17,10 +18,10 @@ def play_tanooki_way(music_file, channels):
 
     clock = pygame.time.Clock()
     try:
-        pygame.mixer.music.load(open('%s' % music_file, 'rb'))
-        print "Music file %s loaded!" % music_file
+        pygame.mixer.music.load(open(music_file, 'rb'))
+        print "Music file loaded!"
     except pygame.error:
-        print "File %s not found! (%s)" % (music_file, pygame.get_error())
+        print "File not found!"
         return
     while not pygame.mixer.music.get_busy():
       pygame.mixer.music.play()

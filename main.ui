@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>320</width>
-    <height>315</height>
+    <height>366</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,13 +60,13 @@
      <string>Select Song</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="song_name">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>100</y>
-      <width>53</width>
-      <height>16</height>
+      <x>0</x>
+      <y>290</y>
+      <width>311</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -87,6 +87,32 @@
     </property>
     <property name="pixmap">
      <pixmap resource="images.qrc">:/png/media/tanooki.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pause_button">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>140</y>
+      <width>41</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pause</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="stop_button">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>140</y>
+      <width>41</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop</string>
     </property>
    </widget>
   </widget>

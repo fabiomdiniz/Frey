@@ -1,14 +1,11 @@
-#!/bin/env python
-# -*- coding: iso-8859-1 -*-
-#
-# Hello World por Rudson R. Alves
-#
+# -*- coding: utf-8 -*-
  
 import sys, os
 from PyQt4 import QtCore, QtGui
 from PyQt4 import Qt
 from main_ui import Ui_MainWindow
 import g2tsg
+from mutagen.easyid3 import EasyID3
 
 class MyForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -33,10 +30,13 @@ class MyForm(QtGui.QMainWindow):
         else:
             channels = 2
 
-        fileName = QtGui.QFileDialog.getOpenFileName(self,
-     'Open Song', os.getcwd())
-        
-        g2tsg.play_tanooki_way(fileName, channels)
+        name = unicode(QtGui.QFileDialog.getOpenFileName(self,
+     'Open Song', os.getcwd()))
+        if name:
+            tag = EasyID3(name)
+            self.ui.song_name.setText(tag['title'][0] + ' by ' +
+                                      tag['artist'][0])
+            g2tsg.play_tanooki_way(name, channels)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
