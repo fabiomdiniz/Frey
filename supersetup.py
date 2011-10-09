@@ -39,7 +39,7 @@ class pygame2exe(py2exe.build_exe.py2exe): #This hack make sure that pygame defa
 class BuildExe:
     def __init__(self):
         #Name of starting .py
-        self.script = "g2tsg.py"
+        self.script = "main.py"#"g2tsg.py"
  
         #Name of program
         self.project_name = "Gokya 2 The Super Gokya"
@@ -74,7 +74,7 @@ class BuildExe:
         #DLL Excludes
         self.exclude_dll = ['']
         #python scripts (strings) to be included, seperated by a comma
-        self.extra_scripts = []
+        self.extra_scripts = ['sip']
  
         #Zip file name (None will bundle files in exe instead of zip file)
         self.zipfile_name = None
@@ -165,4 +165,3 @@ if __name__ == '__main__':
     if operator.lt(len(sys.argv), 2):
         sys.argv.append('py2exe')
     BuildExe().run() #Run generation
-    raw_input("Press any key to continue") #Pause to let user see that things ends 

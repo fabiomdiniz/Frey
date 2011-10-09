@@ -7,3 +7,4 @@ This is a music player
 h2. Dependencies
 
 * pygame
+* pyqt4
