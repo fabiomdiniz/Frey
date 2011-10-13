@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="png">
+    <file>media/prev.png</file>
+    <file>media/next.png</file>
+    <file>media/pause.png</file>
+    <file>media/play.png</file>
     <file>media/tanooki.png</file>
   </qresource>
 </RCC>
