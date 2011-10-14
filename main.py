@@ -10,6 +10,7 @@ from mutagen import File
 import pygame, pygame.mixer
 
 paused = True
+idx = 0
 ROOT_PATH = os.getcwd()
 
 try:
@@ -17,10 +18,45 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
+playlist = []
+
+def dirEntries(dir_name, subdir, *args):
+    '''Return a list of file names found in directory 'dir_name'
+    If 'subdir' is True, recursively access subdirectories under 'dir_name'.
+    Additional arguments, if any, are file extensions to match filenames. Matched
+        file names are added to the list.
+    If there are no additional arguments, all files found in the directory are
+        added to the list.
+    Example usage: fileList = dir_list(r'H:\TEMP', False, 'txt', 'py')
+        Only files with 'txt' and 'py' extensions will be added to the list.
+    Example usage: fileList = dir_list(r'H:\TEMP', True)
+        All files and all the files in subdirectories under H:\TEMP will be added
+        to the list.
+    '''
+    fileList = []
+    for file in os.listdir(dir_name):
+        dirfile = os.path.join(dir_name, file)
+        if os.path.isfile(dirfile):
+            if len(args) == 0:
+                fileList.append(dirfile)
+            else:
+                if os.path.splitext(dirfile)[1][1:] in args:
+                    fileList.append(dirfile)
+        # recursively access file names in subdirectories
+        elif os.path.isdir(dirfile) and subdir:
+            print "Accessing directory:", dirfile
+            fileList += dirEntries(dirfile, subdir, *args)
+    return fileList
+
+def getPrettyName(song_file):
+    return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))
+
+def gen_file_name(s):
+    return "".join([x for x in s if x.isalpha() or x.isdigit()])
 
 def get_cover_hash(song_file):
     name = str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
-    return name.decode('ascii', 'ignore')
+    return gen_file_name(name.decode('ascii', 'ignore'))
 
 def getCoverArtPixmap(song_file):
     artwork = song_file.tags.get('APIC:','')
@@ -64,7 +100,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             #pyqtRemoveInputHook()
             #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
             for url in event.mimeData().urls():
-                links.append(str(url.toLocalFile()))
+                links.append(unicode(url.toLocalFile()))
             print links
             self.filesDropped(links)
 
@@ -77,25 +113,55 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
         self.connect(self.playlist, QtCore.SIGNAL("dropped"), self.filesDropped)
 
-    def filesDropped(self, l):
-        print 'chego no si'
-        for url in l:
-            if os.path.exists(url) and url[url.rfind('.'):] == '.mp3':
-                song_file = File(url)     
-                icon = QtGui.QIcon(getCoverArtPixmap(song_file))
-                item = QtGui.QListWidgetItem(url, self.playlist)
-                item.setIcon(icon)        
+    def _addUrl(self, url):
+        song_file = File(url)     
+        icon = QtGui.QIcon(getCoverArtPixmap(song_file))
+        item = QtGui.QListWidgetItem(getPrettyName(song_file), self.playlist)
+        item.setIcon(icon)
 
-    def _togglePausePlay(self):
+    def filesDropped(self, l):
+        global playlist
+        print 'chego no si'
+        valid_urls = []
+        not_playlist = not playlist
+        for url in l:
+            if os.path.isdir(url):
+                for filename in dirEntries(url, True, 'mp3'):
+                    filename = os.path.join(url, filename)
+                    valid_urls.append(filename)
+                    self._addUrl(filename)
+            elif os.path.exists(url) and url[url.rfind('.'):] == '.mp3':
+                valid_urls.append(url)
+                self._addUrl(url) 
+        playlist += valid_urls
+        if not_playlist and valid_urls:
+            if not self._playSong(valid_urls[0]):
+                self._slotNextSong()
+        
+
+    def _setPlaying(self):
         global paused
         icon2 = QtGui.QIcon()
-        if not paused:
-            icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/play.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        else:
-            icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/pause.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/pause.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        paused = False
         self.pause_button.setIcon(icon2)
         self.pause_button.setIconSize(QtCore.QSize(60, 60))
-        paused = not paused
+
+    def _setPaused(self):
+        global paused
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/play.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        paused = True
+        self.pause_button.setIcon(icon2)
+        self.pause_button.setIconSize(QtCore.QSize(60, 60))
+
+    def _togglePausePlay(self):
+        global paused       
+        if paused:
+            self._setPlaying()
+        else:
+            self._setPaused()
+
 
     def _slotPausePlay(self):
         global paused
@@ -109,13 +175,30 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             pygame.mixer.music.unpause()
 
     def _slotPrevSong(self):
+        global idx
+        global playlist        
+        g2tsg.quit_tanooki()
+        idx -= 1
+        if idx < 0:
+            idx = len(playlist)-1
+        if not self._playSong(playlist[idx]):
+            self._slotPrevSong()
         print 'PREV'
+        self._setPlaying()
 
     def _slotNextSong(self):
+        global idx
+        global playlist
+        g2tsg.quit_tanooki()
+        idx = (idx+1)%len(playlist)
+        if not self._playSong(playlist[idx]):
+            self._slotNextSong()
         print 'NEXT'
+        self._setPlaying()
 
-    def _slotSelectClicked(self):
+    def _playSong(self, name):
         global paused
+
         # Read the text from the lineedit,
         mode = self.channels.currentText()
         # if the lineedit is not empty,
@@ -124,19 +207,25 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             channels = 1
         else:
             channels = 2
+        song_file = File(name)
+        self.song_name.setText(_fromUtf8(str(song_file.tags.get('TIT2',''))))
+        self.artist.setText(_fromUtf8(str(song_file.tags.get('TPE1',''))))
+        self.cover.setPixmap(getCoverArtPixmap(song_file))
+        paused = False
+        print 'play no ', name  
+        return g2tsg.play_tanooki_way(name, channels)
+            
 
+    def _slotSelectClicked(self):
         name = unicode(QtGui.QFileDialog.getOpenFileName(self,
      'Open Song', os.getcwd(), 'Mp3 (*.mp3)'))
         if name:
-            song_file = File(name)
-            self.song_name.setText(_fromUtf8(str(song_file.tags.get('TIT2',''))))
-            self.artist.setText(_fromUtf8(str(song_file.tags.get('TPE1',''))))
-            self.cover.setPixmap(getCoverArtPixmap(song_file))
-            g2tsg.play_tanooki_way(name, channels)
-            paused = False
+            self._playSong(name)
+
 
 if __name__ == "__main__":
     os.system('mkdir cover_cache')
+    g2tsg.init_tanooki()
     app = QtGui.QApplication(sys.argv)
     myapp = MyForm()
     myapp.show()

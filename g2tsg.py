@@ -3,8 +3,25 @@ import pygame, pygame.mixer
 import pygame._view
 import time 
 
+init_continues = 5
+continues = 5
+
+def init_tanooki():
+    pygame.mixer.quit()
+    pygame.mixer.quit()    
+    freq = 44100     # audio CD quality
+    bitsize = -16    # unsigned 16 bit
+    buffer = 2048    # number of samples (experiment to get right sound)
+    pygame.mixer.pre_init(freq, bitsize, 2, buffer)
+
+def quit_tanooki():
+    pygame.mixer.quit()
+
+
 def play_tanooki_way(music_file, channels):
-   # set up the mixer
+    global continues
+    global init_continues
+    # set up the mixer
     pygame.mixer.quit()
     pygame.mixer.quit()
     freq = 44100     # audio CD quality
@@ -16,16 +33,28 @@ def play_tanooki_way(music_file, channels):
     pygame.mixer.music.set_volume(1.0)
 
 
-    clock = pygame.time.Clock()
     try:
         pygame.mixer.music.load(open(music_file, 'rb'))
         print "Music file loaded!"
     except pygame.error:
         print "File not found!"
         return
-    while not pygame.mixer.music.get_busy():
-      pygame.mixer.music.play()
-    
+    pygame.mixer.music.play()
+
+    time.sleep(0.1)
+    if not pygame.mixer.music.get_busy():
+        print 'hadouken'
+        pygame.mixer.music.stop()
+        if continues > 0:
+            continues -= 1
+            return play_tanooki_way(music_file, channels)
+        else:
+            continues = init_continues
+            return False
+    continues = init_continues
+    return True
+        
+
     #time.sleep(5)
     #pygame.mixer.music.stop()
     ##pygame.mixer.music.stop()
