@@ -6,6 +6,7 @@ from PyQt4 import Qt
 from main_ui import Ui_MainWindow
 import g2tsg
 from mutagen.easyid3 import EasyID3
+from mutagen import File
 import pygame, pygame.mixer
 
 paused = True
@@ -15,21 +16,77 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-class MyForm(QtGui.QMainWindow):
+
+def get_cover_hash(song_file):
+    return str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
+
+def getCoverArtPixmap(song_file):
+    artwork = song_file.tags.get('APIC:','')
+    if artwork:
+        iconpath = 'cover_cache/'+get_cover_hash(song_file)+'.jpg'
+        if not os.path.exists(iconpath):
+            with open(iconpath, 'wb') as img:
+                img.write(artwork.data)
+    else:
+        iconpath = _fromUtf8(":/png/media/nocover.jpg")
+    icon = QtGui.QIcon(iconpath)
+    return icon.pixmap(72, 72)                
+
+class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        self.setupUi(self)
         self._connectSlots()
         self.setWindowTitle('Gokya 2 The Super Gokya')
         self.setWindowIcon(QtGui.QIcon('icon.ico'))   
+        self.setAcceptDrops(True)
+        self.__class__.dropEvent = self.lbDropEvent
+        self.__class__.dragEnterEvent = self.lbDragEnterEvent
+
+    def lbDragEnterEvent(self, event):
+        print event.mimeData().hasUrls()
+        if event.mimeData().hasUrls():
+            print event.mimeData().urls()
+            event.accept()
+
+    def lbDropEvent(self, event):
+        print 'DROP AE'
+        print event.mimeData().urls()
+        if event.mimeData().hasUrls():
+            print 'aceito denovo'
+            links = []
+            #from PyQt4.QtCore import pyqtRemoveInputHook
+  
+            #pyqtRemoveInputHook()
+            #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
+            for url in event.mimeData().urls():
+                links.append(str(url.toLocalFile()))
+            print links
+            self.filesDropped(links)
+
+        #files = Qt.QStringList()
+        #print 
+        #for url in event.mimeData().urls():
+        #    self.playlist
+        #self.playlist.insertStringList(event.mimeData().urls())
     
     def _connectSlots(self):
         # Connect our two methods to SIGNALS the GUI emits.
-        self.connect(self.ui.select_song,Qt.SIGNAL("clicked()"),self._slotSelectClicked)
-        self.connect(self.ui.pause_button,Qt.SIGNAL("clicked()"),self._slotPausePlay)
-        self.connect(self.ui.prev_button,Qt.SIGNAL("clicked()"),self._slotPrevSong)
-        self.connect(self.ui.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
+        self.connect(self.select_song,Qt.SIGNAL("clicked()"),self._slotSelectClicked)
+        self.connect(self.pause_button,Qt.SIGNAL("clicked()"),self._slotPausePlay)
+        self.connect(self.prev_button,Qt.SIGNAL("clicked()"),self._slotPrevSong)
+        self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
+        self.connect(self.playlist, QtCore.SIGNAL("dropped"), self.filesDropped)
+
+    def filesDropped(self, l):
+        print 'chego no si'
+        for url in l:
+            if os.path.exists(url) and url[url.rfind('.'):] == '.mp3':
+                song_file = File(url)     
+                icon = QtGui.QIcon(getCoverArtPixmap(song_file))
+                item = QtGui.QListWidgetItem(url, self.playlist)
+                item.setIcon(icon)        
+                item.setStatusTip(url) 
 
     def _togglePausePlay(self):
         global paused
@@ -38,8 +95,8 @@ class MyForm(QtGui.QMainWindow):
             icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/play.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
             icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/pause.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ui.pause_button.setIcon(icon2)
-        self.ui.pause_button.setIconSize(QtCore.QSize(60, 60))
+        self.pause_button.setIcon(icon2)
+        self.pause_button.setIconSize(QtCore.QSize(60, 60))
         paused = not paused
 
     def _slotPausePlay(self):
@@ -62,7 +119,7 @@ class MyForm(QtGui.QMainWindow):
     def _slotSelectClicked(self):
         global paused
         # Read the text from the lineedit,
-        mode = self.ui.channels.currentText()
+        mode = self.channels.currentText()
         # if the lineedit is not empty,
         if str(mode) == "Mono":
             print 'MONO NO KE HIME'
@@ -71,15 +128,17 @@ class MyForm(QtGui.QMainWindow):
             channels = 2
 
         name = unicode(QtGui.QFileDialog.getOpenFileName(self,
-     'Open Song', os.getcwd()))
+     'Open Song', os.getcwd(), 'Mp3 (*.mp3)'))
         if name:
-            tag = EasyID3(name)
-            self.ui.song_name.setText(tag['title'][0])
-            self.ui.artist.setText(tag['artist'][0])
+            song_file = File(name)
+            self.song_name.setText(_fromUtf8(str(song_file.tags.get('TIT2',''))))
+            self.artist.setText(_fromUtf8(str(song_file.tags.get('TPE1',''))))
+            self.cover.setPixmap(getCoverArtPixmap(song_file))
             g2tsg.play_tanooki_way(name, channels)
             paused = False
 
 if __name__ == "__main__":
+    os.system('mkdir cover_cache')
     app = QtGui.QApplication(sys.argv)
     myapp = MyForm()
     myapp.show()
