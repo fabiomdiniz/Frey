@@ -73,7 +73,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>Song Name</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
@@ -102,7 +102,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>Artist</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
