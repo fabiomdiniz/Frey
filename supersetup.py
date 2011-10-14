@@ -14,6 +14,7 @@ try:
     import glob, fnmatch
     import sys, os, shutil
     import operator
+    import glob
 except ImportError, message:
     raise SystemExit,  "Unable to load module. %s" % message
  
@@ -66,13 +67,14 @@ class BuildExe:
  
         #Extra files/dirs copied to game
         self.extra_datas = []
- 
+        self.datas = []#[('imageformats', glob.glob("C:\Python27\Lib\site-packages\PyQt4\plugins\imageformats\*.dll"))]
+
         #Extra/excludes python modules
         self.extra_modules = []
         self.exclude_modules = []
         
         #DLL Excludes
-        self.exclude_dll = ['']
+        self.exclude_dll = []#['gif4.dll', 'ico4.dll', 'jpeg4.dll', 'mng4.dll', 'svg4.dll', 'tiff4.dll']
         #python scripts (strings) to be included, seperated by a comma
         self.extra_scripts = ['sip']
  
@@ -154,7 +156,7 @@ class BuildExe:
                                   'dll_excludes': self.exclude_dll,
                                   'includes': self.extra_scripts} },
             zipfile = self.zipfile_name,
-            data_files = extra_datas,
+            data_files = self.datas,
             dist_dir = self.dist_dir
             )
         

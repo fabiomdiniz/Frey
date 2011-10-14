@@ -10,6 +10,7 @@ from mutagen import File
 import pygame, pygame.mixer
 
 paused = True
+ROOT_PATH = os.getcwd()
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -18,19 +19,22 @@ except AttributeError:
 
 
 def get_cover_hash(song_file):
-    return str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
+    name = str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
+    return name.decode('ascii', 'ignore')
 
 def getCoverArtPixmap(song_file):
     artwork = song_file.tags.get('APIC:','')
     if artwork:
-        iconpath = 'cover_cache/'+get_cover_hash(song_file)+'.jpg'
+        iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
+        iconpath_jpg = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.jpg')
         if not os.path.exists(iconpath):
-            with open(iconpath, 'wb') as img:
+            with open(iconpath_jpg, 'wb') as img:
                 img.write(artwork.data)
+            pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
     else:
-        iconpath = _fromUtf8(":/png/media/nocover.jpg")
+        iconpath = _fromUtf8(":/png/media/nocover.png")
     icon = QtGui.QIcon(iconpath)
-    return icon.pixmap(72, 72)                
+    return icon.pixmap(72, 72)
 
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -38,7 +42,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self._connectSlots()
         self.setWindowTitle('Gokya 2 The Super Gokya')
-        self.setWindowIcon(QtGui.QIcon('icon.ico'))   
+        self.setWindowIcon(QtGui.QIcon(':/png/media/icon.png'))   
         self.setAcceptDrops(True)
         self.__class__.dropEvent = self.lbDropEvent
         self.__class__.dragEnterEvent = self.lbDragEnterEvent
@@ -64,11 +68,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             print links
             self.filesDropped(links)
 
-        #files = Qt.QStringList()
-        #print 
-        #for url in event.mimeData().urls():
-        #    self.playlist
-        #self.playlist.insertStringList(event.mimeData().urls())
     
     def _connectSlots(self):
         # Connect our two methods to SIGNALS the GUI emits.
@@ -86,7 +85,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 icon = QtGui.QIcon(getCoverArtPixmap(song_file))
                 item = QtGui.QListWidgetItem(url, self.playlist)
                 item.setIcon(icon)        
-                item.setStatusTip(url) 
 
     def _togglePausePlay(self):
         global paused

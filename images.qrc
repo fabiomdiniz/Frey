@@ -1,7 +1,8 @@
 <RCC>
   <qresource prefix="png">
-    <file>media/nocover.jpg</file>
+    <file>media/icon.png</file>
     <file>media/prev.png</file>
+    <file>media/nocover.png</file>
     <file>media/next.png</file>
     <file>media/pause.png</file>
     <file>media/play.png</file>
