@@ -50,6 +50,7 @@ def play_tanooki_way(music_file, channels):
             return play_tanooki_way(music_file, channels)
         else:
             continues = init_continues
+            print 'GAME OVER'
             return False
     continues = init_continues
     return True
