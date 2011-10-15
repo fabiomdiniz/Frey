@@ -58,7 +58,9 @@ def get_cover_hash(song_file):
     name = str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
     return gen_file_name(name.decode('ascii', 'ignore'))
 
-def getCoverArtPixmap(song_file):
+def getCoverArtPixmap(url):
+    url = url.replace('/', '\\')
+    song_file = File(url)
     artwork = song_file.tags.get('APIC:','')
     if artwork:
         iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
@@ -68,7 +70,14 @@ def getCoverArtPixmap(song_file):
                 img.write(artwork.data)
             pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
     else:
-        iconpath = _fromUtf8(":/png/media/nocover.png")
+        print url
+        folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
+        print folder
+        if os.path.exists(folder):
+            iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
+            pygame.image.save(pygame.image.load(folder),iconpath)
+        else:
+            iconpath = _fromUtf8(":/png/media/nocover.png")
     icon = QtGui.QIcon(iconpath)
     return icon.pixmap(72, 72)
 
@@ -112,10 +121,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.prev_button,Qt.SIGNAL("clicked()"),self._slotPrevSong)
         self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
         self.connect(self.playlist, QtCore.SIGNAL("dropped"), self.filesDropped)
+        self.playlist.doubleClicked.connect(self._slotClickPlaylist)
+
+    def _slotClickPlaylist(self, item):
+        global idx
+        idx = item.row()
+        self._playIdx(idx)
 
     def _addUrl(self, url):
         song_file = File(url)     
-        icon = QtGui.QIcon(getCoverArtPixmap(song_file))
+        icon = QtGui.QIcon(getCoverArtPixmap(url))
         item = QtGui.QListWidgetItem(getPrettyName(song_file), self.playlist)
         item.setIcon(icon)
 
@@ -135,7 +150,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 self._addUrl(url) 
         playlist += valid_urls
         if not_playlist and valid_urls:
-            if not self._playSong(valid_urls[0]):
+            if not self._playIdx(0):
                 self._slotNextSong()
         
 
@@ -162,6 +177,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         else:
             self._setPaused()
 
+    def _playIdx(self, idx):
+        for i in range(self.playlist.count()):
+            self.playlist.item(i).setBackgroundColor(QtGui.QColor(255,255,255))
+        self.playlist.item(idx).setBackgroundColor(QtGui.QColor(150,150,150))
+        return self._playSong(playlist[idx])
 
     def _slotPausePlay(self):
         global paused
@@ -181,7 +201,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         idx -= 1
         if idx < 0:
             idx = len(playlist)-1
-        if not self._playSong(playlist[idx]):
+        if not self._playIdx(idx):
             self._slotPrevSong()
         print 'PREV'
         self._setPlaying()
@@ -191,7 +211,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global playlist
         g2tsg.quit_tanooki()
         idx = (idx+1)%len(playlist)
-        if not self._playSong(playlist[idx]):
+        if not self._playIdx(idx):
             self._slotNextSong()
         print 'NEXT'
         self._setPlaying()
@@ -210,7 +230,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         song_file = File(name)
         self.song_name.setText(_fromUtf8(str(song_file.tags.get('TIT2',''))))
         self.artist.setText(_fromUtf8(str(song_file.tags.get('TPE1',''))))
-        self.cover.setPixmap(getCoverArtPixmap(song_file))
+        self.cover.setPixmap(getCoverArtPixmap(name))
         paused = False
         print 'play no ', name  
         return g2tsg.play_tanooki_way(name, channels)

@@ -12,7 +12,7 @@ def init_tanooki():
     freq = 44100     # audio CD quality
     bitsize = -16    # unsigned 16 bit
     buffer = 2048    # number of samples (experiment to get right sound)
-    pygame.mixer.pre_init(freq, bitsize, 2, buffer)
+    pygame.mixer.init(freq, bitsize, 2, buffer)
 
 def quit_tanooki():
     pygame.mixer.quit()
