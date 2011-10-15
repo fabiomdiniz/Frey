@@ -44,7 +44,6 @@ def dirEntries(dir_name, subdir, *args):
                     fileList.append(dirfile)
         # recursively access file names in subdirectories
         elif os.path.isdir(dirfile) and subdir:
-            print "Accessing directory:", dirfile
             fileList += dirEntries(dirfile, subdir, *args)
     return fileList
 
@@ -58,7 +57,7 @@ def get_cover_hash(song_file):
     name = str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
     return gen_file_name(name.decode('ascii', 'ignore'))
 
-def getCoverArtPixmap(url):
+def getCoverArtPixmap(url, size=76):
     url = url.replace('/', '\\')
     song_file = File(url)
     artwork = song_file.tags.get('APIC:','')
@@ -70,16 +69,14 @@ def getCoverArtPixmap(url):
                 img.write(artwork.data)
             pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
     else:
-        print url
         folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
-        print folder
         if os.path.exists(folder):
             iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
             pygame.image.save(pygame.image.load(folder),iconpath)
         else:
             iconpath = _fromUtf8(":/png/media/nocover.png")
     icon = QtGui.QIcon(iconpath)
-    return icon.pixmap(72, 72)
+    return icon.pixmap(size, size)
 
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -93,16 +90,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.__class__.dragEnterEvent = self.lbDragEnterEvent
 
     def lbDragEnterEvent(self, event):
-        print event.mimeData().hasUrls()
         if event.mimeData().hasUrls():
-            print event.mimeData().urls()
             event.accept()
 
     def lbDropEvent(self, event):
         print 'DROP AE'
-        print event.mimeData().urls()
         if event.mimeData().hasUrls():
-            print 'aceito denovo'
             links = []
             #from PyQt4.QtCore import pyqtRemoveInputHook
   
@@ -110,7 +103,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
             for url in event.mimeData().urls():
                 links.append(unicode(url.toLocalFile()))
-            print links
             self.filesDropped(links)
 
     
@@ -194,11 +186,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _slotPausePlay(self):
         global paused
         if not paused:
-            print 'vo pausa'
             self._togglePausePlay()
             g2tsg.pause_tanooki()
         else:
-            print 'vo despausa'
             self._togglePausePlay()
             g2tsg.unpause_tanooki()
 
@@ -211,7 +201,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             idx = len(playlist)-1
         if not self._playIdx(idx):
             self._slotPrevSong()
-        print 'PREV'
         self._setPlaying()
 
     def _slotNextSong(self):
@@ -221,7 +210,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         idx = (idx+1)%len(playlist)
         if not self._playIdx(idx):
             self._slotNextSong()
-        print 'NEXT'
         self._setPlaying()
 
     def _playSong(self, name):
@@ -238,7 +226,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         song_file = File(name)
         self.song_name.setText(_fromUtf8(str(song_file.tags.get('TIT2',''))))
         self.artist.setText(_fromUtf8(str(song_file.tags.get('TPE1',''))))
-        self.cover.setPixmap(getCoverArtPixmap(name))
+        self.cover.setPixmap(getCoverArtPixmap(name, 200))
         paused = False
         print 'play no ', name  
         return g2tsg.play_tanooki_way(name, channels)
