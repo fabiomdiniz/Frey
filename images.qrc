@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="png">
+    <file>media/dark_koopatrol_small.png</file>
+    <file>media/Vivian_small.png</file>
+    <file>media/Vivian.png</file>
+    <file>media/dark_koopatrol.png</file>
     <file>media/icon.png</file>
     <file>media/prev.png</file>
     <file>media/nocover.png</file>

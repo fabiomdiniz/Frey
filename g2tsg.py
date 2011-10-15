@@ -3,6 +3,8 @@ import pygame, pygame.mixer
 import pygame._view
 import time 
 
+from tanooki_utils import *
+
 init_continues = 5
 continues = 5
 
@@ -37,12 +39,17 @@ def play_tanooki_way(music_file, channels):
     # optional volume 0 to 1.0
     pygame.mixer.music.set_volume(1.0)
 
-
+    #from PyQt4.QtCore import pyqtRemoveInputHook
+    #pyqtRemoveInputHook()
+    #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
     try:
-        pygame.mixer.music.load(open(music_file, 'rb'))
+        pygame.mixer.music.load(open(clean_path(music_file), 'rb'))
         print "Music file loaded!"
-    except pygame.error:
-        print "File not found!"
+    except Exception as e:
+        #from PyQt4.QtCore import pyqtRemoveInputHook
+        #pyqtRemoveInputHook()
+        #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
+        print "ERROR: ", e
         return
     pygame.mixer.music.play()
 

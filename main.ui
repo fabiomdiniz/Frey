@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>766</width>
-    <height>422</height>
+    <width>1148</width>
+    <height>750</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QComboBox" name="channels">
@@ -25,12 +28,12 @@
     </property>
     <item>
      <property name="text">
-      <string>Mono</string>
+      <string>Stereo</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Stereo</string>
+      <string>Mono</string>
      </property>
     </item>
    </widget>
@@ -66,8 +69,8 @@
    <widget class="QLabel" name="song_name">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>270</y>
+      <x>960</x>
+      <y>20</y>
       <width>311</width>
       <height>16</height>
      </rect>
@@ -95,8 +98,8 @@
    <widget class="QLabel" name="artist">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>290</y>
+      <x>960</x>
+      <y>80</y>
       <width>311</width>
       <height>16</height>
      </rect>
@@ -222,21 +225,27 @@
    <widget class="QListWidget" name="playlist">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>110</y>
-      <width>541</width>
-      <height>251</height>
+      <x>850</x>
+      <y>130</y>
+      <width>271</width>
+      <height>561</height>
      </rect>
     </property>
     <property name="acceptDrops">
      <bool>true</bool>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(:/png/media/dark_koopatrol_small.png);
+background-color: white;
+background-repeat: no-repeat;
+background-position: right bottom;</string>
+    </property>
    </widget>
    <widget class="QLabel" name="cover">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>310</y>
+      <x>850</x>
+      <y>20</y>
       <width>101</width>
       <height>101</height>
      </rect>
@@ -254,14 +263,77 @@
    <widget class="QPushButton" name="clear_button">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>370</y>
+      <x>410</x>
+      <y>30</y>
       <width>93</width>
       <height>28</height>
      </rect>
     </property>
     <property name="text">
      <string>Clear Playlist</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="albums">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>128</y>
+      <width>711</width>
+      <height>561</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(:/png/media/Vivian_small.png);
+background-color: white;
+background-repeat: no-repeat;
+background-position: right bottom;</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>110</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="showGrid">
+     <bool>false</bool>
+    </property>
+    <property name="rowCount">
+     <number>0</number>
+    </property>
+    <property name="columnCount">
+     <number>0</number>
+    </property>
+    <attribute name="horizontalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+   </widget>
+   <widget class="QPushButton" name="load_library">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>70</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select Folder</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="album">
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>50</y>
+      <width>311</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Album</string>
     </property>
    </widget>
   </widget>

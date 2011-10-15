@@ -8,10 +8,11 @@ import g2tsg
 from mutagen.easyid3 import EasyID3
 from mutagen import File
 import pygame
+from tanooki_utils import *
+import tanooki_library
 
 paused = True
 idx = 0
-ROOT_PATH = os.getcwd()
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -20,62 +21,13 @@ except AttributeError:
 
 playlist = []
 
-def dirEntries(dir_name, subdir, *args):
-    '''Return a list of file names found in directory 'dir_name'
-    If 'subdir' is True, recursively access subdirectories under 'dir_name'.
-    Additional arguments, if any, are file extensions to match filenames. Matched
-        file names are added to the list.
-    If there are no additional arguments, all files found in the directory are
-        added to the list.
-    Example usage: fileList = dir_list(r'H:\TEMP', False, 'txt', 'py')
-        Only files with 'txt' and 'py' extensions will be added to the list.
-    Example usage: fileList = dir_list(r'H:\TEMP', True)
-        All files and all the files in subdirectories under H:\TEMP will be added
-        to the list.
-    '''
-    fileList = []
-    for file in os.listdir(dir_name):
-        dirfile = os.path.join(dir_name, file)
-        if os.path.isfile(dirfile):
-            if len(args) == 0:
-                fileList.append(dirfile)
-            else:
-                if os.path.splitext(dirfile)[1][1:] in args:
-                    fileList.append(dirfile)
-        # recursively access file names in subdirectories
-        elif os.path.isdir(dirfile) and subdir:
-            fileList += dirEntries(dirfile, subdir, *args)
-    return fileList
+
 
 def getPrettyName(song_file):
     return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))
 
-def gen_file_name(s):
-    return "".join([x for x in s if x.isalpha() or x.isdigit()])
-
-def get_cover_hash(song_file):
-    name = str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
-    return gen_file_name(name.decode('ascii', 'ignore'))
-
 def getCoverArtPixmap(url, size=76):
-    url = url.replace('/', '\\')
-    song_file = File(url)
-    artwork = song_file.tags.get('APIC:','')
-    if artwork:
-        iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
-        iconpath_jpg = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.jpg')
-        if not os.path.exists(iconpath):
-            with open(iconpath_jpg, 'wb') as img:
-                img.write(artwork.data)
-            pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
-    else:
-        folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
-        if os.path.exists(folder):
-            iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
-            pygame.image.save(pygame.image.load(folder),iconpath)
-        else:
-            iconpath = _fromUtf8(":/png/media/nocover.png")
-    icon = QtGui.QIcon(iconpath)
+    icon = QtGui.QIcon(getCoverArtIconPath(url))
     return icon.pixmap(size, size)
 
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
@@ -88,6 +40,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.setAcceptDrops(True)
         self.__class__.dropEvent = self.lbDropEvent
         self.__class__.dragEnterEvent = self.lbDragEnterEvent
+        self._showLibrary()
 
     def lbDragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -115,6 +68,66 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.playlist, QtCore.SIGNAL("dropped"), self.filesDropped)
         self.playlist.doubleClicked.connect(self._slotClickPlaylist)
         self.clear_button.clicked.connect(self._clearPlaylist)
+        self.load_library.clicked.connect(self._loadLibrary)
+        self.albums.cellClicked.connect(self._clickAlbum)
+        self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
+
+    def load_album(self, album):
+        self._clearPlaylist()
+        conf = tanooki_library.get_or_create_config()
+        for filename in conf['library'][album]['songs']:
+            playlist.append(filename)
+            self._addUrl(filename)
+
+    def _doubleClickAlbum(self, i, j):
+        if self.albums.item(i, j).text():
+            self.load_album(unicode(self.albums.item(i, j).text()))
+            if not self._playIdx(0):
+                self._slotNextSong()
+
+    def _clickAlbum(self, i, j):
+        if self.albums.item(i, j).text():
+            self.load_album(unicode(self.albums.item(i, j).text()))
+
+    def _loadLibrary(self):
+        dialog = QtGui.QFileDialog()
+        dialog.setFileMode(QtGui.QFileDialog.Directory)
+        dialog.setOption(QtGui.QFileDialog.ShowDirsOnly)
+        if dialog.exec_():
+            fileNames = dialog.selectedFiles();
+            tanooki_library.set_library(unicode(fileNames[0]))
+            self._showLibrary()
+
+    def _showLibrary(self):
+        self.albums.clear()
+        conf = tanooki_library.get_or_create_config()
+        self.albums.setSortingEnabled(False) 
+        i = 0
+        j = 0
+        num_col = 6
+        num_albums = len(conf['library'])
+        import math
+        self.albums.setRowCount(int(math.ceil(float(num_albums)/num_col)))
+        self.albums.setColumnCount(num_col);
+        for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,114)
+        for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,114)
+        
+        for album in conf['library']:
+            item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), album)
+            item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled)
+            self.albums.setItem(i, j, item)
+            if j == num_col - 1:
+                i += 1
+            j = (j+1)%num_col
+        while j<num_col:
+            item = QtGui.QTableWidgetItem('')
+            item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled)
+            self.albums.setItem(i, j, item)
+            j += 1
+        #self.albums.setStyle(QtGui.QApplication.instance().style())
+        #from PyQt4.QtCore import pyqtRemoveInputHook
+        #pyqtRemoveInputHook()
+        #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
 
     def _clearPlaylist(self):
         global idx
@@ -126,7 +139,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _slotClickPlaylist(self, item):
         global idx
         idx = item.row()
-        self._playIdx(idx)
+        if not self._playIdx(idx):
+            self._slotNextSong()
 
     def _addUrl(self, url):
         song_file = File(url)     
@@ -214,10 +228,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def _playSong(self, name):
         global paused
-
-        # Read the text from the lineedit,
+        global idx
         mode = self.channels.currentText()
-        # if the lineedit is not empty,
         if str(mode) == "Mono":
             print 'MONO NO KE HIME'
             channels = 1
@@ -226,8 +238,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         song_file = File(name)
         self.song_name.setText(_fromUtf8(str(song_file.tags.get('TIT2',''))))
         self.artist.setText(_fromUtf8(str(song_file.tags.get('TPE1',''))))
+        self.album.setText(_fromUtf8(str(song_file.tags.get('TALB',''))))
         self.cover.setPixmap(getCoverArtPixmap(name, 200))
-        paused = False
+        self._setPlaying()
         print 'play no ', name  
         return g2tsg.play_tanooki_way(name, channels)
             
