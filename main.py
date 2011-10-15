@@ -7,7 +7,7 @@ from main_ui import Ui_MainWindow
 import g2tsg
 from mutagen.easyid3 import EasyID3
 from mutagen import File
-import pygame, pygame.mixer
+import pygame
 
 paused = True
 idx = 0
@@ -122,6 +122,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
         self.connect(self.playlist, QtCore.SIGNAL("dropped"), self.filesDropped)
         self.playlist.doubleClicked.connect(self._slotClickPlaylist)
+        self.clear_button.clicked.connect(self._clearPlaylist)
+
+    def _clearPlaylist(self):
+        global idx
+        global playlist
+        playlist = []
+        idx = 0
+        self.playlist.clear()
 
     def _slotClickPlaylist(self, item):
         global idx
@@ -188,11 +196,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         if not paused:
             print 'vo pausa'
             self._togglePausePlay()
-            pygame.mixer.music.pause()
+            g2tsg.pause_tanooki()
         else:
             print 'vo despausa'
             self._togglePausePlay()
-            pygame.mixer.music.unpause()
+            g2tsg.unpause_tanooki()
 
     def _slotPrevSong(self):
         global idx

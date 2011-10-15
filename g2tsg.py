@@ -17,6 +17,11 @@ def init_tanooki():
 def quit_tanooki():
     pygame.mixer.quit()
 
+def pause_tanooki():
+    pygame.mixer.music.pause()
+
+def unpause_tanooki():
+    pygame.mixer.music.unpause()
 
 def play_tanooki_way(music_file, channels):
     global continues
