@@ -47,7 +47,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             event.accept()
 
     def lbDropEvent(self, event):
-        print 'DROP AE'
         if event.mimeData().hasUrls():
             links = []
             #from PyQt4.QtCore import pyqtRemoveInputHook
@@ -254,8 +253,20 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
 if __name__ == "__main__":
     os.system('mkdir cover_cache')
+    import ctypes
+    myappid = 'fabiodiniz.gokya.supergokya' # arbitrary string
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    #import comtypes.client as cc
+    #cc.GetModule("TaskbarLib.tlb")
+    #import comtypes.gen.TaskbarLib as tbl
+    #taskbar = cc.CreateObject(
+    #"{56FDF344-FD6D-11d0-958A-006097C9A090}",
+    #interface=tbl.ITaskbarList3)
+    #taskbar.HrInit()
+
     g2tsg.init_tanooki()
     app = QtGui.QApplication(sys.argv)
     myapp = MyForm()
     myapp.show()
+    #taskbar.SetProgressValue(myapp.winId(),40,100)
     sys.exit(app.exec_())
