@@ -42,6 +42,9 @@ def play_tanooki_way(music_file, channels):
     #from PyQt4.QtCore import pyqtRemoveInputHook
     #pyqtRemoveInputHook()
     #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
+
+    clock = pygame.time.Clock()
+
     try:
         pygame.mixer.music.load(open(clean_path(music_file), 'rb'))
         print "Music file loaded!"
@@ -64,10 +67,12 @@ def play_tanooki_way(music_file, channels):
             continues = init_continues
             print 'GAME OVER'
             return False
-    continues = init_continues
-    return True
-        
-
+    else:
+        continues = init_continues
+        while pygame.mixer.music.get_busy():
+            clock.tick(30)
+        pygame.mixer.music.stop()
+        return True
     #time.sleep(5)
     #pygame.mixer.music.stop()
     ##pygame.mixer.music.stop()

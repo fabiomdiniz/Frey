@@ -32,6 +32,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, taskbar, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
+        self.play_thread = QtCore.QThread(parent = self)
         self._connectSlots()
         self.setWindowTitle('Gokya 2 The Super Gokya')
         self.setWindowIcon(QtGui.QIcon(':/png/media/icon.png'))   
@@ -42,6 +43,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.playlist.dropEvent = self.appendAlbumEvent
         self.huge_tanooki.lower()
         self.taskbar = taskbar
+        #self.thread.run = myRun
 
     def lbDragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -75,6 +77,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.load_library.clicked.connect(self._loadLibrary)
         self.albums.cellClicked.connect(self._clickAlbum)
         self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
+        self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong)
 
     def appendAlbumPlaylist(self, album):
         conf = tanooki_library.get_or_create_config()
@@ -237,6 +240,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _playSong(self, name):
         global paused
         global idx
+        global channels
         mode = self.channels.currentText()
         if str(mode) == "Mono":
             print 'MONO NO KE HIME'
@@ -249,9 +253,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.album.setText(_fromUtf8(str(song_file.tags.get('TALB',''))))
         self.cover.setPixmap(getCoverArtPixmap(name, 200))
         self._setPlaying()
-        print 'play no ', name  
-        return g2tsg.play_tanooki_way(name, channels)
-            
+        print 'play no ', name
+        self.play_thread.terminate() 
+        g2tsg.quit_tanooki()
+        self.play_thread.run = lambda : g2tsg.play_tanooki_way(name, channels)
+        self.play_thread.start()
+        return True    
 
     def _slotSelectClicked(self):
         name = unicode(QtGui.QFileDialog.getOpenFileName(self,
