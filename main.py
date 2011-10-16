@@ -14,14 +14,12 @@ import tanooki_library
 paused = True
 idx = 0
 
+playlist = []
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
-
-playlist = []
-
-
 
 def getPrettyName(song_file):
     return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))
@@ -31,7 +29,7 @@ def getCoverArtPixmap(url, size=76):
     return icon.pixmap(size, size)
 
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, taskbar, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         self._connectSlots()
@@ -41,6 +39,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.__class__.dropEvent = self.lbDropEvent
         self.__class__.dragEnterEvent = self.lbDragEnterEvent
         self._showLibrary()
+        self.playlist.dropEvent = self.appendAlbumEvent
+        self.huge_tanooki.lower()
+        self.taskbar = taskbar
 
     def lbDragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -57,6 +58,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 links.append(unicode(url.toLocalFile()))
             self.filesDropped(links)
 
+    def appendAlbumEvent(self, event):
+        if event.source() is self.albums:
+            self.appendAlbumPlaylist(unicode(self.albums.currentItem().text()))
+
     
     def _connectSlots(self):
         # Connect our two methods to SIGNALS the GUI emits.
@@ -71,12 +76,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.albums.cellClicked.connect(self._clickAlbum)
         self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
 
-    def load_album(self, album):
-        self._clearPlaylist()
+    def appendAlbumPlaylist(self, album):
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
             playlist.append(filename)
             self._addUrl(filename)
+
+    def load_album(self, album):
+        self._clearPlaylist()
+        self.appendAlbumPlaylist(album)
+
 
     def _doubleClickAlbum(self, i, j):
         if self.albums.item(i, j).text():
@@ -94,7 +103,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         dialog.setOption(QtGui.QFileDialog.ShowDirsOnly)
         if dialog.exec_():
             fileNames = dialog.selectedFiles();
-            tanooki_library.set_library(unicode(fileNames[0]))
+            tanooki_library.set_library(unicode(fileNames[0]), taskbar, self.winId())
             self._showLibrary()
 
     def _showLibrary(self):
@@ -113,7 +122,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         
         for album in conf['library']:
             item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), album)
-            item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled)
+            item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled|QtCore.Qt.ItemIsDragEnabled)
             self.albums.setItem(i, j, item)
             if j == num_col - 1:
                 i += 1
@@ -256,17 +265,17 @@ if __name__ == "__main__":
     import ctypes
     myappid = 'fabiodiniz.gokya.supergokya' # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-    #import comtypes.client as cc
-    #cc.GetModule("TaskbarLib.tlb")
-    #import comtypes.gen.TaskbarLib as tbl
-    #taskbar = cc.CreateObject(
-    #"{56FDF344-FD6D-11d0-958A-006097C9A090}",
-    #interface=tbl.ITaskbarList3)
-    #taskbar.HrInit()
+    import comtypes.client as cc
+    cc.GetModule("TaskbarLib.tlb")
+    import comtypes.gen.TaskbarLib as tbl
+    taskbar = cc.CreateObject(
+    "{56FDF344-FD6D-11d0-958A-006097C9A090}",
+    interface=tbl.ITaskbarList3)
+    taskbar.HrInit()
 
     g2tsg.init_tanooki()
     app = QtGui.QApplication(sys.argv)
-    myapp = MyForm()
+    myapp = MyForm(taskbar=taskbar)
     myapp.show()
-    #taskbar.SetProgressValue(myapp.winId(),40,100)
+
     sys.exit(app.exec_())

@@ -67,7 +67,7 @@ class BuildExe:
  
         #Extra files/dirs copied to game
         self.extra_datas = []
-        self.datas = []#[('imageformats', glob.glob("C:\Python27\Lib\site-packages\PyQt4\plugins\imageformats\*.dll"))]
+        self.datas = ['TaskbarLib.tlb']#[('imageformats', glob.glob("C:\Python27\Lib\site-packages\PyQt4\plugins\imageformats\*.dll"))]
 
         #Extra/excludes python modules
         self.extra_modules = []
@@ -122,11 +122,6 @@ class BuildExe:
         if os.path.isdir(self.dist_dir): #Erase previous destination dir
             shutil.rmtree(self.dist_dir)
         
-        #Use the default pygame icon, if none given
-        if self.icon_file == None:
-            path = os.path.split(pygame.__file__)[0]
-            self.icon_file = os.path.join(path, 'pygame.ico')
- 
         #List all data files to add
         extra_datas = []
         for data in self.extra_datas:

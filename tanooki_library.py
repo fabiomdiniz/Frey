@@ -19,15 +19,23 @@ def get_or_create_config():
 def save_config(conf):
     open('conf.json', 'w').write(json.dumps(conf))
 
-def set_library(folder):
+def set_library(folder, taskbar, winid):
     conf = get_or_create_config()
     conf['library'] = {}
     conf['folder'] = folder
-    for path in dirEntries(folder, True, 'mp3'):
+
+    entries = dirEntries(folder, True, 'mp3')
+
+    num_entries = len(entries)
+
+    for i, path in enumerate(entries):
         filename = os.path.join(folder, path)
         info = get_song_info(filename)
         if not conf['library'].has_key(info[1]):
             conf['library'][info[1]] = {'cover': getCoverArtIconPath(filename),
                                         'songs': []}
         conf['library'][info[1]]['songs'].append(filename)
+        taskbar.SetProgressValue(winid,i,num_entries)
+    taskbar.SetProgressState(winid,0)
+
     save_config(conf)

@@ -69,7 +69,7 @@
    <widget class="QLabel" name="song_name">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>830</x>
       <y>20</y>
       <width>311</width>
       <height>16</height>
@@ -98,7 +98,7 @@
    <widget class="QLabel" name="artist">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>830</x>
       <y>80</y>
       <width>311</width>
       <height>16</height>
@@ -111,8 +111,8 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
+      <x>20</x>
+      <y>30</y>
       <width>209</width>
       <height>62</height>
      </rect>
@@ -240,11 +240,17 @@ background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;</string>
     </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::DropOnly</enum>
+    </property>
+    <property name="defaultDropAction">
+     <enum>Qt::IgnoreAction</enum>
+    </property>
    </widget>
    <widget class="QLabel" name="cover">
     <property name="geometry">
      <rect>
-      <x>850</x>
+      <x>720</x>
       <y>20</y>
       <width>101</width>
       <height>101</height>
@@ -288,10 +294,25 @@ background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;</string>
     </property>
+    <property name="dragEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::DragOnly</enum>
+    </property>
+    <property name="defaultDropAction">
+     <enum>Qt::CopyAction</enum>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="selectionBehavior">
+     <enum>QAbstractItemView::SelectItems</enum>
+    </property>
     <property name="iconSize">
      <size>
       <width>110</width>
-      <height>100</height>
+      <height>110</height>
      </size>
     </property>
     <property name="showGrid">
@@ -326,7 +347,7 @@ background-position: right bottom;</string>
    <widget class="QLabel" name="album">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>830</x>
       <y>50</y>
       <width>311</width>
       <height>16</height>
@@ -336,6 +357,59 @@ background-position: right bottom;</string>
      <string>Album</string>
     </property>
    </widget>
+   <widget class="QLabel" name="huge_tanooki">
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>-50</y>
+      <width>300</width>
+      <height>348</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="images.qrc">:/png/media/mario_tanooki.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>-140</x>
+      <y>540</y>
+      <width>281</width>
+      <height>291</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="images.qrc">:/png/media/paperbowser.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <zorder>channels</zorder>
+   <zorder>label</zorder>
+   <zorder>select_song</zorder>
+   <zorder>song_name</zorder>
+   <zorder>label_3</zorder>
+   <zorder>artist</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>cover</zorder>
+   <zorder>clear_button</zorder>
+   <zorder>albums</zorder>
+   <zorder>load_library</zorder>
+   <zorder>album</zorder>
+   <zorder>huge_tanooki</zorder>
+   <zorder>label_5</zorder>
+   <zorder>playlist</zorder>
   </widget>
   <action name="actionExit">
    <property name="text">

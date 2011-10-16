@@ -6,6 +6,13 @@ from mutagen import File
 
 ROOT_PATH = os.getcwd()
 
+from PyQt4 import QtCore
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    _fromUtf8 = lambda s: s
+
+
 def clean_path(path):
     path = os.path.abspath(path)
     path = os.path.normpath(path)
@@ -14,8 +21,8 @@ def clean_path(path):
 def getCoverArtIconPath(url):
     url = url.replace('/', '\\')
     song_file = File(url)
-    artwork = song_file.tags.get('APIC:','')
-    if artwork:
+    if song_file.tags and song_file.tags.get('APIC:',''):
+        artwork = song_file.tags.get('APIC:','')
         iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
         iconpath_jpg = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.jpg')
         if not os.path.exists(iconpath):
@@ -28,7 +35,7 @@ def getCoverArtIconPath(url):
             iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
             pygame.image.save(pygame.image.load(folder),iconpath)
         else:
-            iconpath = _fromUtf8(":/png/media/nocover.png")
+            iconpath = u":/png/media/nocover.png"
     return iconpath
 
 def dirEntries(dir_name, subdir, *args):
@@ -67,6 +74,8 @@ def get_cover_hash(song_file):
 
 def get_song_info(name):
     song_file = File(name)
-    return [unicode(song_file.tags.get('TIT2','')),
-            unicode(song_file.tags.get('TALB','')),
-            unicode(song_file.tags.get('TPE1',''))]
+    if song_file.tags:
+        return [unicode(song_file.tags.get('TIT2','')),
+                unicode(song_file.tags.get('TALB','')),
+                unicode(song_file.tags.get('TPE1',''))]
+    return ['','',name]
