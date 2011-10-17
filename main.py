@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
  
+phonofied = True
+
 import sys, os, time
 from PyQt4 import QtCore, QtGui
 from PyQt4 import Qt
 from main_ui import Ui_MainWindow
-import g2tsg
+
 from mutagen.easyid3 import EasyID3
 from mutagen import File
 import pygame
@@ -15,6 +17,8 @@ paused = True
 idx = 0
 
 playlist = []
+
+g2tsg = None
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -313,8 +317,14 @@ if __name__ == "__main__":
         taskbar.HrInit()
     else:
         taskbar = None
-    g2tsg.init_tanooki()
+    #g2tsg.init_tanooki()
     app = QtGui.QApplication(sys.argv)
+    if len(sys.argv) > 1 and sys.argv[1] == 'phonon':
+        print 'PHONORADICALIZO'
+        import g2tsg_phonon as g2tsg
+    else:
+        print 'PYGAMECOVARDIZO'
+        import g2tsg
     myapp = MyForm(taskbar=taskbar)
     myapp.show()
 

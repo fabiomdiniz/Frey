@@ -9,35 +9,50 @@ init_continues = 5
 continues = 5
 
 #music = Phonon.MediaObject()
+audioOutput = Phonon.AudioOutput(Phonon.MusicCategory)
 mediaObject = Phonon.MediaObject()
-
+mediaObject.setTickInterval(1000)
+Phonon.createPath(mediaObject, audioOutput)
 
 def init_tanooki():
     pass
 
 def quit_tanooki():
-    global music
-    music.clear()
+    pass
+    #global music
+    #music.clear()
 
 def pause_tanooki():
-    global music
-    music.pause()
+    global mediaObject
+    mediaObject.pause()
 
 def unpause_tanooki():
-    global music
-    music.play()
+    global mediaObject
+    mediaObject.play()
 
 def play_tanooki_way(music_file, channels):
-    global continues
-    global init_continues
-    global music
+    #global continues
+    #global init_continues
+    global mediaObject
     
-    music = Phonon.createPlayer(Phonon.MusicCategory,
-                              Phonon.MediaSource(music_file));
-    music.play();
+    mediaObject.stop()
+    mediaObject.clearQueue()
+    mediaObject.setCurrentSource(Phonon.MediaSource(music_file))
+    mediaObject.play()
 
-    while music.remainingTime() > 0:
+    #music = Phonon.createPlayer(Phonon.MusicCategory,
+    #                          Phonon.MediaSource(music_file));
+    #print 'play ae'                              
+    #music.play();
+    #from PyQt4.QtCore import pyqtRemoveInputHook
+    #pyqtRemoveInputHook()
+    #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
+    time.sleep(1)
+    while mediaObject.remainingTime() > 0:
+        #print 'remaining'                              
+
         time.sleep(0.1)
+    print 'cabo'                              
 
 
 
