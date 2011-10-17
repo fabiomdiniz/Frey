@@ -35,7 +35,9 @@ def set_library(folder, taskbar, winid):
             conf['library'][info[1]] = {'cover': getCoverArtIconPath(filename),
                                         'songs': []}
         conf['library'][info[1]]['songs'].append(filename)
-        taskbar.SetProgressValue(winid,i,num_entries)
-    taskbar.SetProgressState(winid,0)
+        if taskbar:
+            taskbar.SetProgressValue(winid,i,num_entries)
+    if taskbar:
+        taskbar.SetProgressState(winid,0)
 
     save_config(conf)

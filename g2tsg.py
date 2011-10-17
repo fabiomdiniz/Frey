@@ -17,7 +17,9 @@ def init_tanooki():
     pygame.mixer.init(freq, bitsize, 2, buffer)
 
 def quit_tanooki():
-    pygame.mixer.quit()
+    if pygame.mixer.get_init():
+        pygame.mixer.music.stop()
+        #pygame.mixer.quit()
 
 def pause_tanooki():
     pygame.mixer.music.pause()
@@ -31,6 +33,7 @@ def play_tanooki_way(music_file, channels):
     # set up the mixer
     pygame.mixer.quit()
     pygame.mixer.quit()
+    
     freq = 44100     # audio CD quality
     bitsize = -16    # unsigned 16 bit
     buffer = 2048    # number of samples (experiment to get right sound)
@@ -70,8 +73,10 @@ def play_tanooki_way(music_file, channels):
     else:
         continues = init_continues
         while pygame.mixer.music.get_busy():
+            if not pygame.mixer.get_init():
+                return True
             clock.tick(30)
-        pygame.mixer.music.stop()
+        #pygame.mixer.music.stop()
         return True
     #time.sleep(5)
     #pygame.mixer.music.stop()
