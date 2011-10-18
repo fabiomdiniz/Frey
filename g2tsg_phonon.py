@@ -9,13 +9,16 @@ init_continues = 5
 continues = 5
 
 #music = Phonon.MediaObject()
-audioOutput = Phonon.AudioOutput(Phonon.MusicCategory)
-mediaObject = Phonon.MediaObject()
-mediaObject.setTickInterval(1000)
-Phonon.createPath(mediaObject, audioOutput)
+audioOutput = None
+mediaObject = None
 
-def init_tanooki():
-    pass
+def init_tanooki(app):
+    global audioOutput
+    global mediaObject
+    audioOutput = Phonon.AudioOutput(Phonon.MusicCategory, app)
+    mediaObject = Phonon.MediaObject(app)
+    mediaObject.setTickInterval(1000)
+    Phonon.createPath(mediaObject, audioOutput)
 
 def quit_tanooki():
     pass

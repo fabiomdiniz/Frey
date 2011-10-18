@@ -8,7 +8,7 @@ from tanooki_utils import *
 init_continues = 5
 continues = 5
 
-def init_tanooki():
+def init_tanooki(app):
     pygame.mixer.quit()
     pygame.mixer.quit()    
     freq = 44100     # audio CD quality

@@ -326,6 +326,7 @@ if __name__ == "__main__":
         print 'PYGAMECOVARDIZO'
         import g2tsg
     myapp = MyForm(taskbar=taskbar)
+    g2tsg.init_tanooki(myapp)
     myapp.show()
 
     sys.exit(app.exec_())
