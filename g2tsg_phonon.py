@@ -8,22 +8,21 @@ from tanooki_utils import *
 init_continues = 5
 continues = 5
 
-#music = Phonon.MediaObject()
+music = Phonon.MediaObject()
 audioOutput = None
 mediaObject = None
 
-def init_tanooki(app):
+def init_tanooki():
     global audioOutput
     global mediaObject
-    audioOutput = Phonon.AudioOutput(Phonon.MusicCategory, app)
-    mediaObject = Phonon.MediaObject(app)
+    audioOutput = Phonon.AudioOutput(Phonon.MusicCategory)
+    mediaObject = Phonon.MediaObject()
     mediaObject.setTickInterval(1000)
     Phonon.createPath(mediaObject, audioOutput)
 
 def quit_tanooki():
-    pass
-    #global music
-    #music.clear()
+    global music
+    music.clear()
 
 def pause_tanooki():
     global mediaObject
@@ -34,8 +33,8 @@ def unpause_tanooki():
     mediaObject.play()
 
 def play_tanooki_way(music_file, channels):
-    #global continues
-    #global init_continues
+    global continues
+    global init_continues
     global mediaObject
     
     mediaObject.stop()

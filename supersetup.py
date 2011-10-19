@@ -67,14 +67,14 @@ class BuildExe:
  
         #Extra files/dirs copied to game
         self.extra_datas = []
-        self.datas = ['TaskbarLib.tlb']#[('imageformats', glob.glob("C:\Python27\Lib\site-packages\PyQt4\plugins\imageformats\*.dll"))]
+        self.datas = ['TaskbarLib.tlb',('phonon_backend', glob.glob("C:\Python27\Lib\site-packages\PyQt4\plugins\phonon_backend\*.dll"))]
 
         #Extra/excludes python modules
         self.extra_modules = []
         self.exclude_modules = []
         
         #DLL Excludes
-        self.exclude_dll = []#['gif4.dll', 'ico4.dll', 'jpeg4.dll', 'mng4.dll', 'svg4.dll', 'tiff4.dll']
+        self.exclude_dll = ['phonon_ds94.dll']#['gif4.dll', 'ico4.dll', 'jpeg4.dll', 'mng4.dll', 'svg4.dll', 'tiff4.dll']
         #python scripts (strings) to be included, seperated by a comma
         self.extra_scripts = ['sip']
  

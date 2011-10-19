@@ -12,7 +12,7 @@ from mutagen import File
 import pygame
 from tanooki_utils import *
 import tanooki_library
-
+from PyQt4.phonon import Phonon
 paused = True
 idx = 0
 
@@ -48,7 +48,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.playlist.dropEvent = self.appendAlbumEvent
         self.huge_tanooki.lower()
         self.taskbar = taskbar
-        #self.thread.run = myRun
 
     def lbDragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -269,6 +268,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global paused
         global idx
         global channels
+        global phonofied
         mode = self.channels.currentText()
         if str(mode) == "Mono":
             print 'MONO NO KE HIME'
@@ -305,6 +305,7 @@ if __name__ == "__main__":
     os.system('mkdir cover_cache')
     import platform
     if platform.version()[:3] == '6.1': # Check for win7
+        print 'WINDOWS 7!!!'
         import ctypes
         myappid = 'fabiodiniz.gokya.supergokya' # arbitrary string
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
@@ -319,14 +320,15 @@ if __name__ == "__main__":
         taskbar = None
     #g2tsg.init_tanooki()
     app = QtGui.QApplication(sys.argv)
-    if len(sys.argv) > 1 and sys.argv[1] == 'phonon':
+    phonofied = not os.path.exists('nophonon')
+    if phonofied:
         print 'PHONORADICALIZO'
         import g2tsg_phonon as g2tsg
     else:
         print 'PYGAMECOVARDIZO'
         import g2tsg
     myapp = MyForm(taskbar=taskbar)
-    g2tsg.init_tanooki(myapp)
+    g2tsg.init_tanooki()
     myapp.show()
 
     sys.exit(app.exec_())
