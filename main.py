@@ -48,6 +48,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.playlist.dropEvent = self.appendAlbumEvent
         self.huge_tanooki.lower()
         self.taskbar = taskbar
+        self.overlay.hide()
 
     def lbDragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -82,6 +83,22 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.albums.cellClicked.connect(self._clickAlbum)
         self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
         self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong2)
+        self.close_overlay.clicked.connect(self._closeOverlay)
+        self.transfer_button.clicked.connect(self._appendSongs)
+
+    def _appendSongs(self):
+        album = unicode(self.albums.currentItem().text())
+        conf = tanooki_library.get_or_create_config()
+        for i in range(self.album_songs.count()):
+            item = self.album_songs.item(i)
+            if self.album_songs.isItemSelected(item):
+                filename = conf['library'][album]['songs'][i]
+                playlist.append(filename)
+                self._addUrl(filename)
+                 
+
+    def _closeOverlay(self):
+        self.overlay.hide()
 
     def disconThread(self):
         self.disconnect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong2)
@@ -90,7 +107,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong2)
 
     def _slotNextSong2(self):
-        print 'SINALIZO'
         self._slotNextSong()
 
     def appendAlbumPlaylist(self, album):
@@ -113,10 +129,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 self._slotNextSong()
 
     def _clickAlbum(self, i, j):
-        global idx
-        idx = -1
-        if self.albums.item(i, j).text():
-            self.load_album(unicode(self.albums.item(i, j).text()))
+        if not self.albums.item(i, j).text():
+            return
+        self.album_songs.clear()
+        self.overlay.show()
+        album = unicode(self.albums.item(i, j).text())
+        conf = tanooki_library.get_or_create_config()
+        for filename in conf['library'][album]['songs']:
+            song_file = File(filename)
+            item = QtGui.QListWidgetItem(str(song_file.tags.get('TIT2','')), self.album_songs)
+
 
     def _loadLibrary(self):
         dialog = QtGui.QFileDialog()

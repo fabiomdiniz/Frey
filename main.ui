@@ -395,21 +395,108 @@ background-position: right bottom;</string>
      <bool>true</bool>
     </property>
    </widget>
-   <zorder>channels</zorder>
-   <zorder>label</zorder>
-   <zorder>select_song</zorder>
-   <zorder>song_name</zorder>
-   <zorder>label_3</zorder>
-   <zorder>artist</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>cover</zorder>
-   <zorder>clear_button</zorder>
-   <zorder>albums</zorder>
-   <zorder>load_library</zorder>
-   <zorder>album</zorder>
-   <zorder>huge_tanooki</zorder>
-   <zorder>label_5</zorder>
-   <zorder>playlist</zorder>
+   <widget class="QFrame" name="overlay">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>129</y>
+      <width>711</width>
+      <height>561</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgba(0, 0, 0, 60%);</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QListWidget" name="album_songs">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>60</y>
+       <width>301</width>
+       <height>421</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: white;</string>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::MultiSelection</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="close_overlay">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>30</y>
+       <width>60</width>
+       <height>60</height>
+      </rect>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>60</width>
+       <height>60</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(0, 0, 0, 0%);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="images.qrc">
+       <normaloff>:/png/media/close.png</normaloff>:/png/media/close.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>60</width>
+       <height>60</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="transfer_button">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>210</y>
+       <width>120</width>
+       <height>120</height>
+      </rect>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>90000</width>
+       <height>90000</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(0, 0, 0, 0%);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="images.qrc">
+       <normaloff>:/png/media/arrow.png</normaloff>:/png/media/arrow.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>120</width>
+       <height>120</height>
+      </size>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <action name="actionExit">
    <property name="text">

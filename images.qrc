@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="png">
+    <file>media/arrow.png</file>
+    <file>media/close.png</file>
     <file>media/paperbowser.png</file>
     <file>media/mario_tanooki.png</file>
     <file>media/dark_koopatrol_small.png</file>
