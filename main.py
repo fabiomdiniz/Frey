@@ -28,6 +28,9 @@ except AttributeError:
 def getPrettyName(song_file):
     return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))
 
+def getSongName(song_file):
+    return _fromUtf8(str(song_file.tags.get('TIT2','')))
+
 def getCoverArtPixmap(url, size=76):
     icon = QtGui.QIcon(getCoverArtIconPath(url))
     return icon.pixmap(size, size)
@@ -66,8 +69,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.filesDropped(links)
 
     def appendAlbumEvent(self, event):
+        not_playlist = not playlist
         if event.source() is self.albums:
             self.appendAlbumPlaylist(unicode(self.albums.currentItem().text()))
+        if not_playlist and playlist:
+            idx = 0
+            if not self._playIdx():
+                self._slotNextSong()        
 
     
     def _connectSlots(self):
@@ -196,7 +204,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _addUrl(self, url):
         song_file = File(url)     
         icon = QtGui.QIcon(getCoverArtPixmap(url))
-        item = QtGui.QListWidgetItem(getPrettyName(song_file), self.playlist)
+        item = QtGui.QListWidgetItem(getSongName(song_file), self.playlist)
         item.setIcon(icon)
 
     def filesDropped(self, l):
