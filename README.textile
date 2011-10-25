@@ -9,6 +9,7 @@ h2. Dependencies
 * pygame (diamond sword to beat the mono-stereo boss)
 * pyqt4  ("nuke on ants" or "the frontpage of python gui dev")
 * mutagen (cool name and can also read song tags)
+* pyhook (A link to the past)
 
 h2. Build
 

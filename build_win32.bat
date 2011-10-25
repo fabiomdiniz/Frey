@@ -6,6 +6,8 @@ rmdir /s /q win32
 cd ..
 python pyinstaller\Build.py main.spec
 copy TaskbarLib.tlb dist\TaskbarLib.tlb
+copy Gokeys.exe dist\Gokeys.exe
+copy keys dist\keys
 type null >>dist\nophonon
 mkdir bin
 cd bin

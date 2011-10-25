@@ -26,6 +26,28 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 
+myapp = None
+
+import pyHook
+
+hotkeys_enabled = True
+
+def OnKeyboardEvent(event):
+    global myapp
+    global hotkeys_enabled
+    with open('keys', 'r') as keys_file:
+        keys = keys_file.read().split('\n')
+        if not hotkeys_enabled:
+            return True        
+        key = event.Key # Teclas        
+        if key == keys[2]:
+            myapp._slotNextSong()
+        elif key == keys[1]:
+            myapp._slotPrevSong()
+        elif key == keys[0]:
+            myapp._slotPausePlay()
+    return True
+
 class SpinBoxDelegate(QtGui.QItemDelegate):
     def createEditor(self, parent, option, index):
         editor = QtGui.QSpinBox(parent)
@@ -423,5 +445,7 @@ if __name__ == "__main__":
     myapp = MyForm(taskbar=taskbar)
     g2tsg.init_tanooki()
     myapp.show()
-
+    hm = pyHook.HookManager() 
+    hm.KeyUp = OnKeyboardEvent # Registra a o evento (callbacks)
+    hm.HookKeyboard() # Inicia
     sys.exit(app.exec_())
