@@ -3,6 +3,7 @@
 import os
 import pygame
 from mutagen import File
+from PIL import Image
 
 ROOT_PATH = os.getcwd()
 
@@ -28,7 +29,11 @@ def getCoverArtIconPath(url):
         if not os.path.exists(iconpath):
             with open(iconpath_jpg, 'wb') as img:
                 img.write(artwork.data)
-            pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
+            im = Image.open(iconpath_jpg)
+            im.thumbnail((110,110), Image.ANTIALIAS)
+            im.save(iconpath)
+            os.remove(iconpath_jpg)
+            #pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
     else:
         folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
         if os.path.exists(folder):

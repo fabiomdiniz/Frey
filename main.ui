@@ -289,10 +289,13 @@ background-position: right bottom;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-image: url(:/png/media/Vivian_small.png);
+     <string notr="true">QTableWidget {
+background-image: url(:/png/media/Vivian_small.png);
 background-color: white;
 background-repeat: no-repeat;
-background-position: right bottom;</string>
+background-position: right bottom;
+}
+</string>
     </property>
     <property name="dragEnabled">
      <bool>true</bool>

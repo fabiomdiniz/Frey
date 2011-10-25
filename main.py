@@ -17,13 +17,59 @@ paused = True
 idx = 0
 
 playlist = []
-
+albumslist = []
 g2tsg = None
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
+
+
+class SpinBoxDelegate(QtGui.QItemDelegate):
+    def createEditor(self, parent, option, index):
+        editor = QtGui.QSpinBox(parent)
+        editor.setMinimum(0)
+        editor.setMaximum(100)
+
+        return editor
+
+    def setEditorData(self, spinBox, index):
+        value = index.model().data(index, QtCore.Qt.EditRole)
+
+        spinBox.setValue(value)
+
+    def setModelData(self, spinBox, model, index):
+        spinBox.interpretText()
+        value = spinBox.value()
+
+        model.setData(index, value, QtCore.Qt.EditRole)
+
+    def updateEditorGeometry(self, editor, option, index):
+        editor.setGeometry(option.rect)
+    
+    def paint(self, painter, option, index):
+        #from PyQt4.QtCore import pyqtRemoveInputHook
+        #pyqtRemoveInputHook()
+        #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
+        painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
+        document = QtGui.QTextDocument()
+        
+        value = index.data(QtCore.Qt.DisplayRole)
+        #if (value.isValid() and not value.isNull()):
+        #    text =  index.data().toString()#QtCore.QString("<span style='background-color: lightgreen'>This</span> is highlighted.")
+        text = value.toString()
+        #text.append(")");
+        document.setHtml(text);
+        painter.translate(option.rect.topLeft())
+        document.drawContents(painter)
+        painter.translate(-option.rect.topLeft());
+
+
+
+
+
+
 
 def getPrettyName(song_file):
     return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))
@@ -52,6 +98,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.huge_tanooki.lower()
         self.taskbar = taskbar
         self.overlay.hide()
+        delegate = SpinBoxDelegate()
+        self.albums.setItemDelegate(delegate)        
 
     def lbDragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -69,9 +117,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.filesDropped(links)
 
     def appendAlbumEvent(self, event):
+        global albumslist
         not_playlist = not playlist
         if event.source() is self.albums:
-            self.appendAlbumPlaylist(unicode(self.albums.currentItem().text()))
+            i = self.albums.currentRow()
+            j = self.albums.currentColumn()
+            self.appendAlbumPlaylist(albumslist[i*3+j])#unicode(self.albums.currentItem().text()))
         if not_playlist and playlist:
             idx = 0
             if not self._playIdx():
@@ -95,7 +146,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.transfer_button.clicked.connect(self._appendSongs)
 
     def _appendSongs(self):
-        album = unicode(self.albums.currentItem().text())
+        i = self.albums.currentRow()
+        j = self.albums.currentColumn()
+        album = albumslist[i*3+j]
         conf = tanooki_library.get_or_create_config()
         for i in range(self.album_songs.count()):
             item = self.album_songs.item(i)
@@ -129,19 +182,22 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
 
     def _doubleClickAlbum(self, i, j):
+        global albumslist
         global idx
         if self.albums.item(i, j).text():
-            self.load_album(unicode(self.albums.item(i, j).text()))
+            album = albumslist[i*3+j]#unicode(self.albums.item(i, j).text())
+            self.load_album(album)
             idx = 0
             if not self._playIdx():
                 self._slotNextSong()
 
     def _clickAlbum(self, i, j):
+        global albumslist
         if not self.albums.item(i, j).text():
             return
         self.album_songs.clear()
         self.overlay.show()
-        album = unicode(self.albums.item(i, j).text())
+        album = albumslist[i*3+j]#unicode(self.albums.item(i, j).text())
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
             song_file = File(filename)
@@ -158,6 +214,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self._showLibrary()
 
     def _showLibrary(self):
+        global albumslist
+        albumslist = []
         self.albums.clear()
         conf = tanooki_library.get_or_create_config()
         self.albums.setSortingEnabled(False) 
@@ -168,11 +226,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         import math
         self.albums.setRowCount(int(math.ceil(float(num_albums)/num_col)))
         self.albums.setColumnCount(num_col);
-        for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,114)
-        for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,114)
+        for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,124)
+        for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,112)
         
         for album in conf['library']:
-            item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), album)
+            albumslist.append(album)
+            #item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), album)
+            #item.setStyleSheet("padding-top: 110px;")
+            #item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), '<br>'+album)
+            html = '<img src="'+conf['library'][album]['cover']+'" /><br>'+album
+            item = QtGui.QTableWidgetItem(html)
             item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled|QtCore.Qt.ItemIsDragEnabled)
             self.albums.setItem(i, j, item)
             if j == num_col - 1:
