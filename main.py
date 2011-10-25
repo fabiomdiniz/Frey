@@ -15,7 +15,7 @@ import tanooki_library
 from PyQt4.phonon import Phonon
 paused = True
 idx = 0
-
+num_col = 6
 playlist = []
 albumslist = []
 g2tsg = None
@@ -80,9 +80,11 @@ class SpinBoxDelegate(QtGui.QItemDelegate):
         value = index.data(QtCore.Qt.DisplayRole)
         #if (value.isValid() and not value.isNull()):
         #    text =  index.data().toString()#QtCore.QString("<span style='background-color: lightgreen'>This</span> is highlighted.")
-        text = value.toString()
+        string = unicode(value.toString())
+        if string:
+            string = string[:string.find('<br>')+18]+'...'
         #text.append(")");
-        document.setHtml(text);
+        document.setHtml(string);
         painter.translate(option.rect.topLeft())
         document.drawContents(painter)
         painter.translate(-option.rect.topLeft());
@@ -140,11 +142,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def appendAlbumEvent(self, event):
         global albumslist
+        global num_col
         not_playlist = not playlist
         if event.source() is self.albums:
             i = self.albums.currentRow()
             j = self.albums.currentColumn()
-            self.appendAlbumPlaylist(albumslist[i*3+j])#unicode(self.albums.currentItem().text()))
+            self.appendAlbumPlaylist(albumslist[i*num_col+j])#unicode(self.albums.currentItem().text()))
         if not_playlist and playlist:
             idx = 0
             if not self._playIdx():
@@ -168,9 +171,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.transfer_button.clicked.connect(self._appendSongs)
 
     def _appendSongs(self):
+        global num_col
         i = self.albums.currentRow()
         j = self.albums.currentColumn()
-        album = albumslist[i*3+j]
+        album = albumslist[i*num_col+j]
         conf = tanooki_library.get_or_create_config()
         for i in range(self.album_songs.count()):
             item = self.album_songs.item(i)
@@ -206,20 +210,22 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _doubleClickAlbum(self, i, j):
         global albumslist
         global idx
+        global num_col
         if self.albums.item(i, j).text():
-            album = albumslist[i*3+j]#unicode(self.albums.item(i, j).text())
+            album = albumslist[i*num_col+j]#unicode(self.albums.item(i, j).text())
             self.load_album(album)
             idx = 0
             if not self._playIdx():
                 self._slotNextSong()
 
     def _clickAlbum(self, i, j):
+        global num_col
         global albumslist
         if not self.albums.item(i, j).text():
             return
         self.album_songs.clear()
         self.overlay.show()
-        album = albumslist[i*3+j]#unicode(self.albums.item(i, j).text())
+        album = albumslist[i*num_col+j]#unicode(self.albums.item(i, j).text())
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
             song_file = File(filename)
@@ -237,18 +243,18 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def _showLibrary(self):
         global albumslist
+        global num_col
         albumslist = []
         self.albums.clear()
         conf = tanooki_library.get_or_create_config()
         self.albums.setSortingEnabled(False) 
         i = 0
         j = 0
-        num_col = 6
         num_albums = len(conf['library'])
         import math
         self.albums.setRowCount(int(math.ceil(float(num_albums)/num_col)))
         self.albums.setColumnCount(num_col);
-        for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,124)
+        for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,130)
         for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,112)
         
         for album in conf['library']:
@@ -295,7 +301,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def filesDropped(self, l):
         global playlist
         global idx
-        print 'chego no si'
         valid_urls = []
         not_playlist = not playlist
         for url in l:

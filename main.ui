@@ -318,6 +318,9 @@ background-position: right bottom;
       <height>110</height>
      </size>
     </property>
+    <property name="textElideMode">
+     <enum>Qt::ElideMiddle</enum>
+    </property>
     <property name="showGrid">
      <bool>false</bool>
     </property>

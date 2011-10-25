@@ -22,25 +22,30 @@ def clean_path(path):
 def getCoverArtIconPath(url):
     url = url.replace('/', '\\')
     song_file = File(url)
-    if song_file.tags and song_file.tags.get('APIC:',''):
+    folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
+    album_name = get_cover_hash(song_file)
+    if song_file.tags and song_file.tags.get('APIC:','') and album_name:
         artwork = song_file.tags.get('APIC:','')
-        iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
-        iconpath_jpg = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.jpg')
+        iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')
+        iconpath_jpg = os.path.join(ROOT_PATH,'cover_cache',album_name+'.jpg')
         if not os.path.exists(iconpath):
             with open(iconpath_jpg, 'wb') as img:
                 img.write(artwork.data)
             im = Image.open(iconpath_jpg)
+            #im = im.resize((110, 110), Image.ANTIALIAS)
             im.thumbnail((110,110), Image.ANTIALIAS)
             im.save(iconpath)
             os.remove(iconpath_jpg)
             #pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
+    elif os.path.exists(folder) and album_name:
+        iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')
+        im = Image.open(folder)
+        #im = im.resize((110, 110), Image.ANTIALIAS)
+        im.thumbnail((110,110), Image.ANTIALIAS)
+        im.save(iconpath)
+        #pygame.image.save(pygame.image.load(folder),iconpath)
     else:
-        folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
-        if os.path.exists(folder):
-            iconpath = os.path.join(ROOT_PATH,'cover_cache',get_cover_hash(song_file)+'.png')
-            pygame.image.save(pygame.image.load(folder),iconpath)
-        else:
-            iconpath = u":/png/media/nocover.png"
+        iconpath = u":/png/media/nocover.png"
     return iconpath
 
 def dirEntries(dir_name, subdir, *args):
