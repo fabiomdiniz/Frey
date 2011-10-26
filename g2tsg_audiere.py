@@ -34,7 +34,7 @@ def play_tanooki_way(music_file, channels):
     stream = device.open_file(music_file, 1)
     stream.play()
 
-    time.sleep(0.5)
+    time.sleep(0.1)
     while stream.position > 0:
         #print 'remaining'                              
         time.sleep(0.1)
