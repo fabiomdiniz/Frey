@@ -7,6 +7,7 @@ This is a music player
 h2. Dependencies
 
 * pygame (diamond sword to beat the mono-stereo boss)
+* audiere (Obi-Wan)
 * pyqt4  ("nuke on ants" or "the frontpage of python gui dev")
 * mutagen (cool name and can also read song tags)
 * pyhook (A link to the past)
