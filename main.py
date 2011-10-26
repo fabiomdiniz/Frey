@@ -388,7 +388,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global paused
         global idx
         global channels
-        global phonofied
         mode = self.channels.currentText()
         if str(mode) == "Mono":
             print 'MONO NO KE HIME'
@@ -440,8 +439,12 @@ if __name__ == "__main__":
         taskbar = None
     #g2tsg.init_tanooki()
     app = QtGui.QApplication(sys.argv)
-    phonofied = not os.path.exists('nophonon')
-    if phonofied:
+    phonofied = os.path.exists('phonon')
+    bolognese = os.path.exists('bolognese')
+    if bolognese:
+        print 'MACARRONADIZO'
+        import g2tsg_audiere as g2tsg
+    elif phonofied:
         print 'PHONORADICALIZO'
         import g2tsg_phonon as g2tsg
     else:

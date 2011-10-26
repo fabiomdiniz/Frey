@@ -8,7 +8,7 @@ python pyinstaller\Build.py main.spec
 copy TaskbarLib.tlb dist\TaskbarLib.tlb
 copy Gokeys.exe dist\Gokeys.exe
 copy keys dist\keys
-type null >>dist\nophonon
+type null >>dist\bolognese
 mkdir bin
 cd bin
 mkdir win32

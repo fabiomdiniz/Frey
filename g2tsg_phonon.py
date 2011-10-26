@@ -39,6 +39,7 @@ def play_tanooki_way(music_file, channels):
     
     mediaObject.stop()
     mediaObject.clearQueue()
+
     mediaObject.setCurrentSource(Phonon.MediaSource(music_file))
     mediaObject.play()
 
