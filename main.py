@@ -123,7 +123,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.taskbar = taskbar
         self.overlay.hide()
         delegate = SpinBoxDelegate()
-        self.albums.setItemDelegate(delegate)        
+        self.albums.setItemDelegate(delegate)
+        self._refreshPlaylists()        
 
     def lbDragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -161,7 +162,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.prev_button,Qt.SIGNAL("clicked()"),self._slotPrevSong)
         self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
         self.connect(self.playlist, QtCore.SIGNAL("dropped"), self.filesDropped)
-        self.playlist.doubleClicked.connect(self._slotClickPlaylist)
+        self.playlist.doubleClicked.connect(self._slotClickPlaylist)      
         self.clear_button.clicked.connect(self._clearPlaylist)
         self.load_library.clicked.connect(self._loadLibrary)
         self.albums.cellClicked.connect(self._clickAlbum)
@@ -169,6 +170,46 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong2)
         self.close_overlay.clicked.connect(self._closeOverlay)
         self.transfer_button.clicked.connect(self._appendSongs)
+
+        self.playlists.doubleClicked.connect(self._loadPlaylist)
+        self.delete_playlist.clicked.connect(self._deletePlaylist)
+        self.save_playlist.clicked.connect(self._savePlaylist)
+
+
+    def _refreshPlaylists(self):
+        conf = tanooki_library.get_or_create_config()
+        self.playlists.clear()
+        [QtGui.QListWidgetItem(playlist, self.playlists) for playlist in conf['playlists']]
+
+    def _savePlaylist(self):
+        global playlist
+        text, ok = QtGui.QInputDialog.getText(self, "Playlist Name",
+                "", QtGui.QLineEdit.Normal,
+                get_random_name())
+        text = unicode(text)
+        if ok and text != '':
+            conf = tanooki_library.get_or_create_config()
+            conf['playlists'][text] = playlist[:]
+            tanooki_library.save_config(conf)
+            self._refreshPlaylists()
+
+    def _deletePlaylist(self):
+        item = self.playlists.takeItem(self.playlists.currentRow())
+        conf = tanooki_library.get_or_create_config()
+        del conf['playlists'][unicode(item.text())]
+        tanooki_library.save_config(conf)
+
+    def _loadPlaylist(self, item):
+        global playlist
+        self._clearPlaylist()
+        playlist_name = unicode(self.playlists.currentItem().text())
+        conf = tanooki_library.get_or_create_config()
+        for filename in conf['playlists'][playlist_name]:
+            playlist.append(filename)
+            self._addUrl(filename)
+        self._paintCurrentPlaylist(self.playlists.currentRow())     
+        if not self._playIdx():
+            self._slotNextSong()
 
     def _appendSongs(self):
         global num_col
@@ -348,6 +389,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         for i in range(self.playlist.count()):
             self.playlist.item(i).setBackgroundColor(QtGui.QColor(255,255,255))
         self.playlist.item(idx).setBackgroundColor(QtGui.QColor(150,150,150))
+
+    def _paintCurrentPlaylist(self, idx):
+        time.sleep(0.1)
+        for i in range(self.playlists.count()):
+            self.playlists.item(i).setBackgroundColor(QtGui.QColor(255,255,255))
+        if idx >= 0:
+            self.playlists.item(idx).setBackgroundColor(QtGui.QColor(150,150,150))
+
 
     def _playIdx(self):
         global idx

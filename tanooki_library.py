@@ -12,7 +12,7 @@ def get_or_create_config():
             os.remove('conf.json')
             return get_or_create_config()
     else:
-        conf = {'library': {}, 'folder':''}
+        conf = {'library': {}, 'playlists': {}, 'folder':''}
         open('conf.json', 'w').write(json.dumps(conf))
         return get_or_create_config()
 
