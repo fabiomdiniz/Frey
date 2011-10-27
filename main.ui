@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1148</width>
+    <width>1392</width>
     <height>750</height>
    </rect>
   </property>
@@ -69,8 +69,8 @@
    <widget class="QLabel" name="song_name">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>20</y>
+      <x>1060</x>
+      <y>30</y>
       <width>311</width>
       <height>16</height>
      </rect>
@@ -98,8 +98,8 @@
    <widget class="QLabel" name="artist">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>80</y>
+      <x>1060</x>
+      <y>90</y>
       <width>311</width>
       <height>16</height>
      </rect>
@@ -225,8 +225,8 @@
    <widget class="QListWidget" name="playlist">
     <property name="geometry">
      <rect>
-      <x>850</x>
-      <y>130</y>
+      <x>1080</x>
+      <y>140</y>
       <width>271</width>
       <height>561</height>
      </rect>
@@ -250,8 +250,8 @@ background-position: right bottom;</string>
    <widget class="QLabel" name="cover">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>20</y>
+      <x>950</x>
+      <y>30</y>
       <width>101</width>
       <height>101</height>
      </rect>
@@ -282,8 +282,8 @@ background-position: right bottom;</string>
    <widget class="QTableWidget" name="albums">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>128</y>
+      <x>350</x>
+      <y>138</y>
       <width>711</width>
       <height>561</height>
      </rect>
@@ -353,8 +353,8 @@ background-position: right bottom;
    <widget class="QLabel" name="album">
     <property name="geometry">
      <rect>
-      <x>830</x>
-      <y>50</y>
+      <x>1060</x>
+      <y>60</y>
       <width>311</width>
       <height>16</height>
      </rect>
@@ -366,8 +366,8 @@ background-position: right bottom;
    <widget class="QLabel" name="huge_tanooki">
     <property name="geometry">
      <rect>
-      <x>960</x>
-      <y>-50</y>
+      <x>1190</x>
+      <y>-40</y>
       <width>300</width>
       <height>348</height>
      </rect>
@@ -407,8 +407,8 @@ background-position: right bottom;
     </property>
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>129</y>
+      <x>350</x>
+      <y>139</y>
       <width>711</width>
       <height>561</height>
      </rect>
@@ -502,6 +502,31 @@ background-position: right bottom;
       </size>
      </property>
     </widget>
+   </widget>
+   <widget class="QListWidget" name="playlist_2">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>260</y>
+      <width>271</width>
+      <height>291</height>
+     </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(:/png/media/dark_koopatrol_small.png);
+background-color: white;
+background-repeat: no-repeat;
+background-position: right bottom;</string>
+    </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::DropOnly</enum>
+    </property>
+    <property name="defaultDropAction">
+     <enum>Qt::IgnoreAction</enum>
+    </property>
    </widget>
   </widget>
   <action name="actionExit">
