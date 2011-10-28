@@ -112,6 +112,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.slider_thread.run = self._updateSlider
         self.slider_thread.start()
+        self.seeker.setEnabled(False)
 
 
     def _updateSlider(self, value=0):
@@ -145,8 +146,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.appendAlbumPlaylist(albumslist[i*num_col+j])#unicode(self.albums.currentItem().text()))
         if not_playlist and playlist:
             idx = 0
-            if not self._playIdx():
-                self._slotNextSong()        
+            self._playIdx()
 
     
     def _connectSlots(self):
@@ -160,7 +160,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.load_library.clicked.connect(self._loadLibrary)
         self.albums.cellClicked.connect(self._clickAlbum)
         self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
-        self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong2)
+        self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong)
         self.close_overlay.clicked.connect(self._closeOverlay)
         self.transfer_button.clicked.connect(self._appendSongs)
 
@@ -170,9 +170,26 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.seeker.sliderReleased.connect(self._changeSlider)
         self.seeker.sliderPressed.connect(self.slider_thread.terminate)
+        self.seeker.actionTriggered.connect(self._actionSlider)
+
+
+    def _actionSlider(self, action):
+        if action == 7:
+            return
+        self.slider_thread.terminate()
+        #if action == 1: # QAbstractSlider.SliderSingleStepAdd
+        g2tsg.set_perc_tanooki(self.seeker.sliderPosition())
+        self.slider_thread.start()
+        #QAbstractSlider.SliderSingleStepSub 2
+        #QAbstractSlider.SliderPageStepAdd   3
+        #QAbstractSlider.SliderPageStepSub   4
+        #QAbstractSlider.SliderToMinimum 5
+        #QAbstractSlider.SliderToMaximum 6
+
 
     def _changeSlider(self):
         g2tsg.set_perc_tanooki(self.seeker.value())
+        time.sleep(0.1)
         self.slider_thread.start()
 
     def _refreshPlaylists(self):
@@ -207,8 +224,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             playlist.append(filename)
             self._addUrl(filename)
         self._paintCurrentPlaylist(self.playlists.currentRow())     
-        if not self._playIdx():
-            self._slotNextSong()
+        self._playIdx()
 
     def _appendSongs(self):
         global num_col
@@ -228,13 +244,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.overlay.hide()
 
     def disconThread(self):
-        self.disconnect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong2)
+        self.disconnect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong)
 
     def conThread(self):
-        self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong2)
-
-    def _slotNextSong2(self):
-        self._slotNextSong()
+        self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong)
 
     def appendAlbumPlaylist(self, album):
         conf = tanooki_library.get_or_create_config()
@@ -255,8 +268,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             album = albumslist[i*num_col+j]#unicode(self.albums.item(i, j).text())
             self.load_album(album)
             idx = 0
-            if not self._playIdx():
-                self._slotNextSong()
+            self._playIdx()
 
     def _clickAlbum(self, i, j):
         global num_col
@@ -329,8 +341,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _slotClickPlaylist(self, item):
         global idx
         idx = item.row()
-        if not self._playIdx():
-            self._slotNextSong()
+        self._playIdx()
 
     def _addUrl(self, url):
         song_file = File(url)     
@@ -355,8 +366,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         playlist += valid_urls
         if not_playlist and valid_urls:
             idx = 0
-            if not self._playIdx():
-                self._slotNextSong()
+            self._playIdx()
         
 
     def _setPlaying(self):
@@ -401,7 +411,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global idx
         self.disconThread()
         #self._paintCurrent()
-        return self._playSong(playlist[idx])
+        self._playSong(playlist[idx])
 
     def _slotPausePlay(self):
         global paused
@@ -419,8 +429,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         idx -= 1
         if idx < 0:
             idx = len(playlist)-1
-        if not self._playIdx():
-            self._slotPrevSong()
+        self._playIdx()
         self._setPlaying()
 
     def _slotNextSong(self):
@@ -428,14 +437,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global playlist
         #g2tsg.quit_tanooki()
         idx = (idx+1)%len(playlist)
-        if not self._playIdx():
-            self._slotNextSong()
+        self._playIdx()
         self._setPlaying()
 
     def _playSong(self, name):
         global paused
         global idx
         global channels
+        self.seeker.setEnabled(True)
         mode = self.channels.currentText()
         if str(mode) == "Mono":
             print 'MONO NO KE HIME'
@@ -458,8 +467,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.conThread()
         self.paint_thread.run = lambda : self._paintCurrent()
         self.paint_thread.start()
-        
-        return True    
+        self.seeker.setFocus()
 
     def _slotSelectClicked(self):
         name = unicode(QtGui.QFileDialog.getOpenFileName(self,

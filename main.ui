@@ -539,6 +539,9 @@ background-position: right bottom;</string>
     </property>
    </widget>
    <widget class="QSlider" name="seeker">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -565,7 +568,7 @@ background-position: center middle;
  }</string>
     </property>
     <property name="maximum">
-     <number>100</number>
+     <number>99</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
