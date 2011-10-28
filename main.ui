@@ -20,8 +20,8 @@
    <widget class="QComboBox" name="channels">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>30</y>
+      <x>690</x>
+      <y>70</y>
       <width>73</width>
       <height>22</height>
      </rect>
@@ -40,8 +40,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>30</y>
+      <x>640</x>
+      <y>70</y>
       <width>53</width>
       <height>16</height>
      </rect>
@@ -50,26 +50,10 @@
      <string>Output:</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="select_song">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>60</y>
-      <width>93</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Select Song</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="song_name">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>890</x>
       <y>30</y>
       <width>311</width>
       <height>16</height>
@@ -98,7 +82,7 @@
    <widget class="QLabel" name="artist">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>890</x>
       <y>90</y>
       <width>311</width>
       <height>16</height>
@@ -250,7 +234,7 @@ background-position: right bottom;</string>
    <widget class="QLabel" name="cover">
     <property name="geometry">
      <rect>
-      <x>850</x>
+      <x>780</x>
       <y>30</y>
       <width>101</width>
       <height>101</height>
@@ -269,8 +253,8 @@ background-position: right bottom;</string>
    <widget class="QPushButton" name="clear_button">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>30</y>
+      <x>1100</x>
+      <y>710</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -340,8 +324,8 @@ background-position: right bottom;
    <widget class="QPushButton" name="load_library">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>70</y>
+      <x>660</x>
+      <y>100</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -353,7 +337,7 @@ background-position: right bottom;
    <widget class="QLabel" name="album">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>890</x>
       <y>60</y>
       <width>311</width>
       <height>16</height>
@@ -531,8 +515,8 @@ background-position: right bottom;</string>
    <widget class="QPushButton" name="save_playlist">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>30</y>
+      <x>1000</x>
+      <y>710</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -552,6 +536,42 @@ background-position: right bottom;</string>
     </property>
     <property name="text">
      <string>Delete Playlist</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="seeker">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>411</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"> QSlider::groove:horizontal {
+     border: 1px solid #999999;
+	height:8px;
+     background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);
+     margin: 2px 0;
+ }
+
+ QSlider::handle:horizontal {
+     background-image : url(:/png/media/slider.png);
+     border: 0px solid #5c5c5c;
+	 width:25px;
+background-repeat: no-repeat;
+background-position: center middle;
+     margin: -10px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+ }</string>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="tickPosition">
+     <enum>QSlider::NoTicks</enum>
     </property>
    </widget>
   </widget>

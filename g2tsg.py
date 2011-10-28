@@ -27,6 +27,12 @@ def pause_tanooki():
 def unpause_tanooki():
     pygame.mixer.music.unpause()
 
+def get_perc_tanooki():
+    return 0
+
+def set_perc_tanooki(value):
+    pass
+
 def play_tanooki_way(music_file, channels):
     global continues
     global init_continues

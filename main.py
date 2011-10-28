@@ -49,26 +49,8 @@ def OnKeyboardEvent(event):
     return True
 
 class SpinBoxDelegate(QtGui.QItemDelegate):
-    def createEditor(self, parent, option, index):
-        editor = QtGui.QSpinBox(parent)
-        editor.setMinimum(0)
-        editor.setMaximum(100)
-
-        return editor
-
-    def setEditorData(self, spinBox, index):
-        value = index.model().data(index, QtCore.Qt.EditRole)
-
-        spinBox.setValue(value)
-
-    def setModelData(self, spinBox, model, index):
-        spinBox.interpretText()
-        value = spinBox.value()
-
-        model.setData(index, value, QtCore.Qt.EditRole)
-
-    def updateEditorGeometry(self, editor, option, index):
-        editor.setGeometry(option.rect)
+#    def updateEditorGeometry(self, editor, option, index):
+#        editor.setGeometry(option.rect)
     
     def paint(self, painter, option, index):
         #from PyQt4.QtCore import pyqtRemoveInputHook
@@ -111,6 +93,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.play_thread = QtCore.QThread(parent = self)
         self.paint_thread = QtCore.QThread(parent = self)
+        self.slider_thread = QtCore.QThread(parent = self)
         self._connectSlots()
         self.setWindowTitle('Gokya 2 The Super Gokya')
         self.setWindowIcon(QtGui.QIcon(':/png/media/icon.png'))   
@@ -125,6 +108,17 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         delegate = SpinBoxDelegate()
         self.albums.setItemDelegate(delegate)
         self._refreshPlaylists()        
+
+
+        self.slider_thread.run = self._updateSlider
+        self.slider_thread.start()
+
+
+    def _updateSlider(self, value=0):
+        while True:
+            value = g2tsg.get_perc_tanooki()
+            self.seeker.setValue(value)
+            time.sleep(0.1)
 
     def lbDragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -157,7 +151,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     
     def _connectSlots(self):
         # Connect our two methods to SIGNALS the GUI emits.
-        self.connect(self.select_song,Qt.SIGNAL("clicked()"),self._slotSelectClicked)
         self.connect(self.pause_button,Qt.SIGNAL("clicked()"),self._slotPausePlay)
         self.connect(self.prev_button,Qt.SIGNAL("clicked()"),self._slotPrevSong)
         self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
@@ -175,6 +168,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.delete_playlist.clicked.connect(self._deletePlaylist)
         self.save_playlist.clicked.connect(self._savePlaylist)
 
+        self.seeker.sliderReleased.connect(self._changeSlider)
+        self.seeker.sliderPressed.connect(self.slider_thread.terminate)
+
+    def _changeSlider(self):
+        g2tsg.set_perc_tanooki(self.seeker.value())
+        self.slider_thread.start()
 
     def _refreshPlaylists(self):
         conf = tanooki_library.get_or_create_config()
