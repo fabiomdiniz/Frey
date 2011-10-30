@@ -238,6 +238,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 filename = conf['library'][album]['songs'][i]
                 playlist.append(filename)
                 self._addUrl(filename)
+        self.album_songs.clearSelection()
                  
 
     def _closeOverlay(self):
@@ -309,7 +310,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,130)
         for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,112)
         
-        for album in conf['library']:
+        for album in sorted(conf['library'].keys()):
             albumslist.append(album)
             #item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), album)
             #item.setStyleSheet("padding-top: 110px;")
