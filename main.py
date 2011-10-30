@@ -155,7 +155,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.prev_button,Qt.SIGNAL("clicked()"),self._slotPrevSong)
         self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
         self.connect(self.playlist, QtCore.SIGNAL("dropped"), self.filesDropped)
+
         self.playlist.doubleClicked.connect(self._slotClickPlaylist)      
+        self.playlist.keyReleaseEvent = self.deleteSong
+
         self.clear_button.clicked.connect(self._clearPlaylist)
         self.load_library.clicked.connect(self._loadLibrary)
         self.albums.cellClicked.connect(self._clickAlbum)
@@ -172,6 +175,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.seeker.sliderPressed.connect(self.slider_thread.terminate)
         self.seeker.actionTriggered.connect(self._actionSlider)
 
+    def deleteSong(self, event):
+        global idx
+        if event.key() == QtCore.Qt.Key_Delete:
+            del_idx = self.playlist.currentRow()
+            del playlist[del_idx]
+            self.playlist.takeItem(del_idx)
+            if del_idx <= idx:
+                idx -= 1
 
     def _actionSlider(self, action):
         if action == 7:
