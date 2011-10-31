@@ -4,6 +4,7 @@ phonofied = True
 
 import sys, os, time
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QSlider
 from PyQt4 import Qt
 from main_ui import Ui_MainWindow
 
@@ -171,9 +172,25 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.delete_playlist.clicked.connect(self._deletePlaylist)
         self.save_playlist.clicked.connect(self._savePlaylist)
 
-        self.seeker.sliderReleased.connect(self._changeSlider)
-        self.seeker.sliderPressed.connect(self.slider_thread.terminate)
-        self.seeker.actionTriggered.connect(self._actionSlider)
+        #self.seeker.sliderReleased.connect(self._changeSlider)
+        #self.seeker.sliderPressed.connect(self.slider_thread.terminate)
+        #self.seeker.actionTriggered.connect(self._actionSlider)
+
+        self.seeker_inv.mousePressEvent = self._clickSeeker
+ #       self.seeker.mouseReleaseEvent = self._releaseSeeker
+
+    def _clickSeeker(self, event):
+        self.seeker.setValue(self.seeker.minimum() + ((self.seeker.maximum()-self.seeker.minimum()) * event.x()) / self.seeker.width() ) 
+        event.accept()
+        g2tsg.set_perc_tanooki(self.seeker.sliderPosition())
+#        self._slotPausePlay(True)
+#        self.slider_thread.terminate()
+        QSlider.mousePressEvent(self.seeker, event)
+
+#    def  _releaseSeeker(self, event):
+#        self._slotPausePlay()
+#        self.slider_thread.start()
+#        QSlider.mouseReleaseEvent(self.seeker, event)
 
     def deleteSong(self, event):
         global idx
@@ -183,20 +200,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.playlist.takeItem(del_idx)
             if del_idx <= idx:
                 idx -= 1
-
-    def _actionSlider(self, action):
-        if action == 7:
-            return
-        self.slider_thread.terminate()
-        #if action == 1: # QAbstractSlider.SliderSingleStepAdd
-        g2tsg.set_perc_tanooki(self.seeker.sliderPosition())
-        self.slider_thread.start()
-        #QAbstractSlider.SliderSingleStepSub 2
-        #QAbstractSlider.SliderPageStepAdd   3
-        #QAbstractSlider.SliderPageStepSub   4
-        #QAbstractSlider.SliderToMinimum 5
-        #QAbstractSlider.SliderToMaximum 6
-
 
     def _changeSlider(self):
         g2tsg.set_perc_tanooki(self.seeker.value())
@@ -425,8 +428,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         #self._paintCurrent()
         self._playSong(playlist[idx])
 
-    def _slotPausePlay(self):
+    def _slotPausePlay(self, force_pause=False):
         global paused
+        if force_pause:
+            paused = False
         if not paused:
             self._togglePausePlay()
             g2tsg.pause_tanooki()
@@ -456,7 +461,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global paused
         global idx
         global channels
-        self.seeker.setEnabled(True)
+        #self.seeker.setEnabled(True)
         mode = self.channels.currentText()
         if str(mode) == "Mono":
             print 'MONO NO KE HIME'

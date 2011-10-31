@@ -577,6 +577,45 @@ background-position: center middle;
      <enum>QSlider::NoTicks</enum>
     </property>
    </widget>
+   <widget class="QSlider" name="seeker_inv">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>411</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"> QSlider::groove:horizontal {
+     border: 0px solid #999999;
+	height:8px;
+	background-color: rgba(0, 0, 0, 0%);
+     margin: 0px 0;
+ }
+
+ QSlider::handle:horizontal {
+	background-color: rgba(0, 0, 0, 0%);
+     border: 0px solid #5c5c5c;
+	 width:25px;
+background-repeat: no-repeat;
+background-position: center middle;
+     margin: -10px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+ }</string>
+    </property>
+    <property name="maximum">
+     <number>99</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="tickPosition">
+     <enum>QSlider::NoTicks</enum>
+    </property>
+   </widget>
   </widget>
   <action name="actionExit">
    <property name="text">
