@@ -93,6 +93,7 @@ class SongEditor(QtGui.QWidget, Ui_song_editor):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
+        
 
 
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
@@ -102,7 +103,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.play_thread = QtCore.QThread(parent = self)
         self.paint_thread = QtCore.QThread(parent = self)
         self.slider_thread = QtCore.QThread(parent = self)
-        self._connectSlots()
         self.setWindowTitle('Gokya 2 The Super Gokya')
         self.setWindowIcon(QtGui.QIcon(':/png/media/icon.png'))   
         self.setAcceptDrops(True)
@@ -122,6 +122,22 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.slider_thread.start()
         self.seeker.setEnabled(False)
 
+        self.editor_overlay = QtGui.QFrame(self.centralwidget)
+        self.editor_overlay.setGeometry(self.rect())
+        self.overlay.setObjectName(_fromUtf8("editor_overlay"))
+        self.editor_overlay.setStyleSheet(_fromUtf8("QFrame { background-color: rgba(0, 0, 0, 60%); }"))
+        self.editor_overlay.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.editor_overlay.setFrameShadow(QtGui.QFrame.Raised)
+
+        self.editwidget = SongEditor(self.editor_overlay)
+        self.editwidget.adjustSize()
+        self.editwidget.move(self.editor_overlay.rect().center() - self.editwidget.rect().center())
+        css = "QFrame { background-color: " + str(self.palette().window().color().name()) + "; }"
+        self.editwidget.setStyleSheet(css);
+
+        self.editor_overlay.hide()
+
+        self._connectSlots()
 
     def _updateSlider(self, value=0):
         while True:
@@ -183,9 +199,23 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.edit_button.clicked.connect(self._editSongs)
 
+        self.editwidget.cancel_button.clicked.connect(self.editor_overlay.hide)
+
+
     def _editSongs(self):
-        editwidget = SongEditor(self)
-        editwidget.show()
+        global playlist
+        #from PyQt4.QtCore import pyqtRemoveInputHook
+        #pyqtRemoveInputHook()
+        #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
+        songs_to_edit = []
+        for i in range(self.playlist.count()):
+            item = self.playlist.item(i)
+            if self.playlist.isItemSelected(item):
+                songs_to_edit.append(playlist[i])
+        
+        if songs_to_edit:
+            self.editor_overlay.show()
+
 
     def _clickSeeker(self, event):
         self.seeker.setValue(self.seeker.minimum() + ((self.seeker.maximum()-self.seeker.minimum()) * event.x()) / self.seeker.width() ) 
