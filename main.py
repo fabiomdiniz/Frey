@@ -15,12 +15,14 @@ import pygame
 from tanooki_utils import *
 import tanooki_library
 from PyQt4.phonon import Phonon
+
 paused = True
 idx = 0
 num_col = 6
 playlist = []
 albumslist = []
 g2tsg = None
+songs_to_edit = []
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -74,11 +76,6 @@ class SpinBoxDelegate(QtGui.QItemDelegate):
         painter.translate(-option.rect.topLeft());
 
 
-
-
-
-
-
 def getPrettyName(song_file):
     return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))
 
@@ -94,8 +91,6 @@ class SongEditor(QtGui.QWidget, Ui_song_editor):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         
-
-
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, taskbar, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -208,15 +203,43 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.edit_button.dragEnterEvent = self.editAlbumDrag
 
         self.editwidget.cancel_button.clicked.connect(self.editor_overlay.hide)
+        self.editwidget.save_button.clicked.connect(self._saveEdits)
+
+    def _saveEdits(self):
+        global songs_to_edit
+        global idx
+        global playlist
+        fields = [self.editwidget.track, self.editwidget.name, self.editwidget.artist, self.editwidget.album]
+        tags = ['tracknumber', 'title', 'artist', 'album']
+        fields = [field for field in fields if unicode(field.text())]
+
+        for song in songs_to_edit:
+            audio = EasyID3(song)
+            for field, tag in zip(fields, tags):
+                audio[tag] = unicode(field.text())
+            audio.save()
+        self.refreshPlaylist()
+        self._showLibrary()
+        self.updateNowPlaying(playlist[idx])
+        self.editor_overlay.hide()
+
+    def refreshPlaylist(self):
+        global playlist
+        self.playlist.clear()
+        for filename in playlist:
+            self._addUrl(filename)
+        self._paintCurrent()
 
     def editAlbumEvent(self, event):
         global albumslist
         global num_col
+        global songs_to_edit
         i = self.albums.currentRow()
         j = self.albums.currentColumn()
         album = albumslist[i*num_col+j]
         conf = tanooki_library.get_or_create_config()
-        self.editSongs(conf['library'][album]['songs'])
+        songs_to_edit = conf['library'][album]['songs']
+        self.editSongs()
 
     def _playlistRClick(self, event):
         event.accept()
@@ -226,6 +249,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def _editSongsClick(self):
         global playlist
+        global songs_to_edit
         #from PyQt4.QtCore import pyqtRemoveInputHook
         #pyqtRemoveInputHook()
         #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
@@ -236,9 +260,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 songs_to_edit.append(playlist[i])
         
         if songs_to_edit:
-            self.editSongs(songs_to_edit)
+            self.editSongs()
 
-    def editSongs(self, songs_to_edit):
+    def editSongs(self):
+        global songs_to_edit
         tags = ['TRCK', 'TIT2','TPE1','TALB', 'APIC:']
         fields = [self.editwidget.track, self.editwidget.name, self.editwidget.artist, self.editwidget.album]
         for field in fields:
@@ -549,6 +574,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self._playIdx()
         self._setPlaying()
 
+    def updateNowPlaying(self, name):
+        song_file = File(name)
+        self.song_name.setText(_fromUtf8(str(song_file.tags.get('TIT2',''))))
+        self.artist.setText(_fromUtf8(str(song_file.tags.get('TPE1',''))))
+        self.album.setText(_fromUtf8(str(song_file.tags.get('TALB',''))))
+        self.cover.setPixmap(getCoverArtPixmap(name, 200))
+
     def _playSong(self, name):
         global paused
         global idx
@@ -560,11 +592,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             channels = 1
         else:
             channels = 2
-        song_file = File(name)
-        self.song_name.setText(_fromUtf8(str(song_file.tags.get('TIT2',''))))
-        self.artist.setText(_fromUtf8(str(song_file.tags.get('TPE1',''))))
-        self.album.setText(_fromUtf8(str(song_file.tags.get('TALB',''))))
-        self.cover.setPixmap(getCoverArtPixmap(name, 200))
+        self.updateNowPlaying(name)
         self._setPlaying()
         print 'play no ', name
         self.play_thread.terminate() 
