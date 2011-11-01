@@ -46,10 +46,12 @@
      <bool>true</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-image: url(:/png/media/dark_koopatrol_small.png);
+     <string notr="true">QListWidget {
+background-image: url(:/png/media/dark_koopatrol_small.png);
 background-color: white;
 background-repeat: no-repeat;
-background-position: right bottom;</string>
+background-position: right bottom;
+}</string>
     </property>
     <property name="dragDropMode">
      <enum>QAbstractItemView::DropOnly</enum>
@@ -258,11 +260,6 @@ background-position: right bottom;
       </size>
      </property>
     </widget>
-    <zorder>album_songs</zorder>
-    <zorder>close_overlay</zorder>
-    <zorder>transfer_button</zorder>
-    <zorder>editor_overlay</zorder>
-    <zorder>editor_overlay</zorder>
    </widget>
    <widget class="QListWidget" name="playlists">
     <property name="geometry">
@@ -283,7 +280,7 @@ background-repeat: no-repeat;
 background-position: right bottom;</string>
     </property>
     <property name="dragDropMode">
-     <enum>QAbstractItemView::DropOnly</enum>
+     <enum>QAbstractItemView::NoDragDrop</enum>
     </property>
     <property name="defaultDropAction">
      <enum>Qt::IgnoreAction</enum>
@@ -754,6 +751,9 @@ background-position: center middle;
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QPushButton" name="edit_button">
+         <property name="acceptDrops">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Edit Songs</string>
          </property>

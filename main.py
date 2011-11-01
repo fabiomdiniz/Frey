@@ -4,7 +4,7 @@ phonofied = True
 
 import sys, os, time
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QSlider
+from PyQt4.QtGui import QSlider, QListWidget
 from PyQt4 import Qt
 from main_ui import Ui_MainWindow
 from song_editor_ui import Ui_song_editor
@@ -109,7 +109,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.__class__.dropEvent = self.lbDropEvent
         self.__class__.dragEnterEvent = self.lbDragEnterEvent
         self._showLibrary()
-        self.playlist.dropEvent = self.appendAlbumEvent
+        
         self.huge_tanooki.lower()
         self.taskbar = taskbar
         self.overlay.hide()
@@ -144,6 +144,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             value = g2tsg.get_perc_tanooki()
             self.seeker.setValue(value)
             time.sleep(0.1)
+
+    def editAlbumDrag(self, event):
+        if event.source() is self.albums:
+            event.accept()
 
     def lbDragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -182,6 +186,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.playlist.doubleClicked.connect(self._slotClickPlaylist)      
         self.playlist.keyReleaseEvent = self.deleteSong
+        self.playlist.mouseReleaseEvent = self._playlistRClick
+        self.playlist.dropEvent = self.appendAlbumEvent
 
         self.clear_button.clicked.connect(self._clearPlaylist)
         self.load_library.clicked.connect(self._loadLibrary)
@@ -197,12 +203,28 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.seeker_inv.mousePressEvent = self._clickSeeker
 
-        self.edit_button.clicked.connect(self._editSongs)
+        self.edit_button.clicked.connect(self._editSongsClick)
+        self.edit_button.dropEvent = self.editAlbumEvent
+        self.edit_button.dragEnterEvent = self.editAlbumDrag
 
         self.editwidget.cancel_button.clicked.connect(self.editor_overlay.hide)
 
+    def editAlbumEvent(self, event):
+        global albumslist
+        global num_col
+        i = self.albums.currentRow()
+        j = self.albums.currentColumn()
+        album = albumslist[i*num_col+j]
+        conf = tanooki_library.get_or_create_config()
+        self.editSongs(conf['library'][album]['songs'])
 
-    def _editSongs(self):
+    def _playlistRClick(self, event):
+        event.accept()
+        if event.button() == QtCore.Qt.RightButton:
+            self.playlist.clearSelection()
+        QListWidget.mousePressEvent(self.playlist, event)
+
+    def _editSongsClick(self):
         global playlist
         #from PyQt4.QtCore import pyqtRemoveInputHook
         #pyqtRemoveInputHook()
@@ -214,7 +236,39 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 songs_to_edit.append(playlist[i])
         
         if songs_to_edit:
-            self.editor_overlay.show()
+            self.editSongs(songs_to_edit)
+
+    def editSongs(self, songs_to_edit):
+        tags = ['TRCK', 'TIT2','TPE1','TALB', 'APIC:']
+        fields = [self.editwidget.track, self.editwidget.name, self.editwidget.artist, self.editwidget.album]
+        for field in fields:
+            field.clear()
+        self.editwidget.cover.setPixmap(QtGui.QPixmap(":/png/media/nocover.png"))
+        tags_dict = {'TRCK':set(), 'TIT2':set(),'TPE1':set(),'TALB':set(), 'APIC:':set()}
+        for song in songs_to_edit:
+            info = get_full_song_info(song)
+            for i, tag in enumerate(tags):
+                tags_dict[tag].add(info[i])
+
+        for tag, field in zip(tags[:-1], fields):
+            if len(tags_dict[tag]) == 1:
+                field.setText(_fromUtf8(tags_dict[tag].pop()))
+
+        #from PyQt4.QtCore import pyqtRemoveInputHook
+        #pyqtRemoveInputHook()
+        #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
+        if len(tags_dict[tags[-1]]) == 1:
+            data = tags_dict[tags[-1]].pop()
+            #print data
+            if data:
+                #temp = tempfile.TemporaryFile()
+                #temp.write(data)
+                pixmap = QtGui.QPixmap()
+                pixmap.loadFromData(data)
+                self.editwidget.cover.setPixmap(QtGui.QPixmap(pixmap))
+                #temp.close()
+
+        self.editor_overlay.show()
 
 
     def _clickSeeker(self, event):

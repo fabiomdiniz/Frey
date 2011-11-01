@@ -2,6 +2,7 @@
 
 import os
 import pygame
+import tempfile
 from mutagen import File
 from PIL import Image
 
@@ -90,6 +91,15 @@ def get_song_info(name):
                 unicode(song_file.tags.get('TPE1',''))]
     return ['','',name]
 
+def get_full_song_info(name):
+    song_file = File(name)
+    if song_file.tags:
+        return [unicode(song_file.tags.get('TRCK','')),
+                unicode(song_file.tags.get('TIT2','')),
+                unicode(song_file.tags.get('TPE1','')),
+                unicode(song_file.tags.get('TALB','')),
+                song_file.tags.get('APIC:',type('',(object,),{'data':''})()).data]
+    return ['','',name]
 
 
 pokemons = ['Bulbasaur',
