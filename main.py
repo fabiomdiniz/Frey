@@ -7,6 +7,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QSlider
 from PyQt4 import Qt
 from main_ui import Ui_MainWindow
+from song_editor_ui import Ui_song_editor
 
 from mutagen.easyid3 import EasyID3
 from mutagen import File
@@ -87,6 +88,12 @@ def getSongName(song_file):
 def getCoverArtPixmap(url, size=76):
     icon = QtGui.QIcon(getCoverArtIconPath(url))
     return icon.pixmap(size, size)
+
+class SongEditor(QtGui.QWidget, Ui_song_editor):
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setupUi(self)
+
 
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, taskbar, parent=None):
@@ -172,34 +179,35 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.delete_playlist.clicked.connect(self._deletePlaylist)
         self.save_playlist.clicked.connect(self._savePlaylist)
 
-        #self.seeker.sliderReleased.connect(self._changeSlider)
-        #self.seeker.sliderPressed.connect(self.slider_thread.terminate)
-        #self.seeker.actionTriggered.connect(self._actionSlider)
-
         self.seeker_inv.mousePressEvent = self._clickSeeker
- #       self.seeker.mouseReleaseEvent = self._releaseSeeker
+
+        self.edit_button.clicked.connect(self._editSongs)
+
+    def _editSongs(self):
+        editwidget = SongEditor(self)
+        editwidget.show()
 
     def _clickSeeker(self, event):
         self.seeker.setValue(self.seeker.minimum() + ((self.seeker.maximum()-self.seeker.minimum()) * event.x()) / self.seeker.width() ) 
         event.accept()
         g2tsg.set_perc_tanooki(self.seeker.sliderPosition())
-#        self._slotPausePlay(True)
-#        self.slider_thread.terminate()
+
         QSlider.mousePressEvent(self.seeker, event)
 
-#    def  _releaseSeeker(self, event):
-#        self._slotPausePlay()
-#        self.slider_thread.start()
-#        QSlider.mouseReleaseEvent(self.seeker, event)
 
     def deleteSong(self, event):
         global idx
         if event.key() == QtCore.Qt.Key_Delete:
-            del_idx = self.playlist.currentRow()
-            del playlist[del_idx]
-            self.playlist.takeItem(del_idx)
-            if del_idx <= idx:
-                idx -= 1
+            to_delete = []
+            for i in range(self.playlist.count()):
+                item = self.playlist.item(i)
+                if self.playlist.isItemSelected(item):
+                    to_delete.append(i)
+            for i, del_idx in enumerate(to_delete):
+                del playlist[del_idx]
+                self.playlist.takeItem(del_idx-i)
+                if del_idx <= idx:
+                    idx -= 1
 
     def _changeSlider(self):
         g2tsg.set_perc_tanooki(self.seeker.value())
