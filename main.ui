@@ -304,7 +304,7 @@ background-position: right bottom;</string>
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>1116</width>
+      <width>1166</width>
       <height>114</height>
      </rect>
     </property>
@@ -616,10 +616,17 @@ background-position: center middle;
          </item>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
+       <item row="2" column="0" colspan="2">
         <widget class="QPushButton" name="load_library">
          <property name="text">
           <string>Select Folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QPushButton" name="rescan_library">
+         <property name="text">
+          <string>Rescan Folder</string>
          </property>
         </widget>
        </item>

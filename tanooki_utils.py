@@ -36,7 +36,10 @@ def getCoverArtIconPath(url):
             #im = im.resize((110, 110), Image.ANTIALIAS)
             im.thumbnail((110,110), Image.ANTIALIAS)
             im.save(iconpath)
-            os.remove(iconpath_jpg)
+            try:
+                os.remove(iconpath_jpg)
+            except:
+                pass
             #pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
     elif os.path.exists(folder) and album_name:
         iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')

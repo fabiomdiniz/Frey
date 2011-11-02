@@ -205,22 +205,43 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.editwidget.cancel_button.clicked.connect(self.editor_overlay.hide)
         self.editwidget.save_button.clicked.connect(self._saveEdits)
 
+        self.rescan_library.clicked.connect(self.rescanLibrary)
+
+    def rescanLibrary(self):
+        global taskbar
+        tanooki_library.rescan_library(taskbar, self.winId())
+        if playlist:
+            self.refreshPlaylist()
+            self.updateNowPlaying(playlist[idx])
+        self._showLibrary()
+
+
     def _saveEdits(self):
         global songs_to_edit
         global idx
         global playlist
-        fields = [self.editwidget.track, self.editwidget.name, self.editwidget.artist, self.editwidget.album]
-        tags = ['tracknumber', 'title', 'artist', 'album']
-        fields = [field for field in fields if unicode(field.text())]
+        fields = [('tracknumber', self.editwidget.track), 
+                  ('title',self.editwidget.name),
+                  ('artist',self.editwidget.artist),]
+                  #('album',self.editwidget.album)]
+        fields = [field for field in fields if unicode(field[1].text())]
 
         for song in songs_to_edit:
             audio = EasyID3(song)
-            for field, tag in zip(fields, tags):
+            for tag, field in fields:
                 audio[tag] = unicode(field.text())
             audio.save()
-        self.refreshPlaylist()
+
+        new_album = unicode(self.editwidget.album.text())
+        if new_album:
+            for song in songs_to_edit:
+                tanooki_library.update_album(song, new_album)
+            self._showLibrary()
+        
+        if playlist:
+            self.refreshPlaylist()
+            self.updateNowPlaying(playlist[idx])
         self._showLibrary()
-        self.updateNowPlaying(playlist[idx])
         self.editor_overlay.hide()
 
     def refreshPlaylist(self):
@@ -527,9 +548,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _paintCurrent(self):
         global idx
         time.sleep(0.1)
-        for i in range(self.playlist.count()):
-            self.playlist.item(i).setBackgroundColor(QtGui.QColor(255,255,255))
-        self.playlist.item(idx).setBackgroundColor(QtGui.QColor(150,150,150))
+        if self.playlist.count():
+            for i in range(self.playlist.count()):
+                self.playlist.item(i).setBackgroundColor(QtGui.QColor(255,255,255))
+            self.playlist.item(idx).setBackgroundColor(QtGui.QColor(150,150,150))
 
     def _paintCurrentPlaylist(self, idx):
         time.sleep(0.1)

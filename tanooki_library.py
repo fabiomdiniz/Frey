@@ -2,6 +2,7 @@
 from tanooki_utils import *
 import json
 import os
+from mutagen.easyid3 import EasyID3
 from collections import defaultdict
 
 def get_or_create_config():
@@ -40,4 +41,44 @@ def set_library(folder, taskbar, winid):
     if taskbar:
         taskbar.SetProgressState(winid,0)
 
+    save_config(conf)
+
+def update_album(filename, new_album):
+    conf = get_or_create_config()
+    bak_conf = conf.copy()
+    for album in bak_conf['library']:
+        for i, song in enumerate(bak_conf['library'][album]['songs']):
+            if song == filename:
+                del conf['library'][album]['songs'][i]
+
+                audio = EasyID3(filename)
+                audio['album'] = new_album
+                audio.save()
+
+                if not conf['library'].has_key(new_album):
+                    conf['library'][new_album] = {'cover': getCoverArtIconPath(filename),
+                                                'songs': []}
+                conf['library'][new_album]['songs'].append(filename)
+
+                if not conf['library'][album]['songs']:
+                    del conf['library'][album]
+
+                save_config(conf)
+                return
+
+def rescan_library(taskbar=None, winid=0):
+    conf = get_or_create_config()
+    playlists = conf['playlists'].copy()
+    set_library(conf['folder'], taskbar, winid)
+
+    playlists_bak = playlists.copy()
+    for playlist in playlists_bak:
+        for i, song in enumerate(playlists_bak[playlist]):
+            if not os.path.exists(song):
+                del playlists[playlist][i]
+    for playlist in playlists_bak:
+        if not playlists[playlist]:
+            del playlists[playlist]
+    conf = get_or_create_config()
+    conf['playlists'] = playlists
     save_config(conf)
