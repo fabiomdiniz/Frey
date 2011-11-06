@@ -86,6 +86,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="fetch_cover">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Fetch from Web</string>
         </property>
@@ -165,7 +168,7 @@
   <include location="images.qrc"/>
   <include location="images.qrc"/>
   <include location="images.qrc"/>
-  <include location="../../.designer/backup/images.qrc"/>
+  <include location="images.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -35,6 +35,7 @@ myapp = None
 import pyHook
 
 hotkeys_enabled = True
+change_cover = ''
 
 def OnKeyboardEvent(event):
     global myapp
@@ -83,8 +84,7 @@ def getSongName(song_file):
     return _fromUtf8(str(song_file.tags.get('TIT2','')))
 
 def getCoverArtPixmap(url, size=76):
-    icon = QtGui.QIcon(getCoverArtIconPath(url))
-    return icon.pixmap(size, size)
+    return getCoverArt(url)[1]
 
 class SongEditor(QtGui.QWidget, Ui_song_editor):
     def __init__(self, parent=None):
@@ -204,8 +204,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.editwidget.cancel_button.clicked.connect(self.editor_overlay.hide)
         self.editwidget.save_button.clicked.connect(self._saveEdits)
+        self.editwidget.cover_button.clicked.connect(self._selectCover)
 
         self.rescan_library.clicked.connect(self.rescanLibrary)
+
 
     def rescanLibrary(self):
         global taskbar
@@ -216,10 +218,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self._showLibrary()
 
 
+    def _selectCover(self):
+        global change_cover
+        name = unicode(QtGui.QFileDialog.getOpenFileName(self,
+     'Select Cover', os.getcwd(), 'Image (*.jpg *.png)'))
+        icon = QtGui.QIcon(name)
+        self.editwidget.cover.setPixmap(icon.pixmap(101, 101))
+        change_cover = name
+
     def _saveEdits(self):
         global songs_to_edit
         global idx
         global playlist
+        global change_cover
         fields = [('tracknumber', self.editwidget.track), 
                   ('title',self.editwidget.name),
                   ('artist',self.editwidget.artist),]
@@ -236,8 +247,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         if new_album:
             for song in songs_to_edit:
                 tanooki_library.update_album(song, new_album)
-            self._showLibrary()
         
+        if change_cover:
+            for song in songs_to_edit:
+                tanooki_library.update_album_cover(song, change_cover)
+
+        self._showLibrary()
+        
+
         if playlist:
             self.refreshPlaylist()
             self.updateNowPlaying(playlist[idx])
@@ -285,6 +302,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def editSongs(self):
         global songs_to_edit
+        global change_cover
         tags = ['TRCK', 'TIT2','TPE1','TALB', 'APIC:']
         fields = [self.editwidget.track, self.editwidget.name, self.editwidget.artist, self.editwidget.album]
         for field in fields:
@@ -313,9 +331,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 pixmap.loadFromData(data)
                 self.editwidget.cover.setPixmap(QtGui.QPixmap(pixmap))
                 #temp.close()
-
+            
         self.editor_overlay.show()
-
+        change_cover = ''
 
     def _clickSeeker(self, event):
         self.seeker.setValue(self.seeker.minimum() + ((self.seeker.maximum()-self.seeker.minimum()) * event.x()) / self.seeker.width() ) 

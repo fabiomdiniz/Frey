@@ -5,10 +5,9 @@ import pygame
 import tempfile
 from mutagen import File
 from PIL import Image
-
+from PyQt4 import QtCore, QtGui
 ROOT_PATH = os.getcwd()
 
-from PyQt4 import QtCore
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -20,7 +19,7 @@ def clean_path(path):
     path = os.path.normpath(path)
     return os.path.normcase(path)
 
-def getCoverArtIconPath(url):
+def getCoverArt(url):
     url = url.replace('/', '\\')
     song_file = File(url)
     folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
@@ -41,6 +40,10 @@ def getCoverArtIconPath(url):
             except:
                 pass
             #pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
+
+        pixmap = QtGui.QPixmap()
+        pixmap.loadFromData(artwork.data)
+        return [iconpath, pixmap]
     elif os.path.exists(folder) and album_name:
         iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')
         im = Image.open(folder)
@@ -50,7 +53,9 @@ def getCoverArtIconPath(url):
         #pygame.image.save(pygame.image.load(folder),iconpath)
     else:
         iconpath = u":/png/media/nocover.png"
-    return iconpath
+    icon = QtGui.QIcon(iconpath)
+    pixmap = icon.pixmap(size, size)
+    return [iconpath, pixmap]
 
 def dirEntries(dir_name, subdir, *args):
     '''Return a list of file names found in directory 'dir_name'
