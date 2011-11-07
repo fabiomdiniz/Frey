@@ -186,6 +186,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
         self.connect(self.playlist, QtCore.SIGNAL("dropped"), self.filesDropped)
 
+        self.keyReleaseEvent = self.checkEsc
+
         self.playlist.doubleClicked.connect(self._slotClickPlaylist)      
         self.playlist.keyReleaseEvent = self.deleteSong
         self.playlist.mouseReleaseEvent = self._playlistRClick
@@ -214,7 +216,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.editwidget.cover_button.clicked.connect(self._selectCover)
 
         self.rescan_library.clicked.connect(self.rescanLibrary)
+        self.search.textChanged.connect(self._textEdit)
 
+    def _textEdit(self, qstr):
+        self._showLibrary()
 
     def rescanLibrary(self):
         global taskbar
@@ -364,6 +369,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 if del_idx <= idx:
                     idx -= 1
 
+    def checkEsc(self, event):
+        if event.key() == QtCore.Qt.Key_Escape:
+            if self.overlay.isVisible():
+                self.overlay.hide()
+            else:
+                self.search.setText('')
+            self.search.setFocus()
+
     def _changeSlider(self):
         g2tsg.set_perc_tanooki(self.seeker.value())
         time.sleep(0.1)
@@ -430,8 +443,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def appendAlbumPlaylist(self, album):
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
-            playlist.append(filename)
-            self._addUrl(filename)
+                song_file = File(filename)
+                name = unicode(song_file.tags.get('TIT2',''))
+                if unicode(self.search.text()).lower() in name.lower():
+                    playlist.append(filename)
+                    self._addUrl(filename)
 
     def load_album(self, album):
         self._clearPlaylist()
@@ -459,7 +475,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
             song_file = File(filename)
-            item = QtGui.QListWidgetItem(str(song_file.tags.get('TIT2','')), self.album_songs)
+            name = unicode(song_file.tags.get('TIT2',''))
+            if unicode(self.search.text()).lower() in name.lower():
+                item = QtGui.QListWidgetItem(name, self.album_songs)
 
 
     def _loadLibrary(self):
@@ -474,20 +492,29 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _showLibrary(self):
         global albumslist
         global num_col
+        search = unicode(self.search.text())
         albumslist = []
         self.albums.clear()
         conf = tanooki_library.get_or_create_config()
         self.albums.setSortingEnabled(False) 
         i = 0
         j = 0
-        num_albums = len(conf['library'])
+
+        albums = tanooki_library.find_albums_by_songname(search)
+
+        #num_albums = len(conf['library'])
+        num_albums = len(albums)
+
         import math
+        
         self.albums.setRowCount(int(math.ceil(float(num_albums)/num_col)))
         self.albums.setColumnCount(num_col);
+        
         for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,130)
         for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,112)
         
-        alb_art = [[album, conf['library'][album]['artist']] for album in conf['library']]
+        #alb_art = [[album, conf['library'][album]['artist']] for album in conf['library']]
+        alb_art = [[album, conf['library'][album]['artist']] for album in albums]
         album_sorted = [e[0] for e in sorted(alb_art, key=lambda e: e[1])]        
 
         for album in album_sorted:
@@ -654,7 +681,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.conThread()
         self.paint_thread.run = lambda : self._paintCurrent()
         self.paint_thread.start()
-        self.seeker.setFocus()
 
     def _slotSelectClicked(self):
         name = unicode(QtGui.QFileDialog.getOpenFileName(self,

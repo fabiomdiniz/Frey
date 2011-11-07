@@ -144,3 +144,15 @@ def rescan_library(taskbar=None, winid=0):
     conf = get_or_create_config()
     conf['playlists'] = playlists
     save_config(conf)
+
+def find_albums_by_songname(search):
+    conf = get_or_create_config()
+    if not search:
+        return conf['library'].keys()
+    albums = []
+    for album in conf['library']:
+        for song in conf['library'][album]['songs']:
+            if search.lower() in get_song_info(song)[0].lower():
+                albums.append(album)
+                break
+    return albums
