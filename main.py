@@ -538,7 +538,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         
         #alb_art = [[album, conf['library'][album]['artist']] for album in conf['library']]
         alb_art = [[album, conf['library'][album]['artist']] for album in albums]
-        album_sorted = [e[0] for e in sorted(alb_art, key=lambda e: e[1])]        
+        album_sorted = [e[0] for e in sorted(alb_art, key=lambda e: e[1]+e[0])]        
 
         for album in album_sorted:
             albumslist.append(album)
