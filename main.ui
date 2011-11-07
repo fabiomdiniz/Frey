@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1253</width>
-    <height>831</height>
+    <width>1265</width>
+    <height>781</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,268 +17,212 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>-20</x>
-      <y>170</y>
-      <width>105</width>
-      <height>84</height>
-     </rect>
+   <layout class="QVBoxLayout" name="verticalLayout_8">
+    <property name="margin">
+     <number>0</number>
     </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="images.qrc">:/png/media/tanooki.png</pixmap>
-    </property>
-   </widget>
-   <widget class="QLabel" name="huge_tanooki">
-    <property name="geometry">
-     <rect>
-      <x>1050</x>
-      <y>-40</y>
-      <width>300</width>
-      <height>348</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="images.qrc">:/png/media/mario_tanooki.png</pixmap>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>-150</x>
-      <y>540</y>
-      <width>281</width>
-      <height>291</height>
-     </rect>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::LeftToRight</enum>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="images.qrc">:/png/media/paperbowser.png</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>1166</width>
-      <height>114</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0,0,2">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetNoConstraint</enum>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="prev_button">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="images.qrc">
-             <normaloff>:/png/media/prev.png</normaloff>:/png/media/prev.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pause_button">
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="images.qrc">
-             <normaloff>:/png/media/pause.png</normaloff>:/png/media/pause.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="next_button">
-           <property name="minimumSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="images.qrc">
-             <normaloff>:/png/media/next.png</normaloff>:/png/media/next.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLCDNumber" name="time">
-           <property name="lineWidth">
-            <number>0</number>
-           </property>
-           <property name="smallDecimalPoint">
-            <bool>true</bool>
-           </property>
-           <property name="mode">
-            <enum>QLCDNumber::Dec</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>78</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QFrame" name="seekers">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>411</width>
-           <height>31</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>411</width>
-           <height>31</height>
-          </size>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="lineWidth">
-          <number>0</number>
-         </property>
-         <widget class="QSlider" name="seeker">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>411</width>
-            <height>31</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>411</width>
-            <height>31</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>411</width>
-            <height>31</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"> QSlider::groove:horizontal {
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0,0,2">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetNoConstraint</enum>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="prev_button">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="images.qrc">
+                <normaloff>:/png/media/prev.png</normaloff>:/png/media/prev.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pause_button">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="images.qrc">
+                <normaloff>:/png/media/pause.png</normaloff>:/png/media/pause.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="next_button">
+              <property name="minimumSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="images.qrc">
+                <normaloff>:/png/media/next.png</normaloff>:/png/media/next.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>60</width>
+                <height>60</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLCDNumber" name="time">
+              <property name="lineWidth">
+               <number>0</number>
+              </property>
+              <property name="smallDecimalPoint">
+               <bool>true</bool>
+              </property>
+              <property name="mode">
+               <enum>QLCDNumber::Dec</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>78</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QFrame" name="seekers">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>411</width>
+              <height>31</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>411</width>
+              <height>31</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <widget class="QSlider" name="seeker">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>411</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>411</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>411</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"> QSlider::groove:horizontal {
      border: 1px solid #999999;
 	height:8px;
      background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);
@@ -293,49 +237,49 @@ background-repeat: no-repeat;
 background-position: center middle;
      margin: -10px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
  }</string>
-          </property>
-          <property name="maximum">
-           <number>99</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::NoTicks</enum>
-          </property>
-         </widget>
-         <widget class="QSlider" name="seeker_inv">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>411</width>
-            <height>31</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>411</width>
-            <height>31</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>411</width>
-            <height>31</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"> QSlider::groove:horizontal {
+             </property>
+             <property name="maximum">
+              <number>99</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="tickPosition">
+              <enum>QSlider::NoTicks</enum>
+             </property>
+            </widget>
+            <widget class="QSlider" name="seeker_inv">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>411</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>411</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>411</width>
+               <height>31</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"> QSlider::groove:horizontal {
      border: 0px solid #999999;
 	height:8px;
 	background-color: rgba(0, 0, 0, 0%);
@@ -350,593 +294,473 @@ background-repeat: no-repeat;
 background-position: center middle;
      margin: -10px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
  }</string>
-          </property>
-          <property name="maximum">
-           <number>99</number>
-          </property>
+             </property>
+             <property name="maximum">
+              <number>99</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="tickPosition">
+              <enum>QSlider::NoTicks</enum>
+             </property>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="tickPosition">
-           <enum>QSlider::NoTicks</enum>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>200</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Output:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="channels">
+            <item>
+             <property name="text">
+              <string>Stereo</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Mono</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QPushButton" name="load_library">
+            <property name="text">
+             <string>Select Folder</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="rescan_library">
+            <property name="text">
+             <string>Rescan Folder</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="cover">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>101</width>
+            <height>101</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>101</width>
+            <height>101</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="images.qrc">:/png/media/nocover.png</pixmap>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
           </property>
          </widget>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>200</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Output:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="channels">
-         <item>
-          <property name="text">
-           <string>Stereo</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mono</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QPushButton" name="load_library">
-         <property name="text">
-          <string>Select Folder</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="QPushButton" name="rescan_library">
-         <property name="text">
-          <string>Rescan Folder</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QLabel" name="cover">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>101</width>
-         <height>101</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>101</width>
-         <height>101</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="images.qrc">:/png/media/nocover.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QLabel" name="song_name">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>250</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>250</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Song Name</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="album">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>250</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>250</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Album</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="artist">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>250</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>250</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Artist</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>140</y>
-      <width>1251</width>
-      <height>676</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
-         <item>
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>169</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="delete_playlist">
-           <property name="text">
-            <string>Delete Playlist</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QListWidget" name="playlists">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="acceptDrops">
-          <bool>false</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-image: url(:/png/media/sushie.png);
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="song_name">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>250</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Song Name</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="album">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>250</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Album</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="artist">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>250</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Artist</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>169</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="delete_playlist">
+              <property name="text">
+               <string>Delete Playlist</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QListWidget" name="playlists">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="acceptDrops">
+             <bool>false</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-image: url(:/png/media/sushie.png);
 background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;</string>
-         </property>
-         <property name="dragDropMode">
-          <enum>QAbstractItemView::NoDragDrop</enum>
-         </property>
-         <property name="defaultDropAction">
-          <enum>Qt::IgnoreAction</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetFixedSize</enum>
-         </property>
-         <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Minimum</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>543</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="search">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>160</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QFrame" name="album_frame">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgba(0, 0, 0, 0%);</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QTableWidget" name="albums">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>711</width>
-            <height>631</height>
-           </rect>
+            </property>
+            <property name="dragDropMode">
+             <enum>QAbstractItemView::NoDragDrop</enum>
+            </property>
+            <property name="defaultDropAction">
+             <enum>Qt::IgnoreAction</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>300</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="album_layout" stretch="0,0">
+          <property name="spacing">
+           <number>4</number>
           </property>
-          <property name="styleSheet">
-           <string notr="true">QTableWidget {
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMinimumSize</enum>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetFixedSize</enum>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>543</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="search">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>160</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="albums">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>711</width>
+              <height>631</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QTableWidget {
 background-image: url(:/png/media/Vivian_small.png);
 background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;
 }
 </string>
+            </property>
+            <property name="dragEnabled">
+             <bool>true</bool>
+            </property>
+            <property name="dragDropMode">
+             <enum>QAbstractItemView::DragOnly</enum>
+            </property>
+            <property name="defaultDropAction">
+             <enum>Qt::CopyAction</enum>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectItems</enum>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>110</width>
+              <height>110</height>
+             </size>
+            </property>
+            <property name="textElideMode">
+             <enum>Qt::ElideMiddle</enum>
+            </property>
+            <property name="showGrid">
+             <bool>false</bool>
+            </property>
+            <property name="rowCount">
+             <number>0</number>
+            </property>
+            <property name="columnCount">
+             <number>0</number>
+            </property>
+            <attribute name="horizontalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetFixedSize</enum>
           </property>
-          <property name="dragEnabled">
-           <bool>true</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::DragOnly</enum>
-          </property>
-          <property name="defaultDropAction">
-           <enum>Qt::CopyAction</enum>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectItems</enum>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>110</width>
-            <height>110</height>
-           </size>
-          </property>
-          <property name="textElideMode">
-           <enum>Qt::ElideMiddle</enum>
-          </property>
-          <property name="showGrid">
-           <bool>false</bool>
-          </property>
-          <property name="rowCount">
-           <number>0</number>
-          </property>
-          <property name="columnCount">
-           <number>0</number>
-          </property>
-          <attribute name="horizontalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-         </widget>
-         <widget class="QFrame" name="overlay">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>711</width>
-            <height>631</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: rgba(0, 0, 0, 60%);</string>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <widget class="QListWidget" name="album_songs">
-           <property name="geometry">
-            <rect>
-             <x>200</x>
-             <y>60</y>
-             <width>301</width>
-             <height>421</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: white;</string>
-           </property>
-           <property name="selectionMode">
-            <enum>QAbstractItemView::MultiSelection</enum>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="close_overlay">
-           <property name="geometry">
-            <rect>
-             <x>480</x>
-             <y>30</y>
-             <width>60</width>
-             <height>60</height>
-            </rect>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(0, 0, 0, 0%);</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="images.qrc">
-             <normaloff>:/png/media/close.png</normaloff>:/png/media/close.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>60</width>
-             <height>60</height>
-            </size>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="transfer_button">
-           <property name="geometry">
-            <rect>
-             <x>540</x>
-             <y>210</y>
-             <width>120</width>
-             <height>120</height>
-            </rect>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>90000</width>
-             <height>90000</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(0, 0, 0, 0%);</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="images.qrc">
-             <normaloff>:/png/media/arrow.png</normaloff>:/png/media/arrow.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>120</width>
-             <height>120</height>
-            </size>
-           </property>
-          </widget>
-          <zorder>close_overlay</zorder>
-          <zorder>transfer_button</zorder>
-          <zorder>album_songs</zorder>
-         </widget>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
-       <property name="sizeConstraint">
-        <enum>QLayout::SetFixedSize</enum>
-       </property>
-       <item>
-        <widget class="QListWidget" name="playlist">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>582</height>
-          </size>
-         </property>
-         <property name="acceptDrops">
-          <bool>true</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QListWidget {
+          <item>
+           <widget class="QListWidget" name="playlist">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>582</height>
+             </size>
+            </property>
+            <property name="acceptDrops">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QListWidget {
 background-image: url(:/png/media/dark_koopatrol_small.png);
 background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;
 }</string>
-         </property>
-         <property name="dragDropMode">
-          <enum>QAbstractItemView::DropOnly</enum>
-         </property>
-         <property name="defaultDropAction">
-          <enum>Qt::IgnoreAction</enum>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QPushButton" name="edit_button">
-             <property name="acceptDrops">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>Edit Songs</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="clear_button">
-             <property name="text">
-              <string>Clear Playlist</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QPushButton" name="save_playlist">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>256</width>
-             <height>23</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>256</width>
-             <height>23</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Save Playlist</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
+            </property>
+            <property name="dragDropMode">
+             <enum>QAbstractItemView::DropOnly</enum>
+            </property>
+            <property name="defaultDropAction">
+             <enum>Qt::IgnoreAction</enum>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::MultiSelection</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QPushButton" name="edit_button">
+                <property name="acceptDrops">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>Edit Songs</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="clear_button">
+                <property name="text">
+                 <string>Clear Playlist</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="save_playlist">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>256</width>
+                <height>23</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>256</width>
+                <height>23</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Save Playlist</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <action name="actionExit">
    <property name="text">
