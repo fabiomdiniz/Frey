@@ -8,6 +8,7 @@ continues = 5
 
 device = None
 stream = None
+length = 0
 
 def init_tanooki():
     global device
@@ -30,9 +31,11 @@ def unpause_tanooki():
 
 def get_perc_tanooki():
     global stream
+    global length
     if stream:
-        return int(100*stream.position/float(stream.length))
-    return 0
+        perc = 100*stream.position/float(stream.length)
+        return [length*(perc/100.0), int(perc)]
+    return [0,0]
 
 def set_perc_tanooki(value):
     global stream
@@ -42,8 +45,12 @@ def set_perc_tanooki(value):
 def play_tanooki_way(music_file, channels):
     global device
     global stream
+    global length
+
     stream = device.open_file(music_file, 1)
     stream.play()
+    path = clean_path(music_file)
+    length = int(File(path).info.length)
     time.sleep(0.1)
     while stream.position > 0:
         #print 'remaining'                              

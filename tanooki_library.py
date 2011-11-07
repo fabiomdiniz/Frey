@@ -37,7 +37,8 @@ def set_library(folder, taskbar, winid):
         info = get_song_info(filename)
         if not conf['library'].has_key(info[1]):
             conf['library'][info[1]] = {'cover': getCoverArt(filename)[0],
-                                        'songs': []}
+                                        'songs': [],
+                                        'artist':info[2]}
         conf['library'][info[1]]['songs'].append(filename)
         if taskbar:
             taskbar.SetProgressValue(winid,i,num_entries)
@@ -60,7 +61,8 @@ def update_album(filename, new_album):
 
                 if not conf['library'].has_key(new_album):
                     conf['library'][new_album] = {'cover': getCoverArt(filename)[0],
-                                                'songs': []}
+                                                  'songs': [],
+                                                  'artist':get_song_info(filename)[2]}
                 conf['library'][new_album]['songs'].append(filename)
 
                 if not conf['library'][album]['songs']:
@@ -142,3 +144,15 @@ def rescan_library(taskbar=None, winid=0):
     conf = get_or_create_config()
     conf['playlists'] = playlists
     save_config(conf)
+
+def find_albums_by_songname(search):
+    conf = get_or_create_config()
+    if not search:
+        return conf['library'].keys()
+    albums = []
+    for album in conf['library']:
+        for song in conf['library'][album]['songs']:
+            if search.lower() in get_song_info(song)[0].lower():
+                albums.append(album)
+                break
+    return albums

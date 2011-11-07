@@ -8,6 +8,7 @@ from PyQt4.QtGui import QSlider, QListWidget
 from PyQt4 import Qt
 from main_ui import Ui_MainWindow
 from song_editor_ui import Ui_song_editor
+from overlay_ui import Ui_overlay
 
 from mutagen.easyid3 import EasyID3
 from mutagen import File
@@ -69,7 +70,7 @@ class SpinBoxDelegate(QtGui.QItemDelegate):
         #    text =  index.data().toString()#QtCore.QString("<span style='background-color: lightgreen'>This</span> is highlighted.")
         string = unicode(value.toString())
         if string:
-            string = string[:string.find('<br>')+18]+'...'
+            string = string[:string.find('<br>')+24]
         #text.append(")");
         document.setHtml(string);
         painter.translate(option.rect.topLeft())
@@ -91,6 +92,11 @@ class SongEditor(QtGui.QWidget, Ui_song_editor):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
         
+class Overlay(QtGui.QWidget, Ui_overlay):
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setupUi(self)        
+
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, taskbar, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -105,9 +111,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.__class__.dragEnterEvent = self.lbDragEnterEvent
         self._showLibrary()
         
-        self.huge_tanooki.lower()
+        #self.huge_tanooki.lower()
         self.taskbar = taskbar
-        self.overlay.hide()
         delegate = SpinBoxDelegate()
         self.albums.setItemDelegate(delegate)
         self._refreshPlaylists()        
@@ -119,12 +124,29 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.editor_overlay = QtGui.QFrame(self.centralwidget)
         self.editor_overlay.setGeometry(self.rect())
-        self.overlay.setObjectName(_fromUtf8("editor_overlay"))
+        self.editor_overlay.setObjectName(_fromUtf8("editor_overlay"))
         self.editor_overlay.setStyleSheet(_fromUtf8("QFrame { background-color: rgba(0, 0, 0, 60%); }"))
-        self.editor_overlay.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.editor_overlay.setFrameShadow(QtGui.QFrame.Raised)
+        self.editor_overlay.setFrameShape(QtGui.QFrame.NoFrame)
+        self.editor_overlay.setFrameShadow(QtGui.QFrame.Plain)
 
         self.editwidget = SongEditor(self.editor_overlay)
+
+        self.overlay_frame = QtGui.QFrame(self.albums)
+        self.overlay_frame.setGeometry(self.albums.rect())
+        self.overlay_frame.setObjectName(_fromUtf8("overlay_frame"))
+        self.overlay_frame.setStyleSheet(_fromUtf8("QFrame { background-color: rgba(0, 0, 0, 60%); }"))
+        self.overlay_frame.setFrameShape(QtGui.QFrame.NoFrame)
+        self.overlay_frame.setFrameShadow(QtGui.QFrame.Plain)
+
+        self.overlay = Overlay(self.overlay_frame)
+
+
+        #self.overlay = Overlay(self.albums)
+        #self.overlay.setGeometry(self.albums.rect())
+        #self.overlay.setStyleSheet(_fromUtf8("QWidget { background-color: rgba(0, 0, 0, 60%); }"))
+        self.overlay_frame.hide()
+        #self.overlay.hide()
+        
         self.editwidget.adjustSize()
         self.editwidget.move(self.editor_overlay.rect().center() - self.editwidget.rect().center())
         css = "QFrame { background-color: " + str(self.palette().window().color().name()) + "; }"
@@ -132,12 +154,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.editor_overlay.hide()
 
+        self.time.display("00:00") 
+
         self._connectSlots()
 
     def _updateSlider(self, value=0):
         while True:
-            value = g2tsg.get_perc_tanooki()
-            self.seeker.setValue(value)
+            sec, perc = g2tsg.get_perc_tanooki()
+            self.seeker.setValue(perc)
+            minutes = sec//60
+            secs = sec%60
+            qtime = QtCore.QTime(0,minutes,secs)
+            
+            self.time.display(qtime.toString('mm:ss'))
             time.sleep(0.1)
 
     def editAlbumDrag(self, event):
@@ -179,6 +208,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
         self.connect(self.playlist, QtCore.SIGNAL("dropped"), self.filesDropped)
 
+        self.keyReleaseEvent = self.checkEsc
+
         self.playlist.doubleClicked.connect(self._slotClickPlaylist)      
         self.playlist.keyReleaseEvent = self.deleteSong
         self.playlist.mouseReleaseEvent = self._playlistRClick
@@ -189,8 +220,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.albums.cellClicked.connect(self._clickAlbum)
         self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
         self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong)
-        self.close_overlay.clicked.connect(self._closeOverlay)
-        self.transfer_button.clicked.connect(self._appendSongs)
+        self.overlay.close_overlay.clicked.connect(self._closeOverlay)
+        self.overlay.transfer_button.clicked.connect(self._appendSongs)
 
         self.playlists.doubleClicked.connect(self._loadPlaylist)
         self.delete_playlist.clicked.connect(self._deletePlaylist)
@@ -207,7 +238,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.editwidget.cover_button.clicked.connect(self._selectCover)
 
         self.rescan_library.clicked.connect(self.rescanLibrary)
+        self.search.textChanged.connect(self._textEdit)
 
+    def _textEdit(self, qstr):
+        self._showLibrary()
 
     def rescanLibrary(self):
         global taskbar
@@ -331,7 +365,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 pixmap.loadFromData(data)
                 self.editwidget.cover.setPixmap(QtGui.QPixmap(pixmap))
                 #temp.close()
-            
+        self.editor_overlay.setGeometry(self.rect())       
         self.editor_overlay.show()
         change_cover = ''
 
@@ -356,6 +390,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 self.playlist.takeItem(del_idx-i)
                 if del_idx <= idx:
                     idx -= 1
+
+    def checkEsc(self, event):
+        if event.key() == QtCore.Qt.Key_Escape:
+            if self.overlay.isVisible():
+                self.overlay_frame.hide()
+            else:
+                self.search.setText('')
+            self.search.setFocus()
 
     def _changeSlider(self):
         g2tsg.set_perc_tanooki(self.seeker.value())
@@ -402,17 +444,17 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         j = self.albums.currentColumn()
         album = albumslist[i*num_col+j]
         conf = tanooki_library.get_or_create_config()
-        for i in range(self.album_songs.count()):
-            item = self.album_songs.item(i)
-            if self.album_songs.isItemSelected(item):
+        for i in range(self.overlay.album_songs.count()):
+            item = self.overlay.album_songs.item(i)
+            if self.overlay.album_songs.isItemSelected(item):
                 filename = conf['library'][album]['songs'][i]
                 playlist.append(filename)
                 self._addUrl(filename)
-        self.album_songs.clearSelection()
+        self.overlay.album_songs.clearSelection()
                  
 
     def _closeOverlay(self):
-        self.overlay.hide()
+        self.overlay_frame.hide()
 
     def disconThread(self):
         self.disconnect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong)
@@ -423,8 +465,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def appendAlbumPlaylist(self, album):
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
-            playlist.append(filename)
-            self._addUrl(filename)
+                song_file = File(filename)
+                name = unicode(song_file.tags.get('TIT2',''))
+                if unicode(self.search.text()).lower() in name.lower():
+                    playlist.append(filename)
+                    self._addUrl(filename)
 
     def load_album(self, album):
         self._clearPlaylist()
@@ -446,13 +491,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global albumslist
         if not self.albums.item(i, j).text():
             return
-        self.album_songs.clear()
-        self.overlay.show()
+        self.overlay.album_songs.clear()
+        self.overlay_frame.setGeometry(self.albums.rect())
+        self.overlay_frame.show()
         album = albumslist[i*num_col+j]#unicode(self.albums.item(i, j).text())
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
             song_file = File(filename)
-            item = QtGui.QListWidgetItem(str(song_file.tags.get('TIT2','')), self.album_songs)
+            name = unicode(song_file.tags.get('TIT2',''))
+            if unicode(self.search.text()).lower() in name.lower():
+                item = QtGui.QListWidgetItem(name, self.overlay.album_songs)
 
 
     def _loadLibrary(self):
@@ -467,20 +515,32 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _showLibrary(self):
         global albumslist
         global num_col
+        search = unicode(self.search.text())
         albumslist = []
         self.albums.clear()
         conf = tanooki_library.get_or_create_config()
         self.albums.setSortingEnabled(False) 
         i = 0
         j = 0
-        num_albums = len(conf['library'])
+
+        albums = tanooki_library.find_albums_by_songname(search)
+
+        #num_albums = len(conf['library'])
+        num_albums = len(albums)
+
         import math
+        
         self.albums.setRowCount(int(math.ceil(float(num_albums)/num_col)))
         self.albums.setColumnCount(num_col);
+        
         for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,130)
         for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,112)
         
-        for album in sorted(conf['library'].keys()):
+        #alb_art = [[album, conf['library'][album]['artist']] for album in conf['library']]
+        alb_art = [[album, conf['library'][album]['artist']] for album in albums]
+        album_sorted = [e[0] for e in sorted(alb_art, key=lambda e: e[1]+e[0])]        
+
+        for album in album_sorted:
             albumslist.append(album)
             #item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), album)
             #item.setStyleSheet("padding-top: 110px;")
@@ -644,7 +704,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.conThread()
         self.paint_thread.run = lambda : self._paintCurrent()
         self.paint_thread.start()
-        self.seeker.setFocus()
 
     def _slotSelectClicked(self):
         name = unicode(QtGui.QFileDialog.getOpenFileName(self,
