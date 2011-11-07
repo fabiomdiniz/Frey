@@ -314,7 +314,7 @@ background-position: right bottom;</string>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="sizeConstraint">
-          <enum>QLayout::SetMinAndMaxSize</enum>
+          <enum>QLayout::SetNoConstraint</enum>
          </property>
          <property name="bottomMargin">
           <number>0</number>
@@ -416,13 +416,29 @@ background-position: right bottom;</string>
           </widget>
          </item>
          <item>
+          <widget class="QLCDNumber" name="time">
+           <property name="lineWidth">
+            <number>0</number>
+           </property>
+           <property name="smallDecimalPoint">
+            <bool>true</bool>
+           </property>
+           <property name="mode">
+            <enum>QLCDNumber::Dec</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
+             <width>78</width>
              <height>20</height>
             </size>
            </property>

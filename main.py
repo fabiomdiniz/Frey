@@ -69,7 +69,7 @@ class SpinBoxDelegate(QtGui.QItemDelegate):
         #    text =  index.data().toString()#QtCore.QString("<span style='background-color: lightgreen'>This</span> is highlighted.")
         string = unicode(value.toString())
         if string:
-            string = string[:string.find('<br>')+18]+'...'
+            string = string[:string.find('<br>')+24]
         #text.append(")");
         document.setHtml(string);
         painter.translate(option.rect.topLeft())
@@ -132,12 +132,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.editor_overlay.hide()
 
+        self.time.display("00:00") 
+
         self._connectSlots()
 
     def _updateSlider(self, value=0):
         while True:
-            value = g2tsg.get_perc_tanooki()
-            self.seeker.setValue(value)
+            sec, perc = g2tsg.get_perc_tanooki()
+            self.seeker.setValue(perc)
+            minutes = sec//60
+            secs = sec%60
+            qtime = QtCore.QTime(0,minutes,secs)
+            
+            self.time.display(qtime.toString('mm:ss'))
             time.sleep(0.1)
 
     def editAlbumDrag(self, event):
@@ -480,7 +487,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,130)
         for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,112)
         
-        for album in sorted(conf['library'].keys()):
+        alb_art = [[album, conf['library'][album]['artist']] for album in conf['library']]
+        album_sorted = [e[0] for e in sorted(alb_art, key=lambda e: e[1])]        
+
+        for album in album_sorted:
             albumslist.append(album)
             #item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), album)
             #item.setStyleSheet("padding-top: 110px;")

@@ -35,8 +35,8 @@ def unpause_tanooki():
 def get_perc_tanooki():
     global mediaObject
     if mediaObject and mediaObject.totalTime():
-        return int(100*mediaObject.currentTime()/float(mediaObject.totalTime()))
-    return 0
+        return [int(mediaObject.currentTime()/1000) ,int(100*mediaObject.currentTime()/float(mediaObject.totalTime()))]
+    return [0,0]
 
 def set_perc_tanooki(value):
     global mediaObject

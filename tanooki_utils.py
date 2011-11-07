@@ -54,7 +54,7 @@ def getCoverArt(url):
     else:
         iconpath = u":/png/media/nocover.png"
     icon = QtGui.QIcon(iconpath)
-    pixmap = icon.pixmap(size, size)
+    pixmap = icon.pixmap(110, 110)
     return [iconpath, pixmap]
 
 def dirEntries(dir_name, subdir, *args):

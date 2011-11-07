@@ -36,8 +36,9 @@ def get_perc_tanooki():
     global length
     global offset
     if length:
-        return int((offset+pygame.mixer.music.get_pos())/float(length))
-    return 0
+        msecs = offset+pygame.mixer.music.get_pos()
+        return [msecs/1000.0, int(msecs/float(length))]
+    return [0,0]
 
 def set_perc_tanooki(value):
     pass
