@@ -4,7 +4,7 @@ phonofied = True
 
 import sys, os, time
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtGui import QSlider, QListWidget
+from PyQt4.QtGui import QSlider, QListWidget, QTableWidget
 from PyQt4 import Qt
 from main_ui import Ui_MainWindow
 from song_editor_ui import Ui_song_editor
@@ -24,7 +24,8 @@ playlist = []
 albumslist = []
 g2tsg = None
 songs_to_edit = []
-
+overlay_songs = []
+search_query = '_'
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -70,7 +71,7 @@ class SpinBoxDelegate(QtGui.QItemDelegate):
         #    text =  index.data().toString()#QtCore.QString("<span style='background-color: lightgreen'>This</span> is highlighted.")
         string = unicode(value.toString())
         if string:
-            string = string[:string.find('<br>')+24]
+            string = string[:string.find('<br>')+26]
         #text.append(")");
         document.setHtml(string);
         painter.translate(option.rect.topLeft())
@@ -217,9 +218,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.clear_button.clicked.connect(self._clearPlaylist)
         self.load_library.clicked.connect(self._loadLibrary)
+
         self.albums.cellClicked.connect(self._clickAlbum)
         self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
+        self.albums.resizeEvent = self.albumsResize
+
         self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong)
+
         self.overlay.close_overlay.clicked.connect(self._closeOverlay)
         self.overlay.transfer_button.clicked.connect(self._appendSongs)
 
@@ -240,6 +245,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.rescan_library.clicked.connect(self.rescanLibrary)
         self.search.textChanged.connect(self._textEdit)
 
+    def albumsResize(self, event):
+        self._showLibrary()
+        QTableWidget.resizeEvent(self.albums, event)
+        
     def _textEdit(self, qstr):
         self._showLibrary()
 
@@ -266,16 +275,21 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global playlist
         global change_cover
         fields = [('tracknumber', self.editwidget.track), 
-                  ('title',self.editwidget.name),
+                  #('title',self.editwidget.name),
                   ('artist',self.editwidget.artist),]
                   #('album',self.editwidget.album)]
         fields = [field for field in fields if unicode(field[1].text())]
+
+        new_title = unicode(self.editwidget.name.text())
 
         for song in songs_to_edit:
             audio = EasyID3(song)
             for tag, field in fields:
                 audio[tag] = unicode(field.text())
             audio.save()
+
+            if audio['title'] != new_title:
+                tanooki_library.update_title(song, new_title)
 
         new_album = unicode(self.editwidget.album.text())
         if new_album:
@@ -285,9 +299,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         if change_cover:
             for song in songs_to_edit:
                 tanooki_library.update_album_cover(song, change_cover)
-
-        self._showLibrary()
-        
 
         if playlist:
             self.refreshPlaylist()
@@ -366,6 +377,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 self.editwidget.cover.setPixmap(QtGui.QPixmap(pixmap))
                 #temp.close()
         self.editor_overlay.setGeometry(self.rect())       
+        self.editwidget.move(self.editor_overlay.rect().center() - self.editwidget.rect().center())
         self.editor_overlay.show()
         change_cover = ''
 
@@ -379,7 +391,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def deleteSong(self, event):
         global idx
-        if event.key() == QtCore.Qt.Key_Delete:
+        if event.key() == QtCore.Qt.Key_Escape:
+            self.search.setText('')
+            self.search.setFocus()
+        elif event.key() == QtCore.Qt.Key_Delete:
             to_delete = []
             for i in range(self.playlist.count()):
                 item = self.playlist.item(i)
@@ -440,6 +455,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def _appendSongs(self):
         global num_col
+        global overlay_songs
         i = self.albums.currentRow()
         j = self.albums.currentColumn()
         album = albumslist[i*num_col+j]
@@ -447,7 +463,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         for i in range(self.overlay.album_songs.count()):
             item = self.overlay.album_songs.item(i)
             if self.overlay.album_songs.isItemSelected(item):
-                filename = conf['library'][album]['songs'][i]
+                filename = overlay_songs[i]
                 playlist.append(filename)
                 self._addUrl(filename)
         self.overlay.album_songs.clearSelection()
@@ -489,10 +505,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _clickAlbum(self, i, j):
         global num_col
         global albumslist
+        global overlay_songs
         if not self.albums.item(i, j).text():
             return
+        overlay_songs = []
         self.overlay.album_songs.clear()
         self.overlay_frame.setGeometry(self.albums.rect())
+        self.overlay.move(self.overlay_frame.rect().center() - self.overlay.rect().center())
         self.overlay_frame.show()
         album = albumslist[i*num_col+j]#unicode(self.albums.item(i, j).text())
         conf = tanooki_library.get_or_create_config()
@@ -500,6 +519,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             song_file = File(filename)
             name = unicode(song_file.tags.get('TIT2',''))
             if unicode(self.search.text()).lower() in name.lower():
+                overlay_songs.append(filename)
                 item = QtGui.QListWidgetItem(name, self.overlay.album_songs)
 
 
@@ -512,29 +532,32 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             tanooki_library.set_library(unicode(fileNames[0]), taskbar, self.winId())
             self._showLibrary()
 
-    def _showLibrary(self):
+    def _showLibrary(self, run_search=True):
         global albumslist
         global num_col
-        search = unicode(self.search.text())
-        albumslist = []
+        global search_query
+
+        search_query = unicode(self.search.text())
+        
+        print 'search no ', search_query
         self.albums.clear()
         conf = tanooki_library.get_or_create_config()
         self.albums.setSortingEnabled(False) 
         i = 0
         j = 0
 
-        albums = tanooki_library.find_albums_by_songname(search)
-
+        albums = tanooki_library.find_albums_by_songname(search_query)
+        albumslist = []
         #num_albums = len(conf['library'])
         num_albums = len(albums)
 
         import math
-        
+        num_col = self.albums.width()//cover_size
         self.albums.setRowCount(int(math.ceil(float(num_albums)/num_col)))
         self.albums.setColumnCount(num_col);
         
-        for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,130)
-        for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,112)
+        for k in range(self.albums.rowCount()) : self.albums.setRowHeight(k,cover_size+20)
+        for k in range(self.albums.columnCount()) : self.albums.setColumnWidth(k,cover_size+1)
         
         #alb_art = [[album, conf['library'][album]['artist']] for album in conf['library']]
         alb_art = [[album, conf['library'][album]['artist']] for album in albums]

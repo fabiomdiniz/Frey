@@ -8,6 +8,8 @@ from PIL import Image
 from PyQt4 import QtCore, QtGui
 ROOT_PATH = os.getcwd()
 
+cover_size = 140
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -20,6 +22,7 @@ def clean_path(path):
     return os.path.normcase(path)
 
 def getCoverArt(url):
+    global cover_size
     url = url.replace('/', '\\')
     song_file = File(url)
     folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
@@ -32,8 +35,8 @@ def getCoverArt(url):
             with open(iconpath_jpg, 'wb') as img:
                 img.write(artwork.data)
             im = Image.open(iconpath_jpg)
-            #im = im.resize((110, 110), Image.ANTIALIAS)
-            im.thumbnail((110,110), Image.ANTIALIAS)
+            #im = im.resize((cover_size, cover_size), Image.ANTIALIAS)
+            im.thumbnail((cover_size,cover_size), Image.ANTIALIAS)
             im.save(iconpath)
             try:
                 os.remove(iconpath_jpg)
@@ -47,14 +50,14 @@ def getCoverArt(url):
     elif os.path.exists(folder) and album_name:
         iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')
         im = Image.open(folder)
-        #im = im.resize((110, 110), Image.ANTIALIAS)
-        im.thumbnail((110,110), Image.ANTIALIAS)
+        #im = im.resize((cover_size, cover_size), Image.ANTIALIAS)
+        im.thumbnail((cover_size,cover_size), Image.ANTIALIAS)
         im.save(iconpath)
         #pygame.image.save(pygame.image.load(folder),iconpath)
     else:
         iconpath = u":/png/media/nocover.png"
     icon = QtGui.QIcon(iconpath)
-    pixmap = icon.pixmap(110, 110)
+    pixmap = icon.pixmap(cover_size, cover_size)
     return [iconpath, pixmap]
 
 def dirEntries(dir_name, subdir, *args):

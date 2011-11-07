@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1265</width>
-    <height>781</height>
+    <width>1281</width>
+    <height>802</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_8">
     <property name="margin">
-     <number>0</number>
+     <number>8</number>
     </property>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -315,7 +315,7 @@ background-position: center middle;
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
+           <enum>QSizePolicy::MinimumExpanding</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -400,7 +400,7 @@ background-position: center middle;
           <item>
            <widget class="QLabel" name="song_name">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -413,7 +413,7 @@ background-position: center middle;
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>500</width>
               <height>32</height>
              </size>
             </property>
@@ -425,7 +425,7 @@ background-position: center middle;
           <item>
            <widget class="QLabel" name="album">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -438,7 +438,7 @@ background-position: center middle;
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>500</width>
               <height>32</height>
              </size>
             </property>
@@ -450,7 +450,7 @@ background-position: center middle;
           <item>
            <widget class="QLabel" name="artist">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -463,7 +463,7 @@ background-position: center middle;
             </property>
             <property name="maximumSize">
              <size>
-              <width>250</width>
+              <width>500</width>
               <height>32</height>
              </size>
             </property>
@@ -569,7 +569,7 @@ background-position: right bottom;</string>
                <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeType">
-               <enum>QSizePolicy::Minimum</enum>
+               <enum>QSizePolicy::MinimumExpanding</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -600,7 +600,7 @@ background-position: right bottom;</string>
           <item>
            <widget class="QTableWidget" name="albums">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -619,6 +619,9 @@ background-repeat: no-repeat;
 background-position: right bottom;
 }
 </string>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
             </property>
             <property name="dragEnabled">
              <bool>true</bool>

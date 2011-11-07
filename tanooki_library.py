@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from tanooki_utils import *
+from tanooki_utils import cover_size
 import json
 import os
 from mutagen.easyid3 import EasyID3
@@ -37,9 +38,11 @@ def set_library(folder, taskbar, winid):
         info = get_song_info(filename)
         if not conf['library'].has_key(info[1]):
             conf['library'][info[1]] = {'cover': getCoverArt(filename)[0],
+                                        'titles': [],
                                         'songs': [],
                                         'artist':info[2]}
         conf['library'][info[1]]['songs'].append(filename)
+        conf['library'][info[1]]['titles'].append(info[0])
         if taskbar:
             taskbar.SetProgressValue(winid,i,num_entries)
     if taskbar:
@@ -54,20 +57,38 @@ def update_album(filename, new_album):
         for i, song in enumerate(bak_conf['library'][album]['songs']):
             if song == filename:
                 del conf['library'][album]['songs'][i]
+                del conf['library'][album]['titles'][i]
 
                 audio = EasyID3(filename)
                 audio['album'] = new_album
                 audio.save()
 
+                info = get_song_info(filename)
+
                 if not conf['library'].has_key(new_album):
                     conf['library'][new_album] = {'cover': getCoverArt(filename)[0],
                                                   'songs': [],
-                                                  'artist':get_song_info(filename)[2]}
+                                                  'titles': [],
+                                                  'artist':info[2]}
                 conf['library'][new_album]['songs'].append(filename)
+                conf['library'][new_album]['titles'].append(info[0])
 
                 if not conf['library'][album]['songs']:
                     del conf['library'][album]
 
+                save_config(conf)
+                return
+
+def update_title(filename, new_title):
+    conf = get_or_create_config()
+    bak_conf = conf.copy()
+    for album in bak_conf['library']:
+        for i, song in enumerate(bak_conf['library'][album]['songs']):
+            if song == filename:
+                conf['library'][album]['titles'][i] = new_title
+                audio = EasyID3(filename)
+                audio['title'] = new_title
+                audio.save()
                 save_config(conf)
                 return
 
@@ -117,8 +138,8 @@ def update_album_cover(filename, new_cover):
             with open(iconpath_jpg, 'wb') as img:
                 img.write(data)
             im = Image.open(iconpath_jpg)
-            #im = im.resize((110, 110), Image.ANTIALIAS)
-            im.thumbnail((110,110), Image.ANTIALIAS)
+            #im = im.resize((cover_size, cover_size), Image.ANTIALIAS)
+            im.thumbnail((cover_size,cover_size), Image.ANTIALIAS)
             im.save(iconpath)
             try:
                 os.remove(iconpath_jpg)
@@ -151,8 +172,8 @@ def find_albums_by_songname(search):
         return conf['library'].keys()
     albums = []
     for album in conf['library']:
-        for song in conf['library'][album]['songs']:
-            if search.lower() in get_song_info(song)[0].lower():
+        for title in conf['library'][album]['titles']:
+            if search.lower() in title.lower():
                 albums.append(album)
                 break
     return albums
