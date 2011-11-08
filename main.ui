@@ -362,6 +362,13 @@ background-position: center middle;
             </property>
            </widget>
           </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QPushButton" name="gokeys">
+            <property name="text">
+             <string>Gokeys</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>

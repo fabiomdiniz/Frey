@@ -33,11 +33,13 @@ except AttributeError:
 
 
 myapp = None
-
+hm = None
 import pyHook
 
 hotkeys_enabled = True
 change_cover = ''
+
+keys_got = 0
 
 def OnKeyboardEvent(event):
     global myapp
@@ -53,6 +55,25 @@ def OnKeyboardEvent(event):
             myapp._slotPrevSong()
         elif key == keys[0]:
             myapp._slotPausePlay()
+    return True
+
+def GrabGokeys(app, event):
+    global hm
+    global keys_got
+    if keys_got == 0:
+        keyfile = open('keys', 'w')
+    else:
+        keyfile = open('keys', 'a')
+    keyfile.write(event.Key)
+    keyfile.write('\n')
+    keys_got += 1 
+    if keys_got == 3:
+        keys_got = 0
+        keyfile.close()
+        keys = open('keys', 'r').read().split('\n')
+        hm.KeyUp = OnKeyboardEvent # Registra a o evento (callbacks)
+        hm.HookKeyboard() # Inicia
+        app.gokeys_frame.hide()
     return True
 
 class SpinBoxDelegate(QtGui.QItemDelegate):
@@ -147,6 +168,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         #self.overlay.setStyleSheet(_fromUtf8("QWidget { background-color: rgba(0, 0, 0, 60%); }"))
         self.overlay_frame.hide()
         #self.overlay.hide()
+
+
         
         self.editwidget.adjustSize()
         self.editwidget.move(self.editor_overlay.rect().center() - self.editwidget.rect().center())
@@ -154,6 +177,18 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.editwidget.setStyleSheet(css);
 
         self.editor_overlay.hide()
+
+        self.gokeys_frame = QtGui.QFrame(self.centralwidget)
+        self.gokeys_frame.setGeometry(self.rect())
+        self.gokeys_frame.setObjectName(_fromUtf8("gokeys_frame"))
+        self.gokeys_frame.setStyleSheet(_fromUtf8("QFrame { background-color: rgba(0, 0, 0, 60%); }"))
+        self.gokeys_frame.setFrameShape(QtGui.QFrame.NoFrame)
+        self.gokeys_frame.setFrameShadow(QtGui.QFrame.Plain)
+
+        self.gokeys_label = QtGui.QLabel('Please press the keys wanted in this order: Pause/Play -> Previous -> Next', self.gokeys_frame)
+        self.gokeys_label.setStyleSheet(_fromUtf8("QLabel { color:white; font-size:30px; }"))
+
+        self.gokeys_frame.hide()
 
         self.time.display("00:00") 
 
@@ -264,6 +299,22 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.rescan_library.clicked.connect(self.rescanLibrary)
         self.search.textChanged.connect(self._textEdit)
+
+        self.gokeys.clicked.connect(self._setGokeys)
+
+    def _setGokeys(self):
+        global hm
+        self.gokeys_frame.setGeometry(self.rect())       
+        self.gokeys_label.setGeometry(((self.width() - self.gokeys_label.sizeHint().width()) / 2), (self.height() - self.gokeys_label.sizeHint().height()) / 2, self.gokeys_label.sizeHint().width(), self.gokeys_label.sizeHint().height())
+        #self.gokeys_label.move(self.rect().center() - self.gokeys_label.rect().center())
+        self.gokeys_frame.show()
+        
+        self.gokeys_label.setFocus()
+
+        hm.KeyUp = lambda x: GrabGokeys(self, x) # Registra a o evento (callbacks)
+        hm.HookKeyboard() # Inicia
+
+
 
     def albumsResize(self, event):
         self._showLibrary()
