@@ -205,7 +205,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self._playIdx()
 
     def reorderPlaylist(self):
-        pass#for i in
+        global playlist
+        global idx
+        new_playlist = []
+        old_titles = [get_song_info(song)[0] for song in playlist]
+        idx_set = False
+        for i in range(self.playlist.count()):
+            item = self.playlist.item(i)
+            old_idx = old_titles.index(unicode(item.text()))
+            new_playlist.append(playlist[old_idx])
+            if old_idx == idx and not idx_set:
+                idx = i
+                idx_set = True
+        playlist = new_playlist[:]
     
     def _connectSlots(self):
         # Connect our two methods to SIGNALS the GUI emits.
@@ -232,6 +244,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.overlay.close_overlay.clicked.connect(self._closeOverlay)
         self.overlay.transfer_button.clicked.connect(self._appendSongs)
+
+        self.overlay.album_songs.mouseReleaseEvent = self._album_songsRClick
+
 
         self.playlists.doubleClicked.connect(self._loadPlaylist)
         self.delete_playlist.clicked.connect(self._deletePlaylist)
@@ -334,6 +349,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         songs_to_edit = conf['library'][album]['songs']
         self.editSongs()
 
+    def _album_songsRClick(self, event):
+        event.accept()
+        if event.button() == QtCore.Qt.RightButton:
+            self.overlay.album_songs.clearSelection()
+        QListWidget.mousePressEvent(self.overlay.album_songs, event)
+
     def _playlistRClick(self, event):
         event.accept()
         if event.button() == QtCore.Qt.RightButton:
@@ -418,10 +439,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def checkEsc(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
-            if self.overlay.isVisible():
-                self.overlay_frame.hide()
-            else:
-                self.search.setText('')
+            #if self.overlay.isVisible():
+            #    self.overlay_frame.hide()
+            #else:
+            self.search.setText('')
             self.search.setFocus()
 
     def _changeSlider(self):
