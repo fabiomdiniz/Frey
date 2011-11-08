@@ -2,6 +2,7 @@
 import time 
 import audiere
 from tanooki_utils import *
+import win32api
 
 init_continues = 5
 continues = 5
@@ -47,9 +48,9 @@ def play_tanooki_way(music_file, channels):
     global stream
     global length
 
-    stream = device.open_file(music_file, 1)
+    path = win32api.GetShortPathName(clean_path(music_file))
+    stream = device.open_file(path, 1)
     stream.play()
-    path = clean_path(music_file)
     length = int(File(path).info.length)
     time.sleep(0.1)
     while stream.position > 0:

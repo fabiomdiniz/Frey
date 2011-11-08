@@ -3,7 +3,7 @@ import pygame, pygame.mixer
 import pygame._view
 import time 
 from mutagen import File
-
+import win32api
 from tanooki_utils import *
 
 init_continues = 5
@@ -56,7 +56,7 @@ def play_tanooki_way(music_file, channels):
     global continues
     global init_continues
     global path
-    path = clean_path(music_file)
+    path = win32api.GetShortPathName(clean_path(music_file))
     # set up the mixer
     pygame.mixer.quit()
     pygame.mixer.quit()

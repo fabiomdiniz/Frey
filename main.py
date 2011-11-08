@@ -123,6 +123,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, taskbar, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
+
         self.play_thread = QtCore.QThread(parent = self)
         self.paint_thread = QtCore.QThread(parent = self)
         self.slider_thread = QtCore.QThread(parent = self)
@@ -185,7 +186,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.gokeys_frame.setFrameShape(QtGui.QFrame.NoFrame)
         self.gokeys_frame.setFrameShadow(QtGui.QFrame.Plain)
 
-        self.gokeys_label = QtGui.QLabel('Please press the keys wanted in this order: Pause/Play -> Previous -> Next', self.gokeys_frame)
+        self.gokeys_label = QtGui.QLabel('Press the keys wanted in this order: Pause/Play -> Previous -> Next', self.gokeys_frame)
         self.gokeys_label.setStyleSheet(_fromUtf8("QLabel { color:white; font-size:30px; }"))
 
         self.gokeys_frame.hide()
@@ -450,7 +451,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
         if len(tags_dict[tags[-1]]) == 1:
             data = tags_dict[tags[-1]].pop()
-            #print data
             if data:
                 #temp = tempfile.TemporaryFile()
                 #temp.write(data)
@@ -473,6 +473,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def deleteSong(self, event):
         global idx
+        global playlist
         if event.key() == QtCore.Qt.Key_Escape:
             self.search.setText('')
             self.search.setFocus()
@@ -483,10 +484,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 if self.playlist.isItemSelected(item):
                     to_delete.append(i)
             for i, del_idx in enumerate(to_delete):
-                del playlist[del_idx]
                 self.playlist.takeItem(del_idx-i)
                 if del_idx <= idx:
                     idx -= 1
+            playlist = [item for i, item in enumerate(playlist) if i not in to_delete]
 
     def checkEsc(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
@@ -624,7 +625,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         search_query = unicode(self.search.text())
         
-        print 'search no ', search_query
         self.albums.clear()
         conf = tanooki_library.get_or_create_config()
         self.albums.setSortingEnabled(False) 
@@ -802,7 +802,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             channels = 2
         self.updateNowPlaying(name)
         self._setPlaying()
-        print 'play no ', name
+        print 'play no ', name.encode('ascii','ignore')
         self.play_thread.terminate() 
         #g2tsg.quit_tanooki()
         #print 'sleepei'
@@ -824,7 +824,6 @@ if __name__ == "__main__":
     os.system('mkdir cover_cache')
     import platform
     if platform.version()[:3] == '6.1': # Check for win7
-        print 'WINDOWS 7!!!'
         import ctypes
         myappid = 'fabiodiniz.gokya.supergokya' # arbitrary string
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)

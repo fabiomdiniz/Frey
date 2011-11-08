@@ -4,6 +4,7 @@
 import time 
 from PyQt4.phonon import Phonon
 from tanooki_utils import *
+import win32api
 
 init_continues = 5
 continues = 5
@@ -49,8 +50,9 @@ def play_tanooki_way(music_file, channels):
     
     mediaObject.stop()
     mediaObject.clearQueue()
+    path = win32api.GetShortPathName(clean_path(music_file))
 
-    mediaObject.setCurrentSource(Phonon.MediaSource(music_file))
+    mediaObject.setCurrentSource(Phonon.MediaSource(path))
     mediaObject.play()
 
     #music = Phonon.createPlayer(Phonon.MusicCategory,
