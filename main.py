@@ -197,10 +197,15 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             i = self.albums.currentRow()
             j = self.albums.currentColumn()
             self.appendAlbumPlaylist(albumslist[i*num_col+j])#unicode(self.albums.currentItem().text()))
+        elif event.source() is self.playlist:
+            QListWidget.dropEvent(self.playlist, event)
+            self.reorderPlaylist()
         if not_playlist and playlist:
             idx = 0
             self._playIdx()
 
+    def reorderPlaylist(self):
+        pass#for i in
     
     def _connectSlots(self):
         # Connect our two methods to SIGNALS the GUI emits.
@@ -250,7 +255,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         QTableWidget.resizeEvent(self.albums, event)
         
     def _textEdit(self, qstr):
+        global overlay_album
+        global overlay_songs
+        overlay_songs = []
+        self.overlay.album_songs.clear()
         self._showLibrary()
+        self.display_overlay(overlay_album)
 
     def rescanLibrary(self):
         global taskbar
@@ -456,9 +466,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _appendSongs(self):
         global num_col
         global overlay_songs
-        i = self.albums.currentRow()
-        j = self.albums.currentColumn()
-        album = albumslist[i*num_col+j]
+        global overlay_album
+        album = overlay_album
         conf = tanooki_library.get_or_create_config()
         for i in range(self.overlay.album_songs.count()):
             item = self.overlay.album_songs.item(i)
@@ -506,6 +515,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global num_col
         global albumslist
         global overlay_songs
+        global overlay_album
         if not self.albums.item(i, j).text():
             return
         overlay_songs = []
@@ -513,7 +523,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.overlay_frame.setGeometry(self.albums.rect())
         self.overlay.move(self.overlay_frame.rect().center() - self.overlay.rect().center())
         self.overlay_frame.show()
-        album = albumslist[i*num_col+j]#unicode(self.albums.item(i, j).text())
+        overlay_album = albumslist[i*num_col+j]#unicode(self.albums.item(i, j).text())
+        self.display_overlay(overlay_album)
+
+    def display_overlay(self, album):
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
             song_file = File(filename)
