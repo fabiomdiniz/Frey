@@ -368,7 +368,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 audio[tag] = unicode(field.text())
             audio.save()
 
-            if audio['title'] != new_title:
+            if new_title and audio['title'] != new_title:
                 tanooki_library.update_title(song, new_title)
 
         new_album = unicode(self.editwidget.album.text())
@@ -401,7 +401,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         j = self.albums.currentColumn()
         album = albumslist[i*num_col+j]
         conf = tanooki_library.get_or_create_config()
-        songs_to_edit = conf['library'][album]['songs']
+        songs = conf['library'][album]['songs']
+        titles = conf['library'][album]['titles']
+        songs_to_edit = [song for i, song in enumerate(songs) if unicode(self.search_name.text()).lower() in titles[i].lower()]
         self.editSongs()
 
     def _album_songsRClick(self, event):
