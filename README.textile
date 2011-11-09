@@ -19,3 +19,7 @@ Just run build_win32.bat and it will do all the work for you.
 (It wont work on Linux)
 (It wont work on Macs)
 (It may not work with ActiveState Python)
+
+h2. Download
+
+Get the lastest binaries "here":https://github.com/fabiomdiniz/Gokya-2-The-Super-Gokya/downloads
