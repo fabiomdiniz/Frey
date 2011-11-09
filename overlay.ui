@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>711</width>
+    <width>787</width>
     <height>641</height>
    </rect>
   </property>
@@ -22,7 +22,7 @@
   <widget class="QListWidget" name="album_songs">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>210</x>
      <y>50</y>
      <width>381</width>
      <height>541</height>
@@ -44,7 +44,7 @@
   <widget class="QPushButton" name="close_overlay">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>570</x>
      <y>10</y>
      <width>60</width>
      <height>60</height>
@@ -76,7 +76,7 @@
   <widget class="QPushButton" name="transfer_button">
    <property name="geometry">
     <rect>
-     <x>530</x>
+     <x>640</x>
      <y>290</y>
      <width>120</width>
      <height>120</height>
@@ -103,6 +103,43 @@
      <width>120</width>
      <height>120</height>
     </size>
+   </property>
+  </widget>
+  <widget class="QLabel" name="cover">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>230</y>
+     <width>150</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>101</width>
+     <height>101</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>10100</width>
+     <height>10000</height>
+    </size>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="images.qrc">:/png/media/nocover.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

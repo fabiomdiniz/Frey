@@ -79,18 +79,19 @@ def update_album(filename, new_album):
                 save_config(conf)
                 return
 
-def update_title(filename, new_title):
+def update_title(filename, new_title, new_artist):
     conf = get_or_create_config()
     bak_conf = conf.copy()
-    for album in bak_conf['library']:
-        for i, song in enumerate(bak_conf['library'][album]['songs']):
-            if song == filename:
-                conf['library'][album]['titles'][i] = new_title
-                audio = EasyID3(filename)
-                audio['title'] = new_title
-                audio.save()
-                save_config(conf)
-                return
+    audio = EasyID3(filename)
+    audio['title'] = new_title
+    audio.save()
+    i = conf['library'][audio['album']]['songs'].index(filename)
+    conf['library'][audio['album']]['titles'][i] = new_title
+    save_config(conf)
+    #for album in bak_conf['library']:
+    #    for i, song in enumerate(bak_conf['library'][album]['songs']):
+    #        if song == filename:
+    #            return
 
 def update_album_cover(filename, new_cover):
     conf = get_or_create_config()
