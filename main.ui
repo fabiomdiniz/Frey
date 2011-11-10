@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1615</width>
-    <height>826</height>
+    <width>1248</width>
+    <height>802</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -407,14 +407,14 @@ background-position: center middle;
           <item>
            <widget class="QLabel" name="song_name">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>50</width>
               <height>32</height>
              </size>
             </property>
@@ -432,14 +432,14 @@ background-position: center middle;
           <item>
            <widget class="QLabel" name="album">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>50</width>
               <height>32</height>
              </size>
             </property>
@@ -457,14 +457,14 @@ background-position: center middle;
           <item>
            <widget class="QLabel" name="artist">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>50</width>
               <height>32</height>
              </size>
             </property>
@@ -576,7 +576,7 @@ background-position: right bottom;</string>
                <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeType">
-               <enum>QSizePolicy::MinimumExpanding</enum>
+               <enum>QSizePolicy::Expanding</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -673,7 +673,7 @@ background-position: right bottom;</string>
             </property>
             <property name="minimumSize">
              <size>
-              <width>711</width>
+              <width>690</width>
               <height>631</height>
              </size>
             </property>

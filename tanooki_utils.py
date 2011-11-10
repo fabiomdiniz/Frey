@@ -16,6 +16,15 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 
+def getPrettyName(song_file):
+    return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))
+
+def getSongName(song_file):
+    return _fromUtf8(str(song_file.tags.get('TIT2','')))
+
+def getCoverArtPixmap(url, size=76):
+    return getCoverArt(url)[1]
+
 def clean_path(path):
     path = os.path.abspath(path)
     path = os.path.normpath(path)
@@ -91,6 +100,8 @@ def gen_file_name(s):
     return "".join([x for x in s if x.isalpha() or x.isdigit()])
 
 def get_cover_hash(song_file):
+    if not song_file:
+        return ''
     name = str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
     return gen_file_name(name.decode('ascii', 'ignore'))
 
