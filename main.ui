@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1248</width>
-    <height>802</height>
+    <height>812</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -554,28 +554,60 @@ background-position: center middle;
            </layout>
           </item>
           <item>
-           <widget class="QListWidget" name="playlists">
+           <widget class="QGroupBox" name="groupBox_2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="acceptDrops">
-             <bool>false</bool>
+            <property name="minimumSize">
+             <size>
+              <width>256</width>
+              <height>320</height>
+             </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-image: url(:/png/media/sushie.png);
+             <string notr="true">QGroupBox {background-image: url(:/png/media/sushie.png);
 background-color: white;
 background-repeat: no-repeat;
-background-position: right bottom;</string>
+background-position: right bottom;
+}</string>
             </property>
-            <property name="dragDropMode">
-             <enum>QAbstractItemView::NoDragDrop</enum>
+            <property name="title">
+             <string/>
             </property>
-            <property name="defaultDropAction">
-             <enum>Qt::IgnoreAction</enum>
-            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QListWidget" name="playlists">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="acceptDrops">
+                <bool>false</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QListWidget { background-color: rgba(0, 0, 0, 0%); }
+</string>
+               </property>
+               <property name="dragDropMode">
+                <enum>QAbstractItemView::NoDragDrop</enum>
+               </property>
+               <property name="defaultDropAction">
+                <enum>Qt::IgnoreAction</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
@@ -703,7 +735,7 @@ background-position: right bottom;</string>
            </layout>
           </item>
           <item>
-           <widget class="QTableWidget" name="albums">
+           <widget class="QGroupBox" name="groupBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -717,109 +749,168 @@ background-position: right bottom;</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">QTableWidget {
+             <string notr="true"> QGroupBox {
 background-image: url(:/png/media/Vivian_small.png);
 background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;
+background-attachment: scroll;
 }
 </string>
             </property>
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
-            </property>
-            <property name="dragEnabled">
-             <bool>true</bool>
-            </property>
-            <property name="dragDropMode">
-             <enum>QAbstractItemView::DragOnly</enum>
-            </property>
-            <property name="defaultDropAction">
-             <enum>Qt::CopyAction</enum>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::SingleSelection</enum>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectItems</enum>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>110</width>
-              <height>110</height>
-             </size>
-            </property>
-            <property name="textElideMode">
-             <enum>Qt::ElideMiddle</enum>
-            </property>
-            <property name="showGrid">
-             <bool>false</bool>
-            </property>
-            <property name="rowCount">
-             <number>0</number>
-            </property>
-            <property name="columnCount">
-             <number>0</number>
-            </property>
-            <attribute name="horizontalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QTableWidget" name="albums">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>690</width>
+                 <height>631</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QTableWidget { background-color: rgba(0, 0, 0, 0%); }
+</string>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+               <property name="dragEnabled">
+                <bool>true</bool>
+               </property>
+               <property name="dragDropMode">
+                <enum>QAbstractItemView::DragOnly</enum>
+               </property>
+               <property name="defaultDropAction">
+                <enum>Qt::CopyAction</enum>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectItems</enum>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>110</width>
+                 <height>110</height>
+                </size>
+               </property>
+               <property name="textElideMode">
+                <enum>Qt::ElideMiddle</enum>
+               </property>
+               <property name="showGrid">
+                <bool>false</bool>
+               </property>
+               <property name="rowCount">
+                <number>0</number>
+               </property>
+               <property name="columnCount">
+                <number>0</number>
+               </property>
+               <attribute name="horizontalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
+         <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0">
           <property name="sizeConstraint">
            <enum>QLayout::SetFixedSize</enum>
           </property>
           <item>
-           <widget class="QListWidget" name="playlist">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>582</height>
-             </size>
-            </property>
-            <property name="acceptDrops">
-             <bool>true</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QListWidget {
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QGroupBox" name="groupBox_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>256</width>
+                <height>595</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QGroupBox {
 background-image: url(:/png/media/dark_koopatrol_small.png);
 background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;
 }</string>
-            </property>
-            <property name="dragEnabled">
-             <bool>true</bool>
-            </property>
-            <property name="dragDropMode">
-             <enum>QAbstractItemView::DragDrop</enum>
-            </property>
-            <property name="defaultDropAction">
-             <enum>Qt::MoveAction</enum>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::ExtendedSelection</enum>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectItems</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout">
+              </property>
+              <property name="title">
+               <string/>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_10">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="margin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QListWidget" name="playlist">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>582</height>
+                  </size>
+                 </property>
+                 <property name="acceptDrops">
+                  <bool>true</bool>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QListWidget { background-color: rgba(0, 0, 0, 0%); }</string>
+                 </property>
+                 <property name="dragEnabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="dragDropMode">
+                  <enum>QAbstractItemView::DragDrop</enum>
+                 </property>
+                 <property name="defaultDropAction">
+                  <enum>Qt::MoveAction</enum>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::ExtendedSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectItems</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
