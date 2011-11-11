@@ -33,6 +33,12 @@ def unpause_tanooki():
     global mediaObject
     mediaObject.play()
 
+def get_volume_tanooki():
+    return 1.0
+
+def set_volume_tanooki(volume):
+    pass
+
 def get_perc_tanooki():
     global mediaObject
     if mediaObject and mediaObject.totalTime():

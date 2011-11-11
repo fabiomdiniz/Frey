@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="png">
+    <file>media/volume.png</file>
     <file>media/slider.png</file>
     <file>media/sushie.png</file>
     <file>media/arrow.png</file>

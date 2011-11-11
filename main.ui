@@ -145,6 +145,45 @@
              </widget>
             </item>
             <item>
+             <widget class="QSlider" name="volume">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>27</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">/* QSlider::groove:vertical {
+     border: 1px solid #999999;
+	width:35px;
+     background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);
+     margin: 2px 0;
+ }
+
+ QSlider::handle:vertical {
+     background-image : url(:/png/media/volume.png);
+     border: 0px solid #5c5c5c;
+	 width:25px;
+background-repeat: no-repeat;
+background-position: center middle;
+     margin: -30px -30px; 
+ }*/</string>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="horizontalSpacer">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -154,7 +193,7 @@
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>78</width>
+                <width>72</width>
                 <height>20</height>
                </size>
               </property>

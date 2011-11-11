@@ -40,6 +40,12 @@ def get_perc_tanooki():
         return [msecs/1000.0, int(msecs/float(length))]
     return [0,0]
 
+def get_volume_tanooki():
+    return 1.0
+
+def set_volume_tanooki(volume):
+    pass
+
 def set_perc_tanooki(value):
     pass
     # I CANT GET IT TO WORK!

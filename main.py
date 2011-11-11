@@ -124,6 +124,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.play_thread = QtCore.QThread(parent = self)
         self.paint_thread = QtCore.QThread(parent = self)
         self.slider_thread = QtCore.QThread(parent = self)
+        self.volume_thread = QtCore.QThread(parent = self)
 
         self.setWindowTitle('Gokya 2 The Super Gokya')
         self.setWindowIcon(QtGui.QIcon(':/png/media/icon.png'))   
@@ -140,6 +141,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.slider_thread.run = self._updateSlider
         self.slider_thread.start()
         self.seeker.setEnabled(False)
+
+        self.volume_thread.run = self._updateVolume
+        self.volume_thread.start()
 
         self.editor_overlay = QtGui.QFrame(self.centralwidget)
         self.editor_overlay.setGeometry(self.rect())
@@ -192,6 +196,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             
             self.time.display(qtime.toString('mm:ss'))
             time.sleep(0.1)
+
+    def _updateVolume(self, value=0):
+        while True:
+            vol = g2tsg.get_volume_tanooki()
+            self.volume.setValue(vol*100)
+            time.sleep(0.5)
 
     def editAlbumDrag(self, event):
         if event.source() is self.albums:
@@ -277,6 +287,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.save_playlist.clicked.connect(self._savePlaylist)
 
         self.seeker_inv.mousePressEvent = self._clickSeeker
+
+        self.volume.mousePressEvent = self._clickVolume
+        self.volume.actionTriggered.connect(self._moveVolume)
 
         self.edit_button.clicked.connect(self._editSongsClick)
         self.edit_button.dropEvent = self.editAlbumEvent
@@ -466,6 +479,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         QSlider.mousePressEvent(self.seeker, event)
 
+    def _clickVolume(self, event):
+        self.volume.setValue(self.volume.minimum() + ((self.volume.maximum()-self.volume.minimum()) * (self.volume.height() - event.y()) ) / self.volume.height() ) 
+        event.accept()
+        vol = self.volume.sliderPosition()/100.0
+        g2tsg.set_volume_tanooki(vol)
+
+        QSlider.mousePressEvent(self.volume, event)
+
+    def _moveVolume(self, value):
+        self.volume_thread.terminate()
+        vol = self.volume.sliderPosition()/100.0
+        g2tsg.set_volume_tanooki(vol)
+        self.volume_thread.start()
 
     def deleteSong(self, event):
         global idx
