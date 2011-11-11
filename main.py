@@ -17,6 +17,9 @@ from tanooki_utils import *
 import tanooki_library
 from PyQt4.phonon import Phonon
 
+import bottlenose
+import urllib
+
 paused = True
 idx = 0
 num_col = 6
@@ -298,6 +301,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.editwidget.cancel_button.clicked.connect(self.editor_overlay.hide)
         self.editwidget.save_button.clicked.connect(self._saveEdits)
         self.editwidget.cover_button.clicked.connect(self._selectCover)
+        self.editwidget.fetch_cover.clicked.connect(self._fetchCover)
+        
+
 
         self.search_name.textChanged.connect(self._textEdit)
         self.search_artist.textChanged.connect(self._textEdit)
@@ -355,6 +361,24 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         icon = QtGui.QIcon(name)
         self.editwidget.cover.setPixmap(icon.pixmap(101, 101))
         change_cover = name
+
+    def _fetchCover(self):
+        global change_cover
+        album = unicode(self.editwidget.album.text())
+        artist = unicode(self.editwidget.artist.text())
+        if album and artist:
+            try:
+                url = bottlenose.Amazon().get_cover(artist, album)
+                if url is None:
+                    return
+                filename = url.split('/')[-1]
+                path = os.path.join(ROOT_PATH,'cover_cache',filename)
+                urllib.urlretrieve(url, path)
+                icon = QtGui.QIcon(path)
+                self.editwidget.cover.setPixmap(icon.pixmap(101, 101))
+                change_cover = path
+            except Exception as e:
+                print 'error: ',e
 
     def _saveEdits(self):
         global songs_to_edit
@@ -715,7 +739,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled)
             self.albums.setItem(i, j, item)
             j += 1
-        #self.albums.setStyle(QtGui.QApplication.instance().style())
+
         #from PyQt4.QtCore import pyqtRemoveInputHook
         #pyqtRemoveInputHook()
         #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
