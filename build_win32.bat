@@ -7,7 +7,6 @@ cd ..
 python pyinstaller\Build.py main.spec
 copy TaskbarLib.tlb dist\TaskbarLib.tlb
 copy keys dist\keys
-type null >>dist\bolognese
 mkdir bin
 cd bin
 mkdir win32

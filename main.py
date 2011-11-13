@@ -2,6 +2,13 @@
  
 phonofied = True
 
+import g2tsg_audiere, g2tsg_gst
+import numpy.core.multiarray
+import pygst
+pygst.require('0.10')
+import gst
+import gobject
+
 import sys, os, time
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QSlider, QListWidget, QTableWidget
@@ -12,14 +19,13 @@ from overlay_ui import Ui_overlay
 
 from mutagen.easyid3 import EasyID3
 from mutagen import File
-import pygame
 from tanooki_utils import *
 import tanooki_library
 from PyQt4.phonon import Phonon
 
 import bottlenose
 import urllib
-
+import imp
 paused = True
 idx = 0
 num_col = 6
@@ -44,6 +50,9 @@ hotkeys_enabled = True
 change_cover = ''
 
 keys_got = 0
+
+channels = 2
+chan_mode = ''
 
 def OnKeyboardEvent(event):
     global myapp
@@ -867,21 +876,34 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global paused
         global idx
         global channels
+        global chan_mode
+        global g2tsg
         #self.seeker.setEnabled(True)
         mode = self.channels.currentText()
-        if str(mode) == "Mono":
-            print 'MONO NO KE HIME'
-            channels = 1
-        else:
-            channels = 2
+        self.play_thread.terminate()
+        vol = self.volume.sliderPosition()/100.0
+        if chan_mode != str(mode):
+            chan_mode = str(mode)
+            g2tsg.quit_tanooki()
+            if str(mode) == "Mono":
+                print 'MONO NO KE HIME'
+                channels = 1
+                g2tsg = g2tsg_gst
+                #fp, pathname, description = imp.find_module('g2tsg_gst')
+                #g2tsg = imp.load_module('g2tsg', fp, pathname, description)
+            else:
+                g2tsg = g2tsg_audiere
+                #fp, pathname, description = imp.find_module('g2tsg_audiere')
+                #g2tsg = imp.load_module('g2tsg', fp, pathname, description)
+                g2tsg.init_tanooki()
+                channels = 2
         self.updateNowPlaying(name)
         self._setPlaying()
         print 'play no ', name.encode('ascii','ignore')
-        self.play_thread.terminate() 
         #g2tsg.quit_tanooki()
         #print 'sleepei'
         #time.sleep(4)
-        self.play_thread.run = lambda : g2tsg.play_tanooki_way(name, channels)
+        self.play_thread.run = lambda : g2tsg.play_tanooki_way(name, channels, vol)
         self.play_thread.start()
         self.conThread()
         self.paint_thread.run = lambda : self._paintCurrent()
@@ -911,20 +933,24 @@ if __name__ == "__main__":
     else:
         taskbar = None
     #g2tsg.init_tanooki()
-    app = QtGui.QApplication(sys.argv)
-    phonofied = os.path.exists('phonon')
-    bolognese = os.path.exists('bolognese')
-    if bolognese:
-        print 'MACARRONADIZO'
-        import g2tsg_audiere as g2tsg
-    elif phonofied:
-        print 'PHONORADICALIZO'
-        import g2tsg_phonon as g2tsg
-    else:
-        print 'PYGAMECOVARDIZO'
-        import g2tsg
-    myapp = MyForm(taskbar=taskbar)
+    g2tsg = g2tsg_audiere
     g2tsg.init_tanooki()
+    app = QtGui.QApplication(sys.argv)
+    #phonofied = os.path.exists('phonon')
+    #bolognese = os.path.exists('bolognese')
+    #if bolognese:
+    #    print 'MACARRONADIZO'
+    #    import g2tsg_audiere as g2tsg
+    #elif phonofied:
+    #    print 'PHONORADICALIZO'
+    #    import g2tsg_phonon as g2tsg
+    #else:
+    #    print 'PYGAMECOVARDIZO'
+    #    import g2tsg
+    #import g2tsg_gst as g2tsg
+    #fp, pathname, description = imp.find_module('g2tsg_audiere')
+    #g2tsg = imp.load_module('g2tsg', fp, pathname, description)
+    myapp = MyForm(taskbar=taskbar)
     myapp.show()
     hm = pyHook.HookManager() 
     hm.KeyUp = OnKeyboardEvent # Registra a o evento (callbacks)

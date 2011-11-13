@@ -19,7 +19,7 @@ def init_tanooki():
 
 def quit_tanooki():
     global stream
-    if stream.playing:
+    if stream and stream.playing:
         stream.stop()
 
 def pause_tanooki():
@@ -54,11 +54,10 @@ def set_perc_tanooki(value):
     if stream:
         stream.position = max(1,int(stream.length*value/100.0))
 
-def play_tanooki_way(music_file, channels):
+def play_tanooki_way(music_file, channels, vol):
     global device
     global stream
     global length
-    vol = get_volume_tanooki()
     path = win32api.GetShortPathName(clean_path(music_file))
     stream = device.open_file(path, 1)
     stream.play()
