@@ -6,8 +6,7 @@ This is a music player
 
 h2. Dependencies
 
-* pymedia (why play in mono if i can convert the file to mono and then open the converted file?)
-* audiere (Obi-Wan)
+* BASS and pybass (HELL YEAH)
 * pyqt4  ("nuke on ants" or "the frontpage of python gui dev")
 * mutagen (cool name and can also read song tags)
 * pyhook (A link to the past)

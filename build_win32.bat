@@ -6,6 +6,7 @@ rmdir /s /q win32
 cd ..
 python pyinstaller\Build.py main.spec
 copy TaskbarLib.tlb dist\TaskbarLib.tlb
+copy bass.dll dist\bass.dll
 copy keys dist\keys
 mkdir bin
 cd bin

@@ -2,7 +2,7 @@
  
 phonofied = True
 
-import g2tsg_audiere
+import g2tsg_bass
 import numpy.core.multiarray
 #import g2tsg_gst
 #import pygst
@@ -921,7 +921,7 @@ if __name__ == "__main__":
         taskbar.HrInit()
     else:
         taskbar = None
-    g2tsg = g2tsg_audiere
+    g2tsg = g2tsg_bass
     g2tsg.init_tanooki()
     app = QtGui.QApplication(sys.argv)
     myapp = MyForm(taskbar=taskbar)
