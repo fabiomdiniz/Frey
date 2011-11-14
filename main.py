@@ -320,6 +320,17 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.gokeys.clicked.connect(self._setGokeys)
 
+
+        self.channels.currentIndexChanged.connect(self._changeChannels)
+
+
+    def _changeChannels(self, i):
+        mode = self.channels.currentText()
+        if str(mode) == "Mono":
+            g2tsg.tanooki_mono()
+        else:
+            g2tsg.tanooki_stereo()
+
     def _setGokeys(self):
         global hm
         self.gokeys_frame.setGeometry(self.rect())       
