@@ -632,8 +632,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def appendAlbumPlaylist(self, album):
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
-                song_file = File(filename)
-                name = unicode(song_file.tags.get('TIT2',''))
+                #song_file = File(filename)
+                name = getSongName(filename)#unicode(song_file.tags.get('TIT2',''))
                 if unicode(self.search_name.text()).lower() in name.lower():
                     playlist.append(filename)
                     self._addUrl(filename)
@@ -673,8 +673,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             return
         conf = tanooki_library.get_or_create_config()
         for filename in conf['library'][album]['songs']:
-            song_file = File(filename)
-            name = unicode(song_file.tags.get('TIT2',''))
+            #song_file = File(filename)
+            name = getSongName(filename)#unicode(song_file.tags.get('TIT2',''))
             if unicode(self.search_name.text()).lower() in name.lower():
                 overlay_songs.append(filename)
                 item = QtGui.QListWidgetItem(name, self.overlay.album_songs)
@@ -777,9 +777,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self._playIdx()
 
     def _addUrl(self, url):
-        song_file = File(url)     
         icon = QtGui.QIcon(getCoverArtPixmap(url))
-        item = QtGui.QListWidgetItem(getSongName(song_file), self.playlist)
+        item = QtGui.QListWidgetItem(getSongName(url), self.playlist)
         item.setIcon(icon)
 
     def filesDropped(self, l):
@@ -808,7 +807,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/pause.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         paused = False
         self.pause_button.setIcon(icon2)
-        self.pause_button.setIconSize(QtCore.QSize(60, 60))
+        self.pause_button.setIconSize(QtCore.QSize(62, 60))
 
     def _setPaused(self):
         global paused
@@ -816,7 +815,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/play.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         paused = True
         self.pause_button.setIcon(icon2)
-        self.pause_button.setIconSize(QtCore.QSize(60, 60))
+        self.pause_button.setIconSize(QtCore.QSize(62, 60))
 
     def _togglePausePlay(self):
         global paused       
@@ -877,10 +876,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self._setPlaying()
 
     def updateNowPlaying(self, name):
-        song_file = File(name)
-        self.song_name.setText(_fromUtf8(str(song_file.tags.get('TIT2',''))))
-        self.artist.setText(_fromUtf8(str(song_file.tags.get('TPE1',''))))
-        self.album.setText(_fromUtf8(str(song_file.tags.get('TALB',''))))
+        title, album, artist =  get_song_info(name)
+        self.song_name.setText(_fromUtf8(title))
+        self.artist.setText(_fromUtf8(artist))
+        self.album.setText(_fromUtf8(album))
         self.cover.setPixmap(getCoverArtPixmap(name, 200))
 
     def _playSong(self, name):

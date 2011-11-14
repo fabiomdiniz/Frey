@@ -27,10 +27,16 @@ def unpause_tanooki():
         pybass.BASS_ChannelPlay(handle, False)
 
 def get_volume_tanooki():
-    return pybass.BASS_GetVolume()
+    global handle
+    volume = ctypes.c_float(0.0)
+    pybass.BASS_ChannelGetAttribute(handle, pybass.BASS_ATTRIB_VOL, volume)
+    return volume.value
+    #return pybass.BASS_GetVolume()
 
 def set_volume_tanooki(volume):
-    pybass.BASS_SetVolume(volume)
+    global handle
+    pybass.BASS_ChannelSetAttribute(handle, pybass.BASS_ATTRIB_VOL, volume)
+    #pybass.BASS_SetVolume(volume)
 
 def get_perc_tanooki():
     global handle

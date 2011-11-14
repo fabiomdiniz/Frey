@@ -18,8 +18,8 @@ except AttributeError:
 def getPrettyName(song_file):
     return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))
 
-def getSongName(song_file):
-    return _fromUtf8(str(song_file.tags.get('TIT2','')))
+def getSongName(url):
+    return get_song_info(url)[0]
 
 def getCoverArtPixmap(url, size=76):
     return getCoverArt(url)[1]
@@ -110,9 +110,10 @@ def get_song_info(name):
         return [unicode(song_file.tags.get('TIT2','')),
                 unicode(song_file.tags.get('TALB','')),
                 unicode(song_file.tags.get('TPE1',''))]
-    return ['','',name]
+    return [os.path.basename(name),'','']
 
 def get_full_song_info(name):
+    """ Supposed to return REAL song data. Track, name, artist, album and cover """
     song_file = File(name)
     if song_file.tags:
         return [unicode(song_file.tags.get('TRCK','')),
@@ -120,7 +121,7 @@ def get_full_song_info(name):
                 unicode(song_file.tags.get('TPE1','')),
                 unicode(song_file.tags.get('TALB','')),
                 song_file.tags.get('APIC:',type('',(object,),{'data':''})()).data]
-    return ['','',name]
+    return ['','','','','']
 
 
 pokemons = ['Bulbasaur',
