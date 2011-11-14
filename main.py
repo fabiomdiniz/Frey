@@ -2,12 +2,13 @@
  
 phonofied = True
 
-import g2tsg_audiere, g2tsg_gst
+import g2tsg_audiere
 import numpy.core.multiarray
-import pygst
-pygst.require('0.10')
-import gst
-import gobject
+#import g2tsg_gst
+#import pygst
+#pygst.require('0.10')
+#import gst
+#import gobject
 
 import sys, os, time
 from PyQt4 import QtCore, QtGui
@@ -21,7 +22,6 @@ from mutagen.easyid3 import EasyID3
 from mutagen import File
 from tanooki_utils import *
 import tanooki_library
-from PyQt4.phonon import Phonon
 
 import bottlenose
 import urllib
@@ -322,7 +322,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def _setGokeys(self):
         global hm
-        #self.gokeys_frame.setGeometry(self.rect())       
+        self.gokeys_frame.setGeometry(self.rect())       
         self.gokeys_label.setGeometry(((self.width() - self.gokeys_label.sizeHint().width()) / 2), (self.height() - self.gokeys_label.sizeHint().height()) / 2, self.gokeys_label.sizeHint().width(), self.gokeys_label.sizeHint().height())
         self.gokeys_frame.show()
         
@@ -876,27 +876,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global paused
         global idx
         global channels
-        global chan_mode
         global g2tsg
         #self.seeker.setEnabled(True)
         mode = self.channels.currentText()
         self.play_thread.terminate()
         vol = self.volume.sliderPosition()/100.0
-        if chan_mode != str(mode):
-            chan_mode = str(mode)
-            g2tsg.quit_tanooki()
-            if str(mode) == "Mono":
-                print 'MONO NO KE HIME'
-                channels = 1
-                g2tsg = g2tsg_gst
-                #fp, pathname, description = imp.find_module('g2tsg_gst')
-                #g2tsg = imp.load_module('g2tsg', fp, pathname, description)
-            else:
-                g2tsg = g2tsg_audiere
-                #fp, pathname, description = imp.find_module('g2tsg_audiere')
-                #g2tsg = imp.load_module('g2tsg', fp, pathname, description)
-                g2tsg.init_tanooki()
-                channels = 2
+        if str(mode) == "Mono":
+            print 'MONO NO KE HIME'
+            channels = 1
+        else:
+            channels = 2
         self.updateNowPlaying(name)
         self._setPlaying()
         print 'play no ', name.encode('ascii','ignore')
@@ -932,24 +921,9 @@ if __name__ == "__main__":
         taskbar.HrInit()
     else:
         taskbar = None
-    #g2tsg.init_tanooki()
     g2tsg = g2tsg_audiere
     g2tsg.init_tanooki()
     app = QtGui.QApplication(sys.argv)
-    #phonofied = os.path.exists('phonon')
-    #bolognese = os.path.exists('bolognese')
-    #if bolognese:
-    #    print 'MACARRONADIZO'
-    #    import g2tsg_audiere as g2tsg
-    #elif phonofied:
-    #    print 'PHONORADICALIZO'
-    #    import g2tsg_phonon as g2tsg
-    #else:
-    #    print 'PYGAMECOVARDIZO'
-    #    import g2tsg
-    #import g2tsg_gst as g2tsg
-    #fp, pathname, description = imp.find_module('g2tsg_audiere')
-    #g2tsg = imp.load_module('g2tsg', fp, pathname, description)
     myapp = MyForm(taskbar=taskbar)
     myapp.show()
     hm = pyHook.HookManager() 

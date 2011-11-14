@@ -6,7 +6,7 @@ This is a music player
 
 h2. Dependencies
 
-* gstreamer (...)
+* pymedia (why play in mono if i can convert the file to mono and then open the converted file?)
 * audiere (Obi-Wan)
 * pyqt4  ("nuke on ants" or "the frontpage of python gui dev")
 * mutagen (cool name and can also read song tags)

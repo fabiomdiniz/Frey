@@ -59,12 +59,52 @@ def play_tanooki_way(music_file, channels, vol):
     global stream
     global length
     path = win32api.GetShortPathName(clean_path(music_file))
+    length = int(File(path).info.length)
+    if channels == 1:
+        dumpWAV(path, 1)
+        path = 'cache.wav'
     stream = device.open_file(path, 1)
     stream.play()
     set_volume_tanooki(vol)
-    length = int(File(path).info.length)
     time.sleep(0.1)
     while stream.position > 0:
         #print 'remaining'                              
         time.sleep(0.1)
     print 'cabo'
+
+def dumpWAV( name, channels ):
+  import pymedia.audio.acodec as acodec
+  import pymedia.muxer as muxer
+  import time, wave, string, os
+  import pymedia.audio.sound as sound
+  name1= unicode.split( name, '.' )
+  name2= string.join( name1[ : len( name1 )- 1 ] )
+  # Open demuxer first
+
+  dm= muxer.Demuxer( name1[ -1 ].lower() )
+  dec= None
+  f= open( name, 'rb' )
+  snd= None
+  s= " "
+  while len( s ):
+    s= f.read( 20000 )
+    if len( s ):
+      frames= dm.parse( s )
+      for fr in frames:
+        if dec== None:
+          # Open decoder
+
+          dec= acodec.Decoder( dm.streams[ 0 ] )
+        r= dec.decode( fr[ 1 ] )
+        if r and r.data:
+          rate = 2
+          if channels == 2:
+            rate = 1
+          if snd== None:
+            snd= wave.open('cache.wav', 'wb' )
+            snd.setparams( (channels, 2, r.sample_rate*rate, 0, 'NONE','') )
+          
+          resampler= sound.Resampler( (r.sample_rate,r.channels), (int(r.sample_rate*rate),channels) )
+          data= resampler.resample( r.data )
+          snd.writeframes( data )
+  snd.close()
