@@ -10,7 +10,6 @@ from collections import defaultdict
 import StringIO
 
 
-
 def get_or_create_config():
     if os.path.exists('conf.json'):
         try:
@@ -27,8 +26,8 @@ def save_config(conf):
     open('conf.json', 'w').write(json.dumps(conf))
 
 #from prof import *
-#
-#@profile_func('profprof')
+
+#@profile_func('callgrind.profprof3')
 def set_library(folder, taskbar, winid):
     conf = get_or_create_config()
     conf['library'] = {}
@@ -40,14 +39,16 @@ def set_library(folder, taskbar, winid):
 
     for i, path in enumerate(entries):
         filename = os.path.join(folder, path)
-        info = get_song_info(filename)
+        song_file = File(filename)
+        info = get_song_info(filename, song_file)
         if not conf['library'].has_key(info[1]):
-            conf['library'][info[1]] = {'cover': getCoverArt(filename)[0],
+            conf['library'][info[1]] = {'cover': getCoverArt(filename, song_file)[0],
                                         'titles': [],
                                         'songs': [],
                                         'artist':info[2]}
         conf['library'][info[1]]['songs'].append(filename)
         conf['library'][info[1]]['titles'].append(info[0])
+
         if taskbar:
             taskbar.SetProgressValue(winid,i,num_entries)
     if taskbar:

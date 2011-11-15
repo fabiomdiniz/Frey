@@ -29,10 +29,20 @@ def clean_path(path):
     path = os.path.normpath(path)
     return os.path.normcase(path)
 
-def getCoverArt(url):
+def get_song_info(name, song_file=None):
+    if song_file is None:
+        song_file = File(name)
+    if song_file.tags:
+        return [unicode(song_file.tags.get('TIT2','')),
+                unicode(song_file.tags.get('TALB','')),
+                unicode(song_file.tags.get('TPE1',''))]
+    return [os.path.basename(name),'','']
+
+def getCoverArt(url, song_file=None):
     global cover_size
     url = url.replace('/', '\\')
-    song_file = File(url)
+    if song_file is None:
+        song_file = File(url)
     folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
     album_name = get_cover_hash(song_file)
     if song_file.tags and song_file.tags.get('APIC:','') and album_name:
@@ -104,13 +114,7 @@ def get_cover_hash(song_file):
     name = str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
     return gen_file_name(name.decode('ascii', 'ignore'))
 
-def get_song_info(name):
-    song_file = File(name)
-    if song_file.tags:
-        return [unicode(song_file.tags.get('TIT2','')),
-                unicode(song_file.tags.get('TALB','')),
-                unicode(song_file.tags.get('TPE1',''))]
-    return [os.path.basename(name),'','']
+
 
 def get_full_song_info(name):
     """ Supposed to return REAL song data. Track, name, artist, album and cover """

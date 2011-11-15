@@ -23,6 +23,8 @@ from mutagen import File
 from tanooki_utils import *
 import tanooki_library
 
+import time
+
 import bottlenose
 import urllib
 import imp
@@ -363,8 +365,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global taskbar
         self.load_library.setEnabled(False)
         self.rescan_library.setEnabled(False)
-
+        start = time.clock()
         tanooki_library.rescan_library(taskbar, self.winId())
+        elapsed = (time.clock() - start)
+        print 'rescan library: ', elapsed
         self._showLibrary()
 
         if playlist:
@@ -699,9 +703,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.rescan_library.setEnabled(False)
 
             fileNames = dialog.selectedFiles()
-
+            start = time.clock()
             tanooki_library.set_library(unicode(fileNames[0]), taskbar, self.winId())
-
+            elapsed = (time.clock() - start)
+            print 'scan library: ', elapsed
             if playlist:
                 self.refreshPlaylist()
                 self.updateNowPlaying(playlist[idx])
