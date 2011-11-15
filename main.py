@@ -196,7 +196,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.time.display("00:00") 
 
+        self.volume.setFocusPolicy(QtCore.Qt.NoFocus)
         self._connectSlots()
+        self.albums.setEditTriggers(QTableWidget.NoEditTriggers)
 
     def _updateSlider(self, value=0):
         while True:
@@ -285,6 +287,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.albums.cellClicked.connect(self._clickAlbum)
         self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
         self.albums.resizeEvent = self.albumsResize
+        self.albums.keyPressEvent = self.ignoreKeyAlbums
 
         self.connect(self.play_thread,QtCore.SIGNAL("finished()"),self._slotNextSong)
 
@@ -322,7 +325,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
 
         self.channels.currentIndexChanged.connect(self._changeChannels)
-
 
     def _changeChannels(self, i):
         mode = self.channels.currentText()
@@ -532,10 +534,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         QSlider.mousePressEvent(self.volume, event)
 
     def _moveVolume(self, value):
-        self.volume_thread.terminate()
-        vol = self.volume.sliderPosition()/100.0
-        g2tsg.set_volume_tanooki(vol)
-        self.volume_thread.start()
+        if value == 7: #only drag-dropping
+            self.volume_thread.terminate()
+            vol = self.volume.sliderPosition()/100.0
+            g2tsg.set_volume_tanooki(vol)
+            self.volume_thread.start()
+
+    def ignoreKeyAlbums(self,event):
+        pass
 
     def deleteSong(self, event):
         global idx
@@ -692,7 +698,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.load_library.setEnabled(False)
             self.rescan_library.setEnabled(False)
 
-            fileNames = dialog.selectedFiles();
+            fileNames = dialog.selectedFiles()
+
             tanooki_library.set_library(unicode(fileNames[0]), taskbar, self.winId())
 
             if playlist:
@@ -890,7 +897,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         #self.seeker.setEnabled(True)
         mode = self.channels.currentText()
         self.play_thread.terminate()
-        vol = self.volume.sliderPosition()/100.0
+        vol = g2tsg.get_volume_tanooki()
         if str(mode) == "Mono":
             print 'MONO NO KE HIME'
             channels = 1

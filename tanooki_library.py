@@ -9,6 +9,8 @@ from mutagen import File
 from collections import defaultdict
 import StringIO
 
+
+
 def get_or_create_config():
     if os.path.exists('conf.json'):
         try:
@@ -24,6 +26,9 @@ def get_or_create_config():
 def save_config(conf):
     open('conf.json', 'w').write(json.dumps(conf))
 
+#from prof import *
+#
+#@profile_func('profprof')
 def set_library(folder, taskbar, winid):
     conf = get_or_create_config()
     conf['library'] = {}

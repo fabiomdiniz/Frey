@@ -28,14 +28,17 @@ def unpause_tanooki():
 
 def get_volume_tanooki():
     global handle
-    volume = ctypes.c_float(0.0)
-    pybass.BASS_ChannelGetAttribute(handle, pybass.BASS_ATTRIB_VOL, volume)
-    return volume.value
+    if handle:
+        volume = ctypes.c_float(0.0)
+        pybass.BASS_ChannelGetAttribute(handle, pybass.BASS_ATTRIB_VOL, volume)
+        return volume.value
+    return 1.0
     #return pybass.BASS_GetVolume()
 
 def set_volume_tanooki(volume):
     global handle
-    pybass.BASS_ChannelSetAttribute(handle, pybass.BASS_ATTRIB_VOL, volume)
+    if handle:
+        pybass.BASS_ChannelSetAttribute(handle, pybass.BASS_ATTRIB_VOL, volume)
     #pybass.BASS_SetVolume(volume)
 
 def get_perc_tanooki():
@@ -89,7 +92,6 @@ def play_tanooki_way(music_file, channels, vol):
 
 
 
-    set_volume_tanooki(vol)
     
 
     #handle = pybassmix.BASS_Mixer_StreamCreate(44100, 2, pybass.BASS_SAMPLE_FLOAT );
@@ -107,6 +109,7 @@ def play_tanooki_way(music_file, channels, vol):
     pybassmix.BASS_Mixer_StreamAddChannel(handle, fhandle, pybassmix.BASS_MIXER_DOWNMIX | pybassmix.BASS_MIXER_BUFFER);    
     pybass.BASS_ChannelPlay(handle, False)
 
+    set_volume_tanooki(vol)
 
     while pybass.BASS_ChannelIsActive(fhandle) != pybass.BASS_ACTIVE_STOPPED:
         time.sleep(0.2)
@@ -116,15 +119,19 @@ def play_tanooki_way(music_file, channels, vol):
 def tanooki_mono():
     global fhandle
     global handle
+    vol = get_volume_tanooki()
     pybassmix.BASS_Mixer_ChannelRemove(fhandle)
     handle = pybassmix.BASS_Mixer_StreamCreate(44100, 1, pybass.BASS_SAMPLE_FLOAT )
     pybassmix.BASS_Mixer_StreamAddChannel(handle, fhandle, pybassmix.BASS_MIXER_DOWNMIX | pybassmix.BASS_MIXER_BUFFER);    
     pybass.BASS_ChannelPlay(handle, False)
+    set_volume_tanooki(vol)
 
 def tanooki_stereo():
     global fhandle
     global handle
+    vol = get_volume_tanooki()
     pybassmix.BASS_Mixer_ChannelRemove(fhandle)
     handle = pybassmix.BASS_Mixer_StreamCreate(44100, 2, pybass.BASS_SAMPLE_FLOAT )
     pybassmix.BASS_Mixer_StreamAddChannel(handle, fhandle, pybassmix.BASS_MIXER_DOWNMIX | pybassmix.BASS_MIXER_BUFFER);    
     pybass.BASS_ChannelPlay(handle, False)
+    set_volume_tanooki(vol)
