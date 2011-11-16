@@ -28,7 +28,7 @@ def save_config(conf):
 #from prof import *
 
 #@profile_func('callgrind.profprof3')
-def set_library(folder, taskbar, winid):
+def set_library(folder, taskbar, winid, widget=None):
     conf = get_or_create_config()
     conf['library'] = {}
     conf['folder'] = folder
@@ -37,17 +37,27 @@ def set_library(folder, taskbar, winid):
 
     num_entries = len(entries)
 
+    if widget is not None:
+        widget.progressbar.setMaximum(num_entries)
+    cover = ''
     for i, path in enumerate(entries):
         filename = os.path.join(folder, path)
         song_file = File(filename)
         info = get_song_info(filename, song_file)
         if not conf['library'].has_key(info[1]):
-            conf['library'][info[1]] = {'cover': getCoverArt(filename, song_file)[0],
+            cover_path, cover = getCoverArt(filename, song_file)
+            conf['library'][info[1]] = {'cover': cover_path,
                                         'titles': [],
                                         'songs': [],
                                         'artist':info[2]}
         conf['library'][info[1]]['songs'].append(filename)
         conf['library'][info[1]]['titles'].append(info[0])
+
+        if widget is not None:
+            widget.progressbar.setValue(i)
+            widget.label.setText(filename[-65:])
+            if cover:
+                widget.cover.setPixmap(cover)
 
         if taskbar:
             taskbar.SetProgressValue(winid,i,num_entries)
@@ -157,10 +167,10 @@ def update_album_cover(filename, new_cover):
 
     save_config(conf)
 
-def rescan_library(taskbar=None, winid=0):
+def rescan_library(taskbar=None, winid=0, widget=None):
     conf = get_or_create_config()
     playlists = conf['playlists'].copy()
-    set_library(conf['folder'], taskbar, winid)
+    set_library(conf['folder'], taskbar, winid,widget)
 
     playlists_bak = playlists.copy()
     for playlist in playlists_bak:

@@ -17,6 +17,7 @@ from PyQt4 import Qt
 from main_ui import Ui_MainWindow
 from song_editor_ui import Ui_song_editor
 from overlay_ui import Ui_overlay
+from progress_ui import Ui_progress
 
 from mutagen.easyid3 import EasyID3
 from mutagen import File
@@ -125,6 +126,12 @@ class Overlay(QtGui.QWidget, Ui_overlay):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)        
 
+class ProgressLayer(QtGui.QWidget, Ui_progress):
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+        self.setupUi(self)        
+
+
 class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, taskbar, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -173,6 +180,21 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.editwidget.setStyleSheet(css);
 
         self.editor_overlay.hide()
+
+        self.progress_overlay = QtGui.QFrame(self.centralwidget)
+        self.progress_overlay.setGeometry(self.rect())
+        self.progress_overlay.setObjectName(_fromUtf8("progress_overlay"))
+        self.progress_overlay.setStyleSheet(_fromUtf8("QFrame { background-color: rgba(0, 0, 0, 60%); }"))
+        self.progress_overlay.setFrameShape(QtGui.QFrame.NoFrame)
+        self.progress_overlay.setFrameShadow(QtGui.QFrame.Plain)
+
+        self.progresswidget = ProgressLayer(self.progress_overlay)
+        self.progresswidget.adjustSize()
+        self.progresswidget.move(self.progress_overlay.rect().center() - self.progresswidget.rect().center())
+        css = "QFrame { background-color: " + str(self.palette().window().color().name()) + "; }"
+        self.progresswidget.setStyleSheet(css);
+
+        self.progress_overlay.hide()
 
         self.overlay_frame = QtGui.QFrame(self.albums)
         self.overlay_frame.setGeometry(self.albums.rect())
@@ -366,7 +388,20 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.load_library.setEnabled(False)
         self.rescan_library.setEnabled(False)
         start = time.clock()
-        tanooki_library.rescan_library(taskbar, self.winId())
+
+        self.progress_overlay.setGeometry(self.rect())       
+        self.progresswidget.move(self.progress_overlay.rect().center() - self.progresswidget.rect().center())
+
+        self.progresswidget.progressbar.setValue(0)
+        self.progresswidget.label.setText('')
+        self.progresswidget.cover.setPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/nocover.png")))
+
+        self.progress_overlay.show()
+
+        tanooki_library.rescan_library(taskbar, self.winId(),self.progresswidget)
+
+        self.progress_overlay.hide()    
+        
         elapsed = (time.clock() - start)
         print 'rescan library: ', elapsed
         self._showLibrary()
@@ -411,6 +446,19 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global idx
         global playlist
         global change_cover
+        
+        self.editor_overlay.hide()
+
+        self.progress_overlay.setGeometry(self.rect())       
+        self.progresswidget.move(self.progress_overlay.rect().center() - self.progresswidget.rect().center())
+
+        self.progresswidget.progressbar.setValue(0)
+        self.progresswidget.label.setText('')
+        self.progresswidget.cover.setPixmap(self.editwidget.cover.pixmap())
+
+        self.progress_overlay.show()
+        
+
         fields = [('tracknumber', self.editwidget.track), 
                   #('title',self.editwidget.name),
                   ('artist',self.editwidget.artist),]
@@ -418,8 +466,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         fields = [field for field in fields if unicode(field[1].text())]
 
         new_title = unicode(self.editwidget.name.text())
+        new_album = unicode(self.editwidget.album.text())
 
-        for song in songs_to_edit:
+        self.progresswidget.progressbar.setMaximum(len(songs_to_edit))
+
+        for i, song in enumerate(songs_to_edit):
             audio = EasyID3(song)
             for tag, field in fields:
                 audio[tag] = unicode(field.text())
@@ -428,20 +479,22 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             if new_title and audio['title'] != new_title:
                 tanooki_library.update_title(song, new_title)
 
-        new_album = unicode(self.editwidget.album.text())
-        if new_album:
-            for song in songs_to_edit:
+            if new_album:
                 tanooki_library.update_album(song, new_album)
         
-        if change_cover:
-            for song in songs_to_edit:
+            if change_cover:
                 tanooki_library.update_album_cover(song, change_cover)
+            
+            self.progresswidget.progressbar.setValue(i)
+            self.progresswidget.label.setText('Editing : ' + song[-50:])
 
+        self.progress_overlay.hide()
         if playlist:
             self.refreshPlaylist()
             self.updateNowPlaying(playlist[idx])
+        
         self._showLibrary()
-        self.editor_overlay.hide()
+        
 
     def refreshPlaylist(self):
         global playlist
@@ -704,7 +757,20 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
             fileNames = dialog.selectedFiles()
             start = time.clock()
-            tanooki_library.set_library(unicode(fileNames[0]), taskbar, self.winId())
+            
+            self.progress_overlay.setGeometry(self.rect())       
+            self.progresswidget.move(self.progress_overlay.rect().center() - self.progresswidget.rect().center())
+
+            self.progresswidget.progressbar.setValue(0)
+            self.progresswidget.label.setText('')
+            self.progresswidget.cover.setPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/nocover.png")))
+
+            self.progress_overlay.show()
+
+            tanooki_library.set_library(unicode(fileNames[0]), taskbar, self.winId(), self.progresswidget)
+
+            self.progress_overlay.hide()            
+
             elapsed = (time.clock() - start)
             print 'scan library: ', elapsed
             if playlist:
