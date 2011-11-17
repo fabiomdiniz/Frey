@@ -27,6 +27,7 @@ import tanooki_library
 import time
 
 import bottlenose
+import lastfm
 import urllib
 import imp
 paused = True
@@ -429,17 +430,23 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         artist = unicode(self.editwidget.artist.text())
         if album and artist:
             try:
-                url = bottlenose.Amazon().get_cover(artist, album)
-                if url is None:
-                    return
+                api = lastfm.Api('0927cc0eaf7d023900ed96a0c3a66c0c')
+                url = api.get_album(album, artist=artist).image['large']
+            except Exception as e:
+                print 'lastfm failed, reverting to amazon: ',e
+                try:
+                    url = bottlenose.Amazon().get_cover(artist, album)
+                    if url is None:
+                        return
+                except Exception as e:
+                    print 'error: ',e
+            if url:
                 filename = url.split('/')[-1]
                 path = os.path.join(ROOT_PATH,'cover_cache',filename)
                 urllib.urlretrieve(url, path)
                 icon = QtGui.QIcon(path)
                 self.editwidget.cover.setPixmap(icon.pixmap(101, 101))
                 change_cover = path
-            except Exception as e:
-                print 'error: ',e
 
     def _saveEdits(self):
         global songs_to_edit
