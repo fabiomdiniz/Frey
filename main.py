@@ -23,7 +23,7 @@ from mutagen.easyid3 import EasyID3
 from mutagen import File
 from tanooki_utils import *
 import tanooki_library
-
+import tanooki_gain
 import time
 
 import bottlenose
@@ -363,7 +363,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def getGainThread(self):
         global songs_to_edit
-        self.gain = getGain(songs_to_edit[0])
+        self.gain = tanooki_gain.getSGain(songs_to_edit[0])
 
 
     def gainFinished(self):
