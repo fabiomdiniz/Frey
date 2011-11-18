@@ -5,6 +5,7 @@ import tempfile
 from mutagen import File
 from PIL import Image
 from PyQt4 import QtCore, QtGui
+import subprocess, win32api
 ROOT_PATH = os.getcwd()
 
 cover_size = 140
@@ -14,6 +15,10 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
+def getGain(filename):
+    print 'gain no: ', filename
+    output = subprocess.Popen(["mp3gain.exe", "/s", "s", win32api.GetShortPathName(clean_path(filename))], stdout=subprocess.PIPE).communicate()[0]
+    return int(output.split('\n')[2].split(':')[-1].split('\r')[0])
 
 def getPrettyName(song_file):
     return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))

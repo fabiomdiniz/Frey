@@ -147,6 +147,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.paint_thread = QtCore.QThread(parent = self)
         self.slider_thread = QtCore.QThread(parent = self)
         self.volume_thread = QtCore.QThread(parent = self)
+        self.gain_thread = QtCore.QThread(parent = self)
+
+        self.gain_thread.run = self.getGainThread
+        self.gain_thread.finished.connect(self.gainFinished)
 
         self.setWindowTitle('Gokya 2 The Super Gokya')
         self.setWindowIcon(QtGui.QIcon(':/png/media/icon.png'))   
@@ -196,6 +200,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.progresswidget.setStyleSheet(css);
 
         self.progress_overlay.hide()
+
+
+
+
+
+        
 
         self.overlay_frame = QtGui.QFrame(self.albums)
         self.overlay_frame.setGeometry(self.albums.rect())
@@ -340,7 +350,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.editwidget.cover_button.clicked.connect(self._selectCover)
         self.editwidget.fetch_cover.clicked.connect(self._fetchCover)
         
-
+        self.editwidget.gaincheck.stateChanged.connect(self.toggleGain)
 
         self.search_name.textChanged.connect(self._textEdit)
         self.search_artist.textChanged.connect(self._textEdit)
@@ -350,6 +360,39 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
 
         self.channels.currentIndexChanged.connect(self._changeChannels)
+
+    def getGainThread(self):
+        global songs_to_edit
+        self.gain = getGain(songs_to_edit[0])
+
+
+    def gainFinished(self):
+        self.editwidget.gainslider.setValue(self.gain)
+
+        self.progresswidget.progressbar.setMinimum(self.mini)
+        self.progresswidget.progressbar.setMaximum(self.maxi)
+        self.progress_overlay.hide()
+
+
+    def toggleGain(self, checked):
+        global songs_to_edit
+        self.editwidget.gainslider.setEnabled(checked)
+        self.editwidget.analyzeradio.setEnabled(checked)
+        self.editwidget.customradio.setEnabled(checked)
+        if checked:
+            self.progress_overlay.setGeometry(self.rect())       
+            self.progresswidget.move(self.progress_overlay.rect().center() - self.progresswidget.rect().center())
+            self.mini = self.progresswidget.progressbar.minimum()
+            self.maxi = self.progresswidget.progressbar.maximum()
+            self.progresswidget.progressbar.setValue(0)
+            self.progresswidget.progressbar.setMinimum(0)
+            self.progresswidget.progressbar.setMaximum(0)
+            self.progresswidget.label.setText('Analyzing Song: ' + os.path.basename(songs_to_edit[0]))
+            self.progresswidget.cover.setPixmap(self.editwidget.cover.pixmap())
+
+            self.progress_overlay.show()
+
+            self.gain_thread.start()
 
     def _changeChannels(self, i):
         mode = self.channels.currentText()
@@ -577,6 +620,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 pixmap = QtGui.QPixmap()
                 pixmap.loadFromData(data)
                 self.editwidget.cover.setPixmap(QtGui.QPixmap(pixmap))
+
+        self.editwidget.gaincheck.setEnabled(len(songs_to_edit)==1)
+        
+        #TEMP - TO-DO: read song gain data
+        self.editwidget.gaincheck.setChecked(False)
+        self.editwidget.gainslider.setValue(0)
+        self.editwidget.analyzeradio.setChecked(True)
+
         self.editor_overlay.setGeometry(self.rect())       
         self.editwidget.move(self.editor_overlay.rect().center() - self.editwidget.rect().center())
         self.editor_overlay.show()
