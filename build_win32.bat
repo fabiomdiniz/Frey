@@ -8,6 +8,7 @@ python pyinstaller\Build.py main.spec
 copy TaskbarLib.tlb dist\TaskbarLib.tlb
 copy bass.dll dist\bass.dll
 copy bassmix.dll dist\bassmix.dll
+copy mp3gain.exe dist\mp3gain.exe
 copy keys dist\keys
 mkdir bin
 cd bin

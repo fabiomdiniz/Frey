@@ -162,10 +162,10 @@ def write_soundcheck(file):
 def ape_to_id3_and_itunes(filename):
     addrgid3(filename, readape(filename)) #convert to ID3
     #write_soundcheck(filename)
-    audio = mutagen.File(filename, options=[mutagen.id3.ID3FileType, mutagen.mp4.MP4])
-    rg = ReplayGainMP3(audio.tags)
-    rg.to_soundcheck(audio.tags)
-    audio.save()
+    #audio = mutagen.File(filename, options=[mutagen.id3.ID3FileType, mutagen.mp4.MP4])
+    #rg = ReplayGainMP3(audio.tags)
+    #rg.to_soundcheck(audio.tags)
+    #audio.save()
 
 def getGain(filename):
     """ returns actual gain """
@@ -180,11 +180,11 @@ def getSGain(filename):
     if gain is None:
         gain = 0
     print 'gain no: ', filename
-    output = subprocess.Popen(["mp3gain.exe", "/s", "s", win32api.GetShortPathName(clean_path(filename))], stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(["mp3gain.exe", "/f", win32api.GetShortPathName(clean_path(filename))], stdout=subprocess.PIPE).communicate()[0]
     return gain + int(output.split('\n')[2].split(':')[-1].split('\r')[0])
 
 def setGain(filename, value):
     path = win32api.GetShortPathName(clean_path(filename))
     subprocess.call(["mp3gain.exe", "/u", path])
-    subprocess.call(["mp3gain.exe", "/g", str(value), path])
+    subprocess.call(["mp3gain.exe", "/r", "/g", str(value), path])
     ape_to_id3_and_itunes(path)
