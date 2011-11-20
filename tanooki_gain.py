@@ -180,11 +180,11 @@ def getSGain(filename):
     if gain is None:
         gain = 0
     print 'gain no: ', filename
-    output = subprocess.Popen(["mp3gain.exe", "/f", win32api.GetShortPathName(clean_path(filename))], stdout=subprocess.PIPE).communicate()[0]
+    output = subprocess.Popen(["mp3gain.exe", "/f", win32api.GetShortPathName(clean_path(filename))], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True).communicate()[0]
     return gain + int(output.split('\n')[2].split(':')[-1].split('\r')[0])
 
 def setGain(filename, value):
     path = win32api.GetShortPathName(clean_path(filename))
-    subprocess.call(["mp3gain.exe", "/u", path])
-    subprocess.call(["mp3gain.exe", "/r", "/g", str(value), path])
+    subprocess.call(["mp3gain.exe", "/u", path], shell=True)
+    subprocess.call(["mp3gain.exe", "/r", "/g", str(value), path], shell=True)
     ape_to_id3_and_itunes(path)

@@ -365,7 +365,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         global songs_to_edit
         self.gain = tanooki_gain.getSGain(songs_to_edit[0])
 
-
     def gainFinished(self):
         self.editwidget.gainslider.setValue(self.gain)
 
@@ -380,7 +379,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.progresswidget.move(self.progress_overlay.rect().center() - self.progresswidget.rect().center())
         self.mini = self.progresswidget.progressbar.minimum()
         self.maxi = self.progresswidget.progressbar.maximum()
-        self.progresswidget.progressbar.setValue(0)
+        self.progresswidget.progressbar.setValue(1)
         self.progresswidget.progressbar.setMinimum(0)
         self.progresswidget.progressbar.setMaximum(0)
         self.progresswidget.label.setText('Analyzing Song: ' + os.path.basename(songs_to_edit[0]))
