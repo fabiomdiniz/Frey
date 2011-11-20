@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>398</width>
-    <height>217</height>
+    <height>265</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -42,7 +42,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QFrame" name="">
+    <widget class="QFrame" name="frame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -52,29 +52,29 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>46</height>
+       <height>69</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>46</height>
+       <height>69</height>
       </size>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QCheckBox" name="gaincheck">
-        <property name="text">
-         <string>ReplayGain</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Volume:</string>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QSlider" name="gainslider">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="minimum">
            <number>-15</number>
@@ -94,31 +94,11 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QRadioButton" name="customradio">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Custom Volume</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="analyzeradio">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Analyze Song</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QPushButton" name="analyze_button">
+          <property name="text">
+           <string>Analyze Song</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -136,13 +116,13 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>177</height>
+       <height>191</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>177</height>
+       <height>191</height>
       </size>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">

@@ -10,6 +10,8 @@ h2. Dependencies
 * pyqt4  ("nuke on ants" or "the frontpage of python gui dev")
 * mutagen (cool name and can also read song tags)
 * pyhook (A link to the past)
+* python-lastfm
+* bottlenose
 
 h2. Build
 
