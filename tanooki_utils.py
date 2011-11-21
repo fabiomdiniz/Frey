@@ -34,7 +34,7 @@ def get_song_info(name, song_file=None):
     if song_file is None:
         song_file = File(name)
     if song_file.tags:
-        return [unicode(song_file.tags.get('TIT2','')),
+        return [unicode(song_file.tags.get('TIT2',os.path.basename(name))),
                 unicode(song_file.tags.get('TALB','')),
                 unicode(song_file.tags.get('TPE1',''))]
     return [os.path.basename(name),'','']

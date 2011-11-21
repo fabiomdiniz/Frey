@@ -1,35 +1,28 @@
 # -*- coding: utf-8 -*-
- 
-phonofied = True
-
-import g2tsg_bass
 import numpy.core.multiarray
-#import g2tsg_gst
-#import pygst
-#pygst.require('0.10')
-#import gst
-#import gobject
 
-import sys, os, time
+import sys, os, time, urllib
+
+from mutagen.easyid3 import EasyID3
+from mutagen import File
+
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QSlider, QListWidget, QTableWidget
 from PyQt4 import Qt
+
 from main_ui import Ui_MainWindow
 from song_editor_ui import Ui_song_editor
 from overlay_ui import Ui_overlay
 from progress_ui import Ui_progress
 
-from mutagen.easyid3 import EasyID3
-from mutagen import File
 from tanooki_utils import *
 import tanooki_library
 import tanooki_gain
-import time
+import g2tsg_bass
 
 import bottlenose
 import lastfm
-import urllib
-import imp
+
 paused = True
 idx = 0
 num_col = 6
@@ -40,6 +33,7 @@ songs_to_edit = []
 overlay_songs = []
 overlay_album = None
 search_query = '_'
+
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
@@ -54,9 +48,6 @@ hotkeys_enabled = True
 change_cover = ''
 
 keys_got = 0
-
-channels = 2
-chan_mode = ''
 
 def OnKeyboardEvent(event):
     global myapp
@@ -94,13 +85,7 @@ def GrabGokeys(app, event):
     return True
 
 class SpinBoxDelegate(QtGui.QItemDelegate):
-#    def updateEditorGeometry(self, editor, option, index):
-#        editor.setGeometry(option.rect)
-    
     def paint(self, painter, option, index):
-        #from PyQt4.QtCore import pyqtRemoveInputHook
-        #pyqtRemoveInputHook()
-        #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
         document = QtGui.QTextDocument()
         
@@ -160,9 +145,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.__class__.dragEnterEvent = self.lbDragEnterEvent
 
         self._showLibrary()
-        
-        #self.huge_tanooki.lower()
-        #self._refreshPlaylists()        
 
         self.slider_thread.run = self._updateSlider
         self.slider_thread.start()
@@ -200,12 +182,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.progresswidget.setStyleSheet(css);
 
         self.progress_overlay.hide()
-
-
-
-
-
-        
 
         self.overlay_frame = QtGui.QFrame(self.albums)
         self.overlay_frame.setGeometry(self.albums.rect())
@@ -302,7 +278,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         playlist = new_playlist[:]
     
     def _connectSlots(self):
-        # Connect our two methods to SIGNALS the GUI emits.
         self.connect(self.pause_button,Qt.SIGNAL("clicked()"),self._slotPausePlay)
         self.connect(self.prev_button,Qt.SIGNAL("clicked()"),self._slotPrevSong)
         self.connect(self.next_button,Qt.SIGNAL("clicked()"),self._slotNextSong)
@@ -358,7 +333,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.gokeys.clicked.connect(self._setGokeys)
 
-
         self.channels.currentIndexChanged.connect(self._changeChannels)
 
     def getGainThread(self):
@@ -371,7 +345,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.progresswidget.progressbar.setMinimum(self.mini)
         self.progresswidget.progressbar.setMaximum(self.maxi)
         self.progress_overlay.hide()
-
 
     def analyzeGain(self):
         global songs_to_edit
@@ -406,8 +379,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         hm.KeyUp = lambda x: GrabGokeys(self, x) # Registra a o evento (callbacks)
         hm.HookKeyboard() # Inicia
-
-
 
     def albumsResize(self, event):
         self._showLibrary()
@@ -451,8 +422,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.load_library.setEnabled(True)
         self.rescan_library.setEnabled(True)
-
-
 
     def _selectCover(self):
         global change_cover
@@ -838,13 +807,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.load_library.setEnabled(True)
             self.rescan_library.setEnabled(True)
 
-            #while self.library_thread.isRunning():
-            #    self._showLibrary()
-            #    time.sleep(0.5)
-            #self._showLibrary()
-            #self.load_library.setEnabled(True)
-            #self.rescan_library.setEnabled(True)
-
     def _showLibrary(self, run_search=True):
         global albumslist
         global num_col
@@ -1021,7 +983,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def _playSong(self, name):
         global paused
         global idx
-        global channels
         global g2tsg
         #self.seeker.setEnabled(True)
         mode = self.channels.currentText()
