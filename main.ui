@@ -17,6 +17,32 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">/*QWidget#centralwidget {
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0.18 #ccc9c9, stop: 0.37 #d3d3d3, stop: 0.89 #dedede);
+}
+
+ QPushButton {
+     border: 0px solid #8f8f91;
+     border-radius: 6px;
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #f6f7fa, stop: 1 #dadbde);
+     min-width: 80px;
+ }
+
+ QPushButton:pressed {
+     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #dadbde, stop: 1 #f6f7fa);
+ }
+
+ QPushButton:flat {
+     border: none; 
+ }
+
+ QPushButton:default {
+     border-color: navy;
+ }*/</string>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_8">
     <property name="sizeConstraint">
      <enum>QLayout::SetNoConstraint</enum>
@@ -79,7 +105,7 @@
               </property>
               <property name="minimumSize">
                <size>
-                <width>60</width>
+                <width>0</width>
                 <height>60</height>
                </size>
               </property>
@@ -108,7 +134,7 @@
              <widget class="QPushButton" name="pause_button">
               <property name="minimumSize">
                <size>
-                <width>60</width>
+                <width>0</width>
                 <height>60</height>
                </size>
               </property>
@@ -137,7 +163,7 @@
              <widget class="QPushButton" name="next_button">
               <property name="minimumSize">
                <size>
-                <width>60</width>
+                <width>0</width>
                 <height>60</height>
                </size>
               </property>
@@ -1088,7 +1114,7 @@ background-position: right bottom;
               </property>
               <property name="minimumSize">
                <size>
-                <width>256</width>
+                <width>0</width>
                 <height>23</height>
                </size>
               </property>

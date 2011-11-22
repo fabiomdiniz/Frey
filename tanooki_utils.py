@@ -15,6 +15,28 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
+def get_taskbar():
+    import platform
+    if platform.version()[:3] == '6.1': # Check for win7
+        import ctypes
+        myappid = 'fabiodiniz.gokya.supergokya' # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        import comtypes.client as cc
+        cc.GetModule("TaskbarLib.tlb")
+        import comtypes.gen.TaskbarLib as tbl
+        taskbar = cc.CreateObject(
+        "{56FDF344-FD6D-11d0-958A-006097C9A090}",
+        interface=tbl.ITaskbarList3)
+        taskbar.HrInit()
+    else:
+        taskbar = None
+    return taskbar
+
+def static_var(varname, value):
+    def decorate(func):
+        setattr(func, varname, value)
+        return func
+    return decorate
 
 def getPrettyName(song_file):
     return _fromUtf8(str(song_file.tags.get('TPE1','')) + ' - ' + str(song_file.tags.get('TALB','')) + ' - ' + str(song_file.tags.get('TIT2','')))
