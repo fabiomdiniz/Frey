@@ -329,12 +329,27 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         
     def _randomPlaylist(self):
-        if self.config.playlist:
-            conf = tanooki_library.get_or_create_config()
-            text = get_random_name()
-            conf['playlists'][text] = list(set([random.choice(self.config.playlist) for i in range(15)]))
-            tanooki_library.save_config(conf)
-            self._refreshPlaylists()
+        not_playlist = not self.config.playlist
+        conf = tanooki_library.get_or_create_config()
+
+        songs = []
+        for album in conf['library']:
+            songs += conf['library'][album]['songs']
+        
+        for filename in set([random.choice(songs) for i in range(15)]):
+            self.config.playlist.append(filename)
+            self._addUrl(filename)
+
+        if not_playlist and self.config.playlist:
+            self.config.idx = 0
+            self._playIdx()
+
+        #if self.config.playlist:
+        #    conf = tanooki_library.get_or_create_config()
+        #    text = get_random_name()
+        #    conf['playlists'][text] = list(set([random.choice(self.config.playlist) for i in range(15)]))
+        #    tanooki_library.save_config(conf)
+        #    self._refreshPlaylists()
 
 
     def getGainThread(self):
