@@ -25,7 +25,6 @@ import g2tsg_bass
 import bottlenose
 import lastfm
 
-
 class RuntimeConfig():
     def __init__(self):
         self.paused = True
@@ -150,6 +149,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.__class__.dragEnterEvent = self.lbDragEnterEvent
 
         self._showLibrary()
+        self._refreshPlaylists()
 
         self.slider_thread.run = self._updateSlider
         self.slider_thread.start()
@@ -296,6 +296,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.playlists.doubleClicked.connect(self._loadPlaylist)
         self.delete_playlist.clicked.connect(self._deletePlaylist)
         self.save_playlist.clicked.connect(self._savePlaylist)
+        self.random_playlist.clicked.connect(self._randomPlaylist)
 
         self.seeker_inv.mousePressEvent = self._clickSeeker
 
@@ -320,6 +321,21 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.gokeys.clicked.connect(self._setGokeys)
 
         self.channels.currentIndexChanged.connect(self._changeChannels)
+
+        self.connect(self.progresswidget, Qt.SIGNAL("updateProgress(int)"), self.updateProg)
+
+    def updateProg(self, value):
+        self.progresswidget.progressbar.setValue(value)
+
+        
+    def _randomPlaylist(self):
+        if self.config.playlist:
+            conf = tanooki_library.get_or_create_config()
+            text = get_random_name()
+            conf['playlists'][text] = list(set([random.choice(self.config.playlist) for i in range(15)]))
+            tanooki_library.save_config(conf)
+            self._refreshPlaylists()
+
 
     def getGainThread(self):
         self.gain = tanooki_gain.getSGain(self.config.songs_to_edit[0])
@@ -494,7 +510,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             if self.config.change_cover:
                 tanooki_library.update_album_cover(song, self.config.change_cover)
             
-            self.progresswidget.progressbar.setValue(i)
+            self.progresswidget.emit(Qt.SIGNAL('updateProgress(int)'), i)
+            #self.progresswidgetprogressbar.setValue(i)
             self.progresswidget.label.setText('Editing : ' + song[-50:])
 
         if len(self.config.songs_to_edit) == 1:
@@ -653,15 +670,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             QtGui.QListWidgetItem(playlist, self.playlists)
 
     def _savePlaylist(self):
-        text, ok = QtGui.QInputDialog.getText(self, "Playlist Name",
-                "", QtGui.QLineEdit.Normal,
-                get_random_name())
-        text = unicode(text)
-        if ok and text != '':
-            conf = tanooki_library.get_or_create_config()
-            conf['playlists'][text] = self.config.playlist[:]
-            tanooki_library.save_config(conf)
-            self._refreshPlaylists()
+        if self.config.playlist:
+            text, ok = QtGui.QInputDialog.getText(self, "Playlist Name",
+                    "", QtGui.QLineEdit.Normal,
+                    get_random_name())
+            text = unicode(text)
+            if ok and text != '':
+                conf = tanooki_library.get_or_create_config()
+                conf['playlists'][text] = self.config.playlist[:]
+                tanooki_library.save_config(conf)
+                self._refreshPlaylists()
 
     def _deletePlaylist(self):
         item = self.playlists.takeItem(self.playlists.currentRow())
@@ -774,7 +792,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
             elapsed = (time.clock() - start)
             print 'scan library: ', elapsed
-            if playlist:
+            if self.config.playlist:
                 self.refreshPlaylist()
                 self.updateNowPlaying(playlist[idx])
             self._showLibrary()

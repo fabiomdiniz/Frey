@@ -8,6 +8,7 @@ from mutagen.id3 import APIC
 from mutagen import File
 from collections import defaultdict
 import StringIO
+from PyQt4 import Qt
 
 
 def get_or_create_config():
@@ -54,7 +55,8 @@ def set_library(folder, taskbar, winid, widget=None):
         conf['library'][info[1]]['titles'].append(info[0])
 
         if widget is not None:
-            widget.progressbar.setValue(i)
+            widget.emit(Qt.SIGNAL('updateProgress(int)'), i)
+            #widget.progressbar.setValue(i)
             widget.label.setText(filename[-65:])
             if cover:
                 widget.cover.setPixmap(cover)
