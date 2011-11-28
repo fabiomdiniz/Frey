@@ -70,7 +70,7 @@ def GrabGokeys(app, event, hm):
         GrabGokeys.keys_got = 0
         keyfile.close()
         keys = open('keys', 'r').read().split('\n')
-        hm.KeyUp = OnKeyboardEvent # Registra a o evento (callbacks)
+        hm.KeyUp = lambda event: OnKeyboardEvent(event, app) # Registra a o evento (callbacks)
         hm.HookKeyboard() # Inicia
         app.gokeys_frame.hide()
     return True
@@ -332,11 +332,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         not_playlist = not self.config.playlist
         conf = tanooki_library.get_or_create_config()
 
-        songs = []
-        for album in conf['library']:
-            songs += conf['library'][album]['songs']
+        random_songs = []
+        for i in range(15):
+            album = random.choice(conf['library'].values())
+            random_songs.append(random.choice(album['songs']))
+        #for album in conf['library']:
+        #    songs += conf['library'][album]['songs']
         
-        for filename in set([random.choice(songs) for i in range(15)]):
+        for filename in random_songs:#set([random.choice(songs) for i in range(15)]):
             self.config.playlist.append(filename)
             self._addUrl(filename)
 
