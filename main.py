@@ -339,14 +339,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         #for album in conf['library']:
         #    songs += conf['library'][album]['songs']
         
+        self.config.playlist += random_songs
         for filename in random_songs:#set([random.choice(songs) for i in range(15)]):
-            self.config.playlist.append(filename)
             self._addUrl(filename)
 
         if not_playlist and self.config.playlist:
             self.config.idx = 0
             self._playIdx()
-
         #if self.config.playlist:
         #    conf = tanooki_library.get_or_create_config()
         #    text = get_random_name()
