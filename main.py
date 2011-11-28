@@ -123,6 +123,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.config = RuntimeConfig()
+        self.icon = QtGui.QSystemTrayIcon(QtGui.QIcon(':/png/media/icon.png')) 
+        conf = tanooki_library.get_or_create_config()
+        
+        ischecked = conf.get('notification', False)
+        self.notification.setChecked(ischecked)
+        if ischecked:
+            self.icon.show()
 
         self.config.g2tsg = g2tsg
         self.config.g2tsg.init_tanooki()
@@ -323,6 +330,21 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.channels.currentIndexChanged.connect(self._changeChannels)
 
         self.connect(self.progresswidget, Qt.SIGNAL("updateProgress(int)"), self.updateProg)
+
+        self.notification.stateChanged.connect(self.toggleNotification)
+
+    def toggleNotification(self, ischecked):
+        if not ischecked:
+            self.icon.hide()
+        else:
+            self.icon.show()
+            if self.config.playlist:
+                self.updateNowPlaying(self.config.playlist[self.config.idx])
+            else:
+                self.icon.setIcon(QtGui.QIcon(':/png/media/icon.png'))
+        conf = tanooki_library.get_or_create_config()
+        conf['notification'] = ischecked
+        tanooki_library.save_config(conf)
 
     def updateProg(self, value):
         self.progresswidget.progressbar.setValue(value)
@@ -949,6 +971,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.artist.setText(_fromUtf8(artist))
         self.album.setText(_fromUtf8(album))
         self.cover.setPixmap(getCoverArtPixmap(name, 200))
+        if self.notification.isChecked():
+            self.icon.showMessage(artist, album+ ' - ' +title,0)
+            self.icon.setIcon(QtGui.QIcon(getCoverArtPixmap(name)))
 
     def _playSong(self, name):
         #self.seeker.setEnabled(True)

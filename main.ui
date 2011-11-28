@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1241</width>
-    <height>858</height>
+    <height>890</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -518,6 +518,13 @@ background-position: center middle;
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="8" column="0" colspan="2">
+           <widget class="QCheckBox" name="notification">
+            <property name="text">
+             <string>Notification</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
