@@ -39,6 +39,7 @@ class RuntimeConfig():
         self.search_query = '_'
         self.hm = None
         self.change_cover = ''
+        self.cover_size = 110
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -69,7 +70,6 @@ def GrabGokeys(app, event, hm):
     if GrabGokeys.keys_got == 3:
         GrabGokeys.keys_got = 0
         keyfile.close()
-        keys = open('keys', 'r').read().split('\n')
         hm.KeyUp = lambda event: OnKeyboardEvent(event, app) # Registra a o evento (callbacks)
         hm.HookKeyboard() # Inicia
         app.gokeys_frame.hide()
@@ -208,7 +208,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.gokeys_frame.hide()
 
-    def _updateSlider(self, value=0):
+    def _updateSlider(self):
         while True:
             sec, perc = self.config.g2tsg.get_perc_tanooki()
             self.seeker.setValue(perc)
@@ -219,7 +219,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.time.display(qtime.toString('mm:ss'))
             time.sleep(0.1)
 
-    def _updateVolume(self, value=0):
+    def _updateVolume(self):
         while True:
             vol = self.config.g2tsg.get_volume_tanooki()
             self.volume.setValue(vol*100)
@@ -358,22 +358,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         for i in range(15):
             album = random.choice(conf['library'].values())
             random_songs.append(random.choice(album['songs']))
-        #for album in conf['library']:
-        #    songs += conf['library'][album]['songs']
         
         self.config.playlist += random_songs
-        for filename in random_songs:#set([random.choice(songs) for i in range(15)]):
+        for filename in random_songs:
             self._addUrl(filename)
 
         if not_playlist and self.config.playlist:
             self.config.idx = 0
             self._playIdx()
-        #if self.config.playlist:
-        #    conf = tanooki_library.get_or_create_config()
-        #    text = get_random_name()
-        #    conf['playlists'][text] = list(set([random.choice(self.config.playlist) for i in range(15)]))
-        #    tanooki_library.save_config(conf)
-        #    self._refreshPlaylists()
 
 
     def getGainThread(self):
@@ -473,9 +465,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         print 'rescan library: ', elapsed
         self._showLibrary()
 
-        if playlist:
+        if self.config.playlist:
             self.refreshPlaylist()
-            self.updateNowPlaying(playlist[idx])
+            self.updateNowPlaying(self.config.playlist[self.config.idx])
 
         self.load_library.setEnabled(True)
         self.rescan_library.setEnabled(True)
@@ -737,8 +729,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self._playIdx()
 
     def _appendSongs(self):
-        album = self.config.overlay_album
-        conf = tanooki_library.get_or_create_config()
         for i in range(self.overlay.album_songs.count()):
             item = self.overlay.album_songs.item(i)
             if self.overlay.album_songs.isItemSelected(item):
@@ -798,11 +788,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             name = getSongName(filename)#unicode(song_file.tags.get('TIT2',''))
             if unicode(self.search_name.text()).lower() in name.lower():
                 self.config.overlay_songs.append(filename)
-                item = QtGui.QListWidgetItem(name, self.overlay.album_songs)
+                QtGui.QListWidgetItem(name, self.overlay.album_songs)
 
         icon = QtGui.QIcon(conf['library'][album]['cover'])
-        cover_size = self.overlay.cover.width()
-        self.overlay.cover.setPixmap(icon.pixmap(cover_size, cover_size))
+        cover_width = self.overlay.cover.width()
+        self.overlay.cover.setPixmap(icon.pixmap(cover_width, cover_width))
 
 
     def _loadLibrary(self):
@@ -833,12 +823,13 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             print 'scan library: ', elapsed
             if self.config.playlist:
                 self.refreshPlaylist()
-                self.updateNowPlaying(playlist[idx])
+                self.updateNowPlaying(self.config.playlist[self.config.idx])
             self._showLibrary()
             self.load_library.setEnabled(True)
             self.rescan_library.setEnabled(True)
 
-    def _showLibrary(self, run_search=True):
+    def _showLibrary(self):
+        global cover_size
         self.config.search_query = unicode(self.search_name.text())
         
         self.albums.clear()
@@ -970,7 +961,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.song_name.setText(_fromUtf8(title))
         self.artist.setText(_fromUtf8(artist))
         self.album.setText(_fromUtf8(album))
-        self.cover.setPixmap(getCoverArtPixmap(name, 200))
+        self.cover.setPixmap(getCoverArtPixmap(name))
         if self.notification.isChecked():
             self.icon.showMessage(artist, album+ ' - ' +title,0)
             self.icon.setIcon(QtGui.QIcon(getCoverArtPixmap(name)))
@@ -988,20 +979,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.updateNowPlaying(name)
         self._setPlaying()
         print 'play no ', name.encode('ascii','ignore')
-        #g2tsg.quit_tanooki()
-        #print 'sleepei'
-        #time.sleep(4)
         self.play_thread.run = lambda : self.config.g2tsg.play_tanooki_way(name, channels, vol)
         self.play_thread.start()
         self.conThread()
         self.paint_thread.run = lambda : self._paintCurrent()
         self.paint_thread.start()
-
-    def _slotSelectClicked(self):
-        name = unicode(QtGui.QFileDialog.getOpenFileName(self,
-     'Open Song', os.getcwd(), 'Mp3 (*.mp3)'))
-        if name:
-            self._playSong(name)
 
 if __name__ == "__main__":
     os.system('mkdir cover_cache')
