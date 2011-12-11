@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1241</width>
-    <height>890</height>
+    <height>917</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1068,7 +1068,9 @@ background-position: right bottom;
                   <bool>true</bool>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">QListWidget { background-color: rgba(0, 0, 0, 0%); }</string>
+                  <string notr="true">QListWidget { background-color: rgba(0, 0, 0, 0%); }
+QListWidget::item { background-color: rgba(255, 255, 255, 40%); }
+QListWidget::item::selected { background-color: rgba(0, 0, 0, 40%); }</string>
                  </property>
                  <property name="dragEnabled">
                   <bool>true</bool>
