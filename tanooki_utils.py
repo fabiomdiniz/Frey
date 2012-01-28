@@ -68,8 +68,8 @@ def getCoverArt(url, song_file=None):
         song_file = File(url)
     folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
     album_name = get_cover_hash(song_file)
-    if song_file.tags and song_file.tags.get('APIC:','') and album_name:
-        artwork = song_file.tags.get('APIC:','')
+    if song_file.tags and (song_file.tags.get('APIC:','') or song_file.tags.get('APIC:cover','')) and album_name:
+        artwork = get_cover_ultimate(song_file)
         iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')
         iconpath_jpg = os.path.join(ROOT_PATH,'cover_cache',album_name+'.jpg')
         if not os.path.exists(iconpath):
@@ -137,6 +137,13 @@ def get_cover_hash(song_file):
     name = str(song_file.tags.get('TPE1',''))+'_'+str(song_file.tags.get('TALB',''))
     return gen_file_name(name.decode('ascii', 'ignore'))
 
+def get_cover_ultimate(song_file):
+    if 'APIC:' in song_file.tags:
+        return song_file.tags['APIC:']
+    elif 'APIC:cover' in song_file.tags:
+        return song_file.tags['APIC:cover']
+    else:
+        return type('',(object,),{'data':''})()
 
 
 def get_full_song_info(name):
@@ -147,7 +154,7 @@ def get_full_song_info(name):
                 unicode(song_file.tags.get('TIT2','')),
                 unicode(song_file.tags.get('TPE1','')),
                 unicode(song_file.tags.get('TALB','')),
-                song_file.tags.get('APIC:',type('',(object,),{'data':''})()).data]
+                get_cover_ultimate(song_file).data]
     return ['','','','','']
 
 

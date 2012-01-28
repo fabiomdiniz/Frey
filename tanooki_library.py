@@ -34,7 +34,7 @@ def set_library(folder, taskbar, winid, widget=None):
     conf['library'] = {}
     conf['folder'] = folder
 
-    entries = dirEntries(folder, True, 'mp3')
+    entries = dirEntries(folder, True, 'mp3', 'MP3')
 
     num_entries = len(entries)
 

@@ -287,6 +287,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.load_library.clicked.connect(self._loadLibrary)
         self.rescan_library.clicked.connect(self.rescanLibrary)
 
+        self.play_all.clicked.connect(self.playAllSongs)
+
         self.albums.cellClicked.connect(self._clickAlbum)
         self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
         self.albums.resizeEvent = self.albumsResize
@@ -332,6 +334,17 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.progresswidget, Qt.SIGNAL("updateProgress(int)"), self.updateProg)
 
         self.notification.stateChanged.connect(self.toggleNotification)
+
+    def playAllSongs(self):
+        conf = tanooki_library.get_or_create_config()
+        self._clearPlaylist()
+        for album in conf['library']:
+            self.appendAlbumPlaylist(album)
+        from random import shuffle
+        random.shuffle(self.config.playlist)
+        self.refreshPlaylist()
+        self.config.idx = 0
+        self._playIdx()
 
     def toggleNotification(self, ischecked):
         if not ischecked:
@@ -473,9 +486,9 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         print 'rescan library: ', elapsed
         self._showLibrary()
 
-        if playlist:
+        if self.config.playlist:
             self.refreshPlaylist()
-            self.updateNowPlaying(playlist[idx])
+            self.updateNowPlaying(self.config.playlist[self.config.idx])
 
         self.load_library.setEnabled(True)
         self.rescan_library.setEnabled(True)
@@ -833,7 +846,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             print 'scan library: ', elapsed
             if self.config.playlist:
                 self.refreshPlaylist()
-                self.updateNowPlaying(playlist[idx])
+                self.updateNowPlaying(self.config.playlist[self.config.idx])
             self._showLibrary()
             self.load_library.setEnabled(True)
             self.rescan_library.setEnabled(True)
@@ -1004,11 +1017,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self._playSong(name)
 
 if __name__ == "__main__":
-    os.system('mkdir cover_cache')
-    app = QtGui.QApplication(sys.argv)
-    myapp = MyForm(taskbar=get_taskbar(), g2tsg=g2tsg_bass)
-    myapp.show()
-    myapp.config.hm = pyHook.HookManager() 
-    myapp.config.hm.KeyUp = lambda event: OnKeyboardEvent(event, myapp) # Registra a o evento (callbacks)
-    myapp.config.hm.HookKeyboard() # Inicia
-    sys.exit(app.exec_())
+    try:        
+        os.system('mkdir cover_cache')
+        app = QtGui.QApplication(sys.argv)
+        myapp = MyForm(taskbar=get_taskbar(), g2tsg=g2tsg_bass)
+        myapp.show()
+        myapp.config.hm = pyHook.HookManager() 
+        myapp.config.hm.KeyUp = lambda event: OnKeyboardEvent(event, myapp) # Registra a o evento (callbacks)
+        myapp.config.hm.HookKeyboard() # Inicia
+        sys.exit(app.exec_())
+    except Exception as e:
+        open('bandicoot', 'a').write(str(e)+'\n'+str(globals()))
