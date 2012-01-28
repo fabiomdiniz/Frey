@@ -44,7 +44,7 @@ def getPrettyName(song_file):
 def getSongName(url):
     return get_song_info(url)[0]
 
-def getCoverArtPixmap(url, size=76):
+def getCoverArtPixmap(url):
     return getCoverArt(url)[1]
 
 def clean_path(path):
@@ -115,8 +115,8 @@ def dirEntries(dir_name, subdir, *args):
         to the list.
     '''
     fileList = []
-    for file in os.listdir(dir_name):
-        dirfile = os.path.join(dir_name, file)
+    for file_ in os.listdir(dir_name):
+        dirfile = os.path.join(dir_name, file_)
         if os.path.isfile(dirfile):
             if len(args) == 0:
                 fileList.append(dirfile)
