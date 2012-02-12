@@ -732,14 +732,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         tanooki_library.save_config(conf)
 
     def _loadPlaylist(self, item):
-        self._clearPlaylist()
+        #self._clearPlaylist()
         playlist_name = unicode(self.playlists.currentItem().text())
         conf = tanooki_library.get_or_create_config()
         for filename in conf['playlists'][playlist_name]:
             self.config.playlist.append(filename)
             self._addUrl(filename)
         self._paintCurrentPlaylist(self.playlists.currentRow())     
-        self._playIdx()
+        if not self.config.playlist:
+            self.config.idx = 0
+            self._playIdx()
 
     def _appendSongs(self):
         for i in range(self.overlay.album_songs.count()):
