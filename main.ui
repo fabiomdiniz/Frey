@@ -426,6 +426,9 @@ background-position: center middle;
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
@@ -450,6 +453,22 @@ background-position: center middle;
             </item>
            </widget>
           </item>
+          <item row="2" column="0">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>3</width>
+              <height>5</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item row="3" column="0" colspan="2">
            <widget class="QPushButton" name="load_library">
             <property name="text">
@@ -457,17 +476,26 @@ background-position: center middle;
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>3</width>
+              <height>5</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item row="5" column="0" colspan="2">
            <widget class="QPushButton" name="rescan_library">
             <property name="text">
              <string>Rescan Folder</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0" colspan="2">
-           <widget class="QPushButton" name="gokeys">
-            <property name="text">
-             <string>Gokeys</string>
             </property>
            </widget>
           </item>
@@ -487,37 +515,12 @@ background-position: center middle;
             </property>
            </spacer>
           </item>
-          <item row="4" column="0">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="7" column="0" colspan="2">
+           <widget class="QPushButton" name="gokeys">
+            <property name="text">
+             <string>Gokeys</string>
             </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>3</width>
-              <height>5</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="0">
-           <spacer name="verticalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>3</width>
-              <height>5</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
           <item row="8" column="0" colspan="2">
            <widget class="QCheckBox" name="notification">
@@ -714,11 +717,18 @@ background-origin: margin;
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>169</width>
+                 <width>50</width>
                  <height>20</height>
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="export_itunes">
+               <property name="text">
+                <string>Export to Itunes</string>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="delete_playlist">
