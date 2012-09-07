@@ -20,6 +20,7 @@ from progress_ui import Ui_progress
 from tanooki_utils import *
 import tanooki_library
 import tanooki_gain
+import tanooki_itunes
 import g2tsg_bass
 
 import bottlenose
@@ -144,6 +145,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.slider_thread = QtCore.QThread(parent = self)
         self.volume_thread = QtCore.QThread(parent = self)
         self.gain_thread = QtCore.QThread(parent = self)
+        self.itunes_thread = QtCore.QThread(parent = self)
 
         self.gain_thread.run = self.getGainThread
         self.gain_thread.finished.connect(self.gainFinished)
@@ -306,6 +308,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.delete_playlist.clicked.connect(self._deletePlaylist)
         self.save_playlist.clicked.connect(self._savePlaylist)
         self.random_playlist.clicked.connect(self._randomPlaylist)
+        self.export_itunes.clicked.connect(self._exportItunes)
 
         self.seeker_inv.mousePressEvent = self._clickSeeker
 
@@ -334,6 +337,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.connect(self.progresswidget, Qt.SIGNAL("updateProgress(int)"), self.updateProg)
 
         self.notification.stateChanged.connect(self.toggleNotification)
+
+    def _exportItunes(self):
+        conf = tanooki_library.get_or_create_config()
+        self.itunes_thread.run = lambda : tanooki_itunes.export_playlists(conf['playlists'])
+        self.itunes_thread.start()
 
     def playAllSongs(self):
         conf = tanooki_library.get_or_create_config()

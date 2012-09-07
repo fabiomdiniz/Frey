@@ -10,10 +10,10 @@ def export_playlists(sg_playlists):
 
     for source in itunes.Sources:
         if source.Kind == 1:
-            playlists = source.Playlists()
+            playlists = source.Playlists
 
     #removing old versions
-    map(lambda x: x.delete(), [playlist in playlists if playlist.name in sg_playlists])
+    map(lambda x: x.delete(), [playlist for playlist in playlists if playlist.name in sg_playlists])
     
     for playlist_name in sg_playlists:
         playlist = itunes.CreatePlaylist(playlist_name)
