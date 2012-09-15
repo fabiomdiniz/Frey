@@ -57,7 +57,7 @@ def OnKeyboardEvent(event, myapp):
             myapp._slotPrevSong()
         elif key == keys[0]:
             myapp._slotPausePlay()
-    return True
+    return not myapp.playlist.hasFocus() # so that it doesnt mess with the playlist
 
 @static_var("keys_got", 0)
 def GrabGokeys(app, event, hm):
@@ -146,6 +146,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.volume_thread = QtCore.QThread(parent = self)
         self.gain_thread = QtCore.QThread(parent = self)
         self.itunes_thread = QtCore.QThread(parent = self)
+
+        self.itunes_thread.finished.connect(self._refreshPlaylists)
 
         self.gain_thread.run = self.getGainThread
         self.gain_thread.finished.connect(self.gainFinished)
@@ -1015,7 +1017,7 @@ if __name__ == "__main__":
         myapp = MyForm(taskbar=get_taskbar(), g2tsg=g2tsg_bass)
         myapp.show()
         myapp.config.hm = pyHook.HookManager() 
-        myapp.config.hm.KeyUp = lambda event: OnKeyboardEvent(event, myapp) # Registra a o evento (callbacks)
+        myapp.config.hm.KeyDown = lambda event: OnKeyboardEvent(event, myapp) # Registra a o evento (callbacks)
         myapp.config.hm.HookKeyboard() # Inicia
         sys.exit(app.exec_())
     except Exception as e:
