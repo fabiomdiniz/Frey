@@ -3,6 +3,7 @@
 import win32com.client
 import os
 import tanooki_library
+from PyQt4 import Qt
 
 def get_track_location(track):
     return win32com.client.CastTo(track,"IITFileOrCDTrack").Location
@@ -25,10 +26,20 @@ def get_itunes_playlists():
     playlists = [p for p in playlists if get_special_kind(p) == 0]
     return playlists
 
-def export_playlists(sg_playlists):
+def export_playlists(sg_playlists, widget):
+
+    widget.progressbar.setMaximum(100)
+
+
+    widget.label.setText('Exporting to itunes...')
     from_sg_to_itunes(sg_playlists)
+    widget.emit(Qt.SIGNAL('updateProgress(int)'), 25)
+    widget.label.setText('Importing to Super Gokya...')
     from_itunes_to_sg(sg_playlists)
+    widget.emit(Qt.SIGNAL('updateProgress(int)'), 50)
+    widget.label.setText('Synchronizing playlists...')
     sync_playlists(sg_playlists)
+    widget.emit(Qt.SIGNAL('updateProgress(int)'), 100)
     conf = tanooki_library.get_or_create_config()
     conf['playlists'] = sg_playlists
     tanooki_library.save_config(conf)

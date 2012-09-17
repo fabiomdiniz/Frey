@@ -57,6 +57,8 @@ def OnKeyboardEvent(event, myapp):
             myapp._slotPrevSong()
         elif key == keys[0]:
             myapp._slotPausePlay()
+        else:
+            return True
     return not myapp.playlist.hasFocus() # so that it doesnt mess with the playlist
 
 @static_var("keys_got", 0)
@@ -340,9 +342,16 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         self.notification.stateChanged.connect(self.toggleNotification)
 
-    def _exportItunes(self):
+    def _syncPlaylists(self):
         conf = tanooki_library.get_or_create_config()
-        self.itunes_thread.run = lambda : tanooki_itunes.export_playlists(conf['playlists'])
+        self.progress_overlay.show()
+
+        tanooki_itunes.export_playlists(conf['playlists'], self.progresswidget)
+
+        self.progress_overlay.hide()  
+
+    def _exportItunes(self):
+        self.itunes_thread.run = self._syncPlaylists
         self.itunes_thread.start()
 
     def playAllSongs(self):
