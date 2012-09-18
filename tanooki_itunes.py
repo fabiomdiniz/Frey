@@ -2,8 +2,15 @@
 
 import win32com.client
 import os
+import pythoncom
 import tanooki_library
 from PyQt4 import Qt
+from win32com.client.gencache import EnsureDispatch
+if win32com.client.gencache.is_readonly == True:
+    win32com.client.gencache.is_readonly = False
+    win32com.client.gencache.Rebuild()
+
+#itunes = EnsureDispatch("iTunes.Application")
 
 def get_track_location(track):
     return win32com.client.CastTo(track,"IITFileOrCDTrack").Location
@@ -16,43 +23,50 @@ def convert_user_playlist(playlist):
 
 
 def get_itunes_playlists():
-    itunes= win32com.client.Dispatch("iTunes.Application")
-
+    #itunes= win32com.client.Dispatch("iTunes.Application")
+    if win32com.client.gencache.is_readonly == True:
+        win32com.client.gencache.is_readonly = False
+        win32com.client.gencache.Rebuild()
+    itunes = EnsureDispatch("iTunes.Application")
     playlists = None
 
     for source in itunes.Sources:
         if source.Kind == 1:
             playlists = [p for p in source.Playlists if p.Kind == 2]
+
     playlists = [p for p in playlists if get_special_kind(p) == 0]
+        
     return playlists
 
 def export_playlists(sg_playlists, widget):
+    try:
+        widget.progressbar.setMaximum(100)
+        widget.label.setText('Exporting to itunes...')
+        from_sg_to_itunes(sg_playlists, widget)
+        widget.emit(Qt.SIGNAL('updateProgress(int)'), 25)
+        widget.label.setText('Importing to Super Gokya...')
+        from_itunes_to_sg(sg_playlists)
+        widget.emit(Qt.SIGNAL('updateProgress(int)'), 50)
+        widget.label.setText('Synchronizing playlists...')
+        sync_playlists(sg_playlists)
+        widget.emit(Qt.SIGNAL('updateProgress(int)'), 100)
+        conf = tanooki_library.get_or_create_config()
+        conf['playlists'] = sg_playlists
+        tanooki_library.save_config(conf)
+    except Exception as e:
+        open('erro','w').write(str(e))
 
-    widget.progressbar.setMaximum(100)
-
-
-    widget.label.setText('Exporting to itunes...')
-    from_sg_to_itunes(sg_playlists)
-    widget.emit(Qt.SIGNAL('updateProgress(int)'), 25)
-    widget.label.setText('Importing to Super Gokya...')
-    from_itunes_to_sg(sg_playlists)
-    widget.emit(Qt.SIGNAL('updateProgress(int)'), 50)
-    widget.label.setText('Synchronizing playlists...')
-    sync_playlists(sg_playlists)
-    widget.emit(Qt.SIGNAL('updateProgress(int)'), 100)
-    conf = tanooki_library.get_or_create_config()
-    conf['playlists'] = sg_playlists
-    tanooki_library.save_config(conf)
-
-
-def from_sg_to_itunes(sg_playlists):
+def from_sg_to_itunes(sg_playlists, widget):
     playlists = get_itunes_playlists()
-    itunes= win32com.client.Dispatch("iTunes.Application")
+    #itunes= win32com.client.Dispatch("iTunes.Application")
+    if win32com.client.gencache.is_readonly == True:
+        win32com.client.gencache.is_readonly = False
+        win32com.client.gencache.Rebuild()
+    itunes = EnsureDispatch("iTunes.Application")
 
     itunes_playlists = [p.Name for p in playlists]
     #removing old versions
     #map(lambda x: x.delete(), [playlist for playlist in playlists if playlist.name in sg_playlists])
-    
     for playlist_name in [p for p in sg_playlists if not p in itunes_playlists]:
         playlist = itunes.CreatePlaylist(playlist_name)
         playlist = convert_user_playlist(playlist)
