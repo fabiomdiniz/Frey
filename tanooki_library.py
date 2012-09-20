@@ -2,7 +2,7 @@
 from tanooki_utils import *
 from tanooki_utils import cover_size
 import json
-import os
+import os, datetime
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import APIC
 from mutagen import File
@@ -42,18 +42,20 @@ def set_library(folder, taskbar, winid, widget=None):
         widget.progressbar.setMaximum(num_entries)
     cover = ''
     for i, path in enumerate(entries):
-        filename = os.path.join(folder, path)
-        song_file = File(filename)
-        info = get_song_info(filename, song_file)
-        if not conf['library'].has_key(info[1]):
-            cover_path, cover = getCoverArt(filename, song_file)
-            conf['library'][info[1]] = {'cover': cover_path,
-                                        'titles': [],
-                                        'songs': [],
-                                        'artist':info[2]}
-        conf['library'][info[1]]['songs'].append(filename)
-        conf['library'][info[1]]['titles'].append(info[0])
-
+        try:
+            filename = os.path.join(folder, path)
+            song_file = File(filename)
+            info = get_song_info(filename, song_file)
+            if not conf['library'].has_key(info[1]):
+                cover_path, cover = getCoverArt(filename, song_file)
+                conf['library'][info[1]] = {'cover': cover_path,
+                                            'titles': [],
+                                            'songs': [],
+                                            'artist':info[2]}
+            conf['library'][info[1]]['songs'].append(filename)
+            conf['library'][info[1]]['titles'].append(info[0])
+        except Exception as e:
+            open('bandicoot','a').write(str(datetime.datetime.now()) + '\t ' + str(e) + ' - ' + filename + '\n')
         if widget is not None:
             widget.emit(Qt.SIGNAL('updateProgress(int)'), i)
             #widget.progressbar.setValue(i)

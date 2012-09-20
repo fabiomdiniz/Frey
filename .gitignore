@@ -27,6 +27,7 @@ overlay_ui.py
 *.log
 images_rc.py
 conf.json
+bandicoot
 
 # External tool builders
 .externalToolBuilders/

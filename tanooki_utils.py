@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os
+import os, datetime
 import tempfile
 from mutagen import File
 from PIL import Image
@@ -68,35 +68,39 @@ def getCoverArt(url, song_file=None):
         song_file = File(url)
     folder = os.path.join(url[:url.rfind('\\')], 'folder.jpg')
     album_name = get_cover_hash(song_file)
-    if song_file.tags and (song_file.tags.get('APIC:','') or song_file.tags.get('APIC:cover','')) and album_name:
-        artwork = get_cover_ultimate(song_file)
-        iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')
-        iconpath_jpg = os.path.join(ROOT_PATH,'cover_cache',album_name+'.jpg')
-        if not os.path.exists(iconpath):
-            with open(iconpath_jpg, 'wb') as img:
-                img.write(artwork.data)
-            im = Image.open(iconpath_jpg)
+    iconpath = u":/png/media/nocover.png" #pessimist
+    try:
+        if song_file.tags and (song_file.tags.get('APIC:','') or song_file.tags.get('APIC:cover','')) and album_name:
+            artwork = get_cover_ultimate(song_file)
+            iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')
+            iconpath_jpg = os.path.join(ROOT_PATH,'cover_cache',album_name+'.jpg')
+            if not os.path.exists(iconpath):
+                with open(iconpath_jpg, 'wb') as img:
+                    img.write(artwork.data)
+                print iconpath_jpg
+                im = Image.open(iconpath_jpg)
+                #im = im.resize((cover_size, cover_size), Image.ANTIALIAS)
+                im.thumbnail((cover_size,cover_size), Image.ANTIALIAS)
+                im.save(iconpath)
+                try:
+                    os.remove(iconpath_jpg)
+                except:
+                    pass
+                #pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
+
+            pixmap = QtGui.QPixmap()
+            pixmap.loadFromData(artwork.data)
+            return [iconpath, pixmap]
+        elif os.path.exists(folder) and album_name:
+            iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')
+            im = Image.open(folder)
             #im = im.resize((cover_size, cover_size), Image.ANTIALIAS)
             im.thumbnail((cover_size,cover_size), Image.ANTIALIAS)
             im.save(iconpath)
-            try:
-                os.remove(iconpath_jpg)
-            except:
-                pass
-            #pygame.image.save(pygame.image.load(iconpath_jpg),iconpath)
-
-        pixmap = QtGui.QPixmap()
-        pixmap.loadFromData(artwork.data)
-        return [iconpath, pixmap]
-    elif os.path.exists(folder) and album_name:
-        iconpath = os.path.join(ROOT_PATH,'cover_cache',album_name+'.png')
-        im = Image.open(folder)
-        #im = im.resize((cover_size, cover_size), Image.ANTIALIAS)
-        im.thumbnail((cover_size,cover_size), Image.ANTIALIAS)
-        im.save(iconpath)
-        #pygame.image.save(pygame.image.load(folder),iconpath)
-    else:
-        iconpath = u":/png/media/nocover.png"
+            #pygame.image.save(pygame.image.load(folder),iconpath)
+    except Exception as e:
+        open('bandicoot','a').write(str(datetime.datetime.now()) + '\t ' + str(e) + ' - ' + iconpath + '\n')
+        iconpath = u":/png/media/nocover.png" #pessimist
     icon = QtGui.QIcon(iconpath)
     pixmap = icon.pixmap(cover_size, cover_size)
     return [iconpath, pixmap]

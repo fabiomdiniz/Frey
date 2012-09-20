@@ -4,7 +4,7 @@ mkdir bin
 cd bin
 rmdir /s /q win32
 cd ..
-python pyinstaller\Build.py main.spec
+python pyinstaller\pyinstaller.py main.spec
 copy TaskbarLib.tlb dist\TaskbarLib.tlb
 copy bass.dll dist\bass.dll
 copy bassmix.dll dist\bassmix.dll
