@@ -8,7 +8,6 @@
 bin/
 tmp/
 cover_cache/
-pyinstaller/
 py
 *.tmp
 *.bak

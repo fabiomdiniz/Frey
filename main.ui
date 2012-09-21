@@ -1050,12 +1050,7 @@ background-attachment: scroll;
                </size>
               </property>
               <property name="styleSheet">
-               <string notr="true">QGroupBox {
-background-image: url(:/png/media/dark_koopatrol_small.png);
-background-color: white;
-background-repeat: no-repeat;
-background-position: right bottom;
-}</string>
+               <string notr="true"/>
               </property>
               <property name="title">
                <string/>
@@ -1085,9 +1080,16 @@ background-position: right bottom;
                   <bool>true</bool>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">QListWidget { background-color: rgba(0, 0, 0, 0%); }
+                  <string notr="true">/*QListWidget { background-color: rgba(0, 0, 0, 0%); }
 QListWidget::item { background-color: rgba(255, 255, 255, 40%); }
-QListWidget::item::selected { background-color: rgba(0, 0, 0, 40%); }</string>
+QListWidget::item::selected { background-color: rgba(0, 0, 0, 40%); }*/
+QListWidget {
+background-image: url(:/png/media/dark_koopatrol_small.png);
+background-color: white;
+background-repeat: no-repeat;
+background-position: right bottom;
+background-attachment: fixed;
+}</string>
                  </property>
                  <property name="dragEnabled">
                   <bool>true</bool>

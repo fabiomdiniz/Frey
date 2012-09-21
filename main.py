@@ -592,7 +592,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.playlist.clear()
         for filename in self.config.playlist:
             self._addUrl(filename)
-        self._paintCurrent()
+        #self._paintCurrent()
 
     def editAlbumEvent(self, event):
         i = self.albums.currentRow()
@@ -757,7 +757,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         for filename in conf['playlists'][playlist_name]:
             self.config.playlist.append(filename)
             self._addUrl(filename)
-        self._paintCurrentPlaylist(self.playlists.currentRow())     
+        #self._paintCurrentPlaylist(self.playlists.currentRow())     
         if not self.config.playlist:
             self.config.idx = 0
             self._playIdx()
@@ -948,10 +948,14 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def _paintCurrent(self):
         time.sleep(0.1)
+        print 'vo pinta'
         if self.playlist.count():
             for i in range(self.playlist.count()):
-                self.playlist.item(i).setBackgroundColor(QtGui.QColor(255,255,255))
-            self.playlist.item(self.config.idx).setBackgroundColor(QtGui.QColor(150,150,150))
+                self.playlist.item(i).setBackgroundColor(QtGui.QColor(255,255,255, 0))
+            self.playlist.item(self.config.idx).setBackgroundColor(QtGui.QColor(150,150,150, 90))
+            #from PyQt4.QtCore import pyqtRemoveInputHook
+            #pyqtRemoveInputHook()
+            #from IPython.Shell import IPShellEmbed; IPShellEmbed()() 
 
     def _paintCurrentPlaylist(self, idx):
         time.sleep(0.1)
@@ -1018,6 +1022,10 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.conThread()
         self.paint_thread.run = lambda : self._paintCurrent()
         self.paint_thread.start()
+        #self.playlist.setStyleSheet("""
+        #    QListWidget::item:nth-of-type(2) {background-color: rgba(255, 255, 255, 40%);}
+        #    QListWidget::item {background-color: transparent;}""")
+
 
 if __name__ == "__main__":
     try:        
