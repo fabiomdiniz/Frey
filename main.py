@@ -51,11 +51,11 @@ def OnKeyboardEvent(event, myapp):
     with open('keys', 'r') as keys_file:
         keys = keys_file.read().split('\n')
         key = event.Key # Teclas        
-        if key == keys[2]:
+        if key in [keys[2], 'Media_Next_Track']:
             myapp._slotNextSong()
-        elif key == keys[1]:
+        elif key in [keys[1], 'Media_Prev_Track']:
             myapp._slotPrevSong()
-        elif key == keys[0]:
+        elif key in [keys[0], 'Media_Play_Pause']:
             myapp._slotPausePlay()
         else:
             return True
