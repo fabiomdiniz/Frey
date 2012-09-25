@@ -124,7 +124,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self, taskbar, g2tsg, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
-
         self.config = RuntimeConfig()
         self.icon = QtGui.QSystemTrayIcon(QtGui.QIcon(':/png/media/icon.png')) 
         conf = tanooki_library.get_or_create_config()
@@ -147,9 +146,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.slider_thread = QtCore.QThread(parent = self)
         self.volume_thread = QtCore.QThread(parent = self)
         self.gain_thread = QtCore.QThread(parent = self)
-        self.itunes_thread = QtCore.QThread(parent = self)
-
-        self.itunes_thread.finished.connect(self._refreshPlaylists)
 
         self.gain_thread.run = self.getGainThread
         self.gain_thread.finished.connect(self.gainFinished)
@@ -344,15 +340,18 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def _syncPlaylists(self):
         conf = tanooki_library.get_or_create_config()
+        self.progresswidget.cover.setPixmap(QtGui.QPixmap(_fromUtf8(":/png/media/nocover.png")))
         self.progress_overlay.show()
 
         tanooki_itunes.export_playlists(conf['playlists'], self.progresswidget)
 
+        self._refreshPlaylists()
         self.progress_overlay.hide()  
 
     def _exportItunes(self):
-        self.itunes_thread.run = self._syncPlaylists
-        self.itunes_thread.start()
+        #self.itunes_thread.run = self._syncPlaylists
+        #self.itunes_thread.start()
+        self._syncPlaylists()
 
     def playAllSongs(self):
         conf = tanooki_library.get_or_create_config()
@@ -948,7 +947,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def _paintCurrent(self):
         time.sleep(0.1)
-        print 'vo pinta'
         if self.playlist.count():
             for i in range(self.playlist.count()):
                 self.playlist.item(i).setBackgroundColor(QtGui.QColor(255,255,255, 0))
@@ -1010,7 +1008,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.play_thread.terminate()
         vol = self.config.g2tsg.get_volume_tanooki()
         if str(mode) == "Mono":
-            print 'MONO NO KE HIME'
             channels = 1
         else:
             channels = 2

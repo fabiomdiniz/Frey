@@ -77,7 +77,6 @@ def getCoverArt(url, song_file=None):
             if not os.path.exists(iconpath):
                 with open(iconpath_jpg, 'wb') as img:
                     img.write(artwork.data)
-                print iconpath_jpg
                 im = Image.open(iconpath_jpg)
                 #im = im.resize((cover_size, cover_size), Image.ANTIALIAS)
                 im.thumbnail((cover_size,cover_size), Image.ANTIALIAS)

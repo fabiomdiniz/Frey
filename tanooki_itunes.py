@@ -5,6 +5,7 @@ import os, datetime
 import pythoncom
 import tanooki_library
 from PyQt4 import Qt
+from PyQt4.QtCore import QCoreApplication
 
 def get_track_location(track):
     return win32com.client.CastTo(track,"IITFileOrCDTrack").Location
@@ -29,10 +30,15 @@ def get_itunes_playlists(itunes):
     return playlists
 
 def export_playlists(sg_playlists, widget):
+    
     try:
+        qapp = QCoreApplication.instance()
+        qapp.processEvents()
         widget.progressbar.setMaximum(100)
         widget.label.setText('Starting Itunes...')
         widget.emit(Qt.SIGNAL('updateProgress(int)'), 0)
+        qapp.processEvents()
+        
         if win32com.client.gencache.is_readonly == True:
             win32com.client.gencache.is_readonly = False
             win32com.client.gencache.Rebuild()
@@ -40,14 +46,19 @@ def export_playlists(sg_playlists, widget):
         itunes = EnsureDispatch("iTunes.Application")
 
         widget.label.setText('Exporting to itunes...')
-        from_sg_to_itunes(sg_playlists, widget, itunes)
         widget.emit(Qt.SIGNAL('updateProgress(int)'), 25)
+        qapp.processEvents()
+        from_sg_to_itunes(sg_playlists, widget, itunes)
+        
         widget.label.setText('Importing to Super Gokya...')
-        from_itunes_to_sg(sg_playlists, itunes)
         widget.emit(Qt.SIGNAL('updateProgress(int)'), 50)
+        qapp.processEvents()
+        from_itunes_to_sg(sg_playlists, itunes)
+        
         widget.label.setText('Synchronizing playlists...')
-        sync_playlists(sg_playlists, itunes)
         widget.emit(Qt.SIGNAL('updateProgress(int)'), 100)
+        qapp.processEvents()
+        sync_playlists(sg_playlists, itunes)
         conf = tanooki_library.get_or_create_config()
         conf['playlists'] = sg_playlists
         tanooki_library.save_config(conf)
@@ -87,7 +98,6 @@ def sync_playlists(sg_playlists, itunes):
         sg_tracks = [os.path.abspath(t) for t in sg_playlists[it_playlist.Name]]
 
         for it_track in [tr for tr in it_tracks if not tr in sg_tracks]:
-            print it_playlist.Name  + ' ' + it_track
             sg_playlists[it_playlist.Name].append(it_track)
 
         for sg_track in [tr for tr in sg_tracks if not tr in it_tracks]:

@@ -726,7 +726,7 @@ background-origin: margin;
              <item>
               <widget class="QPushButton" name="export_itunes">
                <property name="text">
-                <string>Export to Itunes</string>
+                <string>Sync with Itunes</string>
                </property>
               </widget>
              </item>

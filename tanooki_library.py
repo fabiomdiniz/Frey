@@ -9,6 +9,8 @@ from mutagen import File
 from collections import defaultdict
 import StringIO
 from PyQt4 import Qt
+from PyQt4.QtCore import QCoreApplication
+
 
 
 def get_or_create_config():
@@ -30,6 +32,7 @@ def save_config(conf):
 
 #@profile_func('callgrind.profprof3')
 def set_library(folder, taskbar, winid, widget=None):
+    qapp = QCoreApplication.instance()
     conf = get_or_create_config()
     conf['library'] = {}
     conf['folder'] = folder
@@ -62,6 +65,7 @@ def set_library(folder, taskbar, winid, widget=None):
             widget.label.setText(filename[-65:])
             if cover:
                 widget.cover.setPixmap(cover)
+            qapp.processEvents()
 
         if taskbar:
             taskbar.SetProgressValue(winid,i,num_entries)
