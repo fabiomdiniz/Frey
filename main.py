@@ -1031,7 +1031,7 @@ if __name__ == "__main__":
         myapp = MyForm(taskbar=get_taskbar(), g2tsg=g2tsg_bass)
         myapp.show()
         myapp.config.hm = pyHook.HookManager() 
-        myapp.config.hm.KeyDown = lambda event: OnKeyboardEvent(event, myapp) # Registra a o evento (callbacks)
+        myapp.config.hm.KeyUp = lambda event: OnKeyboardEvent(event, myapp) # Registra a o evento (callbacks)
         myapp.config.hm.HookKeyboard() # Inicia
         sys.exit(app.exec_())
     except Exception as e:
