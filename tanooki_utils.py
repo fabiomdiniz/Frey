@@ -2,6 +2,8 @@
 
 import os, datetime
 import tempfile
+from functools import wraps
+
 from mutagen import File
 from PIL import Image
 from PyQt4 import QtCore, QtGui
@@ -14,6 +16,15 @@ try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
+
+
+def thread_this(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        thread = QtCore.QThread(parent=args[0])
+        thread.run = lambda: func(*args, **kwargs)
+        thread.start()
+    return inner
 
 def get_taskbar():
     import platform

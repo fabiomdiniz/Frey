@@ -353,7 +353,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         #self.itunes_thread.start()
         self._syncPlaylists()
 
-    def playAllSongs(self):
+    @thread_this
+    def playAllSongs(self, *args):
         conf = tanooki_library.get_or_create_config()
         self._clearPlaylist()
         for album in conf['library']:
@@ -380,8 +381,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
     def updateProg(self, value):
         self.progresswidget.progressbar.setValue(value)
 
-        
-    def _randomPlaylist(self):
+    @thread_this
+    def _randomPlaylist(self, *args):
         not_playlist = not self.config.playlist
         conf = tanooki_library.get_or_create_config()
 
@@ -749,6 +750,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         del conf['playlists'][unicode(item.text())]
         tanooki_library.save_config(conf)
 
+    @thread_this
     def _loadPlaylist(self, item):
         #self._clearPlaylist()
         playlist_name = unicode(self.playlists.currentItem().text())
@@ -760,6 +762,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         if not self.config.playlist:
             self.config.idx = 0
             self._playIdx()
+
 
     def _appendSongs(self):
         for i in range(self.overlay.album_songs.count()):
@@ -927,6 +930,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         item = QtGui.QListWidgetItem(getSongName(url), self.playlist)
         item.setIcon(icon)
 
+    @thread_this
     def filesDropped(self, l):
         valid_urls = []
         not_playlist = not self.config.playlist

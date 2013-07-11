@@ -85,7 +85,7 @@ def from_itunes_to_sg(sg_playlists, itunes):
     #map(lambda x: x.delete(), [playlist for playlist in playlists if playlist.name in sg_playlists])
 
     for playlist in [p for p in playlists if not p.Name in sg_playlists]:
-        sg_playlists[playlist.Name] = [get_track_location(track) for track in playlist.Tracks]
+        sg_playlists[playlist.Name] = [get_track_location(track) for track in playlist.Tracks if get_track_location(track).endswith('.mp3')]
     conf = tanooki_library.get_or_create_config()
     conf['playlists'] = sg_playlists
     tanooki_library.save_config(conf)
@@ -94,7 +94,7 @@ def sync_playlists(sg_playlists, itunes):
     it_playlists = get_itunes_playlists(itunes)
 
     for it_playlist in it_playlists:
-        it_tracks = [os.path.abspath(get_track_location(t)) for t in it_playlist.Tracks]
+        it_tracks = [os.path.abspath(get_track_location(t)) for t in it_playlist.Tracks if get_track_location(track).endswith('.mp3')]
         sg_tracks = [os.path.abspath(t) for t in sg_playlists[it_playlist.Name]]
 
         for it_track in [tr for tr in it_tracks if not tr in sg_tracks]:
