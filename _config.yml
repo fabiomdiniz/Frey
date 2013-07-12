@@ -1,0 +1,7 @@
+tagline: Music Player for the Ragnarok
+
+exclude:
+  - "*.jade"
+  - "*.less"
+  - "bootstrap"
+  - "bootstrap-glyphicons"

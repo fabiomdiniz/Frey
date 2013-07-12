@@ -1,67 +1,34 @@
-<!doctype html>
+---
+layout: none
+---
+
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Frey by fabiomdiniz</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="http://fitztrev.github.io/img/logo.png">
+    <link rel="stylesheet" type="text/css" href="css/shuttle.css">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Francois+One">
+    <title>Frey | {{ site.tagline }}</title>
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">Frey</h1>
-        <p class="header">Tanooki Powered Music Player</p>
-
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/fabiomdiniz/Frey/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/fabiomdiniz/Frey/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/fabiomdiniz/Frey">View On GitHub</a></li>
-        </ul>
-
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/fabiomdiniz">fabiomdiniz</a></p>
-
-
-      </header>
-      <section>
-        <h1>
-<a name="frey-music-player" class="anchor" href="#frey-music-player"><span class="octicon octicon-link"></span></a>Frey Music player</h1>
-
-<h2>
-<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h2>
-
-<ul>
-<li>BASS and pybass (HELL YEAH)</li>
-<li>pyqt4  ("nuke on ants" or "the frontpage of python gui dev")</li>
-<li>mutagen (cool name and can also read song tags)</li>
-<li>pyhook (A link to the past)</li>
-<li>python-lastfm</li>
-<li>bottlenose</li>
-</ul><h2>
-<a name="build" class="anchor" href="#build"><span class="octicon octicon-link"></span></a>Build</h2>
-
-<p>You will need pyinstaller on the same folder as the source code, already configured.
-Just run build_win32.bat and it will do all the work for you.
-(It won't work on Linux)
-(It won't work on Macs)
-(It may not work with ActiveState Python)</p>
-
-<h2>
-<a name="download" class="anchor" href="#download"><span class="octicon octicon-link"></span></a>Download</h2>
-
-<p>Get the lastest binaries "here":<a href="https://github.com/fabiomdiniz/Frey/downloads">https://github.com/fabiomdiniz/Frey/downloads</a></p>
-      </section>
-      <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
-      </footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-sm-6">
+          <h1>Frey</h1>
+          <p class="lead">{{ site.tagline }}</p><br><br>
+          <div class="text-center">
+            <p><a href="https://github.com/fabiomdiniz/Frey/releases/download/v1.0/Frey.rar" class="btn btn-block btn-success btn-large"><i class="glyphicon glyphicon-arrow-down"></i>&nbsp; Download Frey 1.0</a></p>
+            <p class="text-muted"><em>&mdash; or &mdash;</em></p>
+            <p><a href="https://github.com/fabiomdiniz/Frey">View on Github</a></p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-sm-6"><img src="img/logo.png" alt="Frey" class="pull-right img-responsive hidden-sm"></div>
+      </div>
+      <hr>
+      <div class="animation"><img src="img/screenshot.gif" alt="How Frey looks" class="img-responsive"></div>
+      <hr>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
   </body>
 </html>
