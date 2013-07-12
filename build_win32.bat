@@ -15,8 +15,8 @@ cd bin
 mkdir win32
 cd ..
 set path="%PROGRAMFILES%\WinRAR\";%path%
-mkdir "Gokya 2 The Super Gokya"
-copy dist\* "Gokya 2 The Super Gokya"
-rar a -m5 G2TSG "Gokya 2 The Super Gokya\*"
-move G2TSG.rar bin\win32
-rmdir /s /q "Gokya 2 The Super Gokya"
+mkdir "Frey"
+copy dist\* "Frey"
+rar a -m5 Frey "Frey\*"
+move Frey.rar bin\win32
+rmdir /s /q "Frey"
