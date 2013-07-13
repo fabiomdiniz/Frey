@@ -25,10 +25,12 @@ def get_or_create_config():
         open('conf.json', 'w').write(json.dumps(conf))
         return get_or_create_config()
 
+
 def save_config(conf):
     open('conf.json', 'w').write(json.dumps(conf))
 
 #from prof import *
+
 
 #@profile_func('callgrind.profprof3')
 def set_library(folder, taskbar, winid, widget=None):
@@ -49,16 +51,17 @@ def set_library(folder, taskbar, winid, widget=None):
             filename = os.path.join(folder, path)
             song_file = File(filename)
             info = get_song_info(filename, song_file)
-            if not conf['library'].has_key(info[1]):
+            if not info[1] in conf['library']:
                 cover_path, cover = getCoverArt(filename, song_file)
                 conf['library'][info[1]] = {'cover': cover_path,
                                             'titles': [],
                                             'songs': [],
-                                            'artist':info[2]}
+                                            'folder': os.path.dirname(filename),
+                                            'artist': info[2]}
             conf['library'][info[1]]['songs'].append(filename)
             conf['library'][info[1]]['titles'].append(info[0])
         except Exception as e:
-            open('bandicoot','a').write(str(datetime.datetime.now()) + '\t ' + str(e) + ' - ' + filename + '\n')
+            open('bandicoot', 'a').write(str(datetime.datetime.now()) + '\t ' + str(e) + ' - ' + filename + '\n')
         if widget is not None:
             widget.emit(Qt.SIGNAL('updateProgress(int)'), i)
             #widget.progressbar.setValue(i)
@@ -68,11 +71,12 @@ def set_library(folder, taskbar, winid, widget=None):
             qapp.processEvents()
 
         if taskbar:
-            taskbar.SetProgressValue(winid,i,num_entries)
+            taskbar.SetProgressValue(winid, i, num_entries)
     if taskbar:
-        taskbar.SetProgressState(winid,0)
+        taskbar.SetProgressState(winid, 0)
 
     save_config(conf)
+
 
 def update_album(filename, new_album):
     conf = get_or_create_config()
@@ -89,11 +93,11 @@ def update_album(filename, new_album):
 
                 info = get_song_info(filename)
 
-                if not conf['library'].has_key(new_album):
+                if not new_album in conf['library']:
                     conf['library'][new_album] = {'cover': getCoverArt(filename)[0],
                                                   'songs': [],
                                                   'titles': [],
-                                                  'artist':info[2]}
+                                                  'artist': info[2]}
                 conf['library'][new_album]['songs'].append(filename)
                 conf['library'][new_album]['titles'].append(info[0])
 

@@ -518,7 +518,7 @@ background-position: center middle;
           <item row="7" column="0" colspan="2">
            <widget class="QPushButton" name="gokeys">
             <property name="text">
-             <string>Gokeys</string>
+             <string>Hotkeys</string>
             </property>
            </widget>
           </item>
@@ -598,7 +598,7 @@ background-position: center middle;
          <widget class="QWidget" name="infowidget" native="true">
           <property name="styleSheet">
            <string notr="true">#infowidget {
-background-image: url(:/png/media/mario_tanooki.png);
+/*background-image: url(:/png/media/mario_tanooki.png);*/
 background-repeat: no-repeat;
 background-position: right top;
 }
@@ -691,7 +691,7 @@ background-position: right top;
          <widget class="QWidget" name="fcolumn" native="true">
           <property name="styleSheet">
            <string notr="true">#fcolumn {
-background-image: url(:/png/media/paperbowser.png);
+/*background-image: url(:/png/media/paperbowser.png);*/
 background-repeat: no-repeat;
 background-position: left bottom;
 background-origin: margin;
@@ -726,18 +726,75 @@ background-origin: margin;
              <item>
               <widget class="QPushButton" name="export_itunes">
                <property name="text">
-                <string>Sync with Itunes</string>
+                <string>Export to Itunes</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="delete_playlist">
+              <widget class="QPushButton" name="sync_itunes">
                <property name="text">
-                <string>Delete Playlist</string>
+                <string>Sync with Itunes</string>
                </property>
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QTreeView" name="folder_tree">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>400</height>
+              </size>
+             </property>
+             <property name="dragEnabled">
+              <bool>true</bool>
+             </property>
+             <property name="dragDropMode">
+              <enum>QAbstractItemView::DragOnly</enum>
+             </property>
+             <property name="rootIsDecorated">
+              <bool>true</bool>
+             </property>
+             <property name="uniformRowHeights">
+              <bool>true</bool>
+             </property>
+             <property name="headerHidden">
+              <bool>true</bool>
+             </property>
+             <property name="expandsOnDoubleClick">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>100</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="delete_playlist">
+             <property name="text">
+              <string>Delete Playlist</string>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QGroupBox" name="groupBox_2">
@@ -750,11 +807,12 @@ background-origin: margin;
              <property name="minimumSize">
               <size>
                <width>256</width>
-               <height>320</height>
+               <height>50</height>
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">QGroupBox {background-image: url(:/png/media/sushie.png);
+              <string notr="true">QGroupBox {
+/*background-image: url(:/png/media/sushie.png);*/
 background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;
@@ -795,22 +853,6 @@ background-position: right bottom;
               </item>
              </layout>
             </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>300</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -944,7 +986,7 @@ background-position: right bottom;
             </property>
             <property name="styleSheet">
              <string notr="true"> QGroupBox {
-background-image: url(:/png/media/Vivian_small.png);
+/*background-image: url(:/png/media/Vivian_small.png);*/
 background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;
@@ -1084,11 +1126,11 @@ background-attachment: scroll;
 QListWidget::item { background-color: rgba(255, 255, 255, 40%); }
 QListWidget::item::selected { background-color: rgba(0, 0, 0, 40%); }*/
 QListWidget {
-background-image: url(:/png/media/dark_koopatrol_small.png);
+/*background-image: url(:/png/media/dark_koopatrol_small.png);
 background-color: white;
 background-repeat: no-repeat;
 background-position: right bottom;
-background-attachment: fixed;
+background-attachment: fixed;*/
 }</string>
                  </property>
                  <property name="dragEnabled">

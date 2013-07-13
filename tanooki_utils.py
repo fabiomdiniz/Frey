@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os, datetime
+import os
+import datetime
+import stat
 import tempfile
 from functools import wraps
 
@@ -16,6 +18,11 @@ try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
     _fromUtf8 = lambda s: s
+
+
+def force_write(filepath):
+    if (not os.stat(filepath)[0] & stat.S_IWRITE):
+        os.chmod(filepath, stat.S_IWRITE)
 
 
 def thread_this(func):
