@@ -1,26 +1,14 @@
-h1. Gokya 2 The Super Gokya
+h1. Frey Music Player
 
-h2. huh?
+http://fabiomdiniz.github.io/Frey/
 
-This is a music player
+h2. Based on
 
-h2. Dependencies
-
-* BASS and pybass (HELL YEAH)
-* pyqt4  ("nuke on ants" or "the frontpage of python gui dev")
-* mutagen (cool name and can also read song tags)
-* pyhook (A link to the past)
+* BASS and pybass
+* pyqt4
+* mutagen
+* pyhook
 * python-lastfm
 * bottlenose
 
-h2. Build
-
-You will need pyinstaller on the same folder as the source code, already configured.
-Just run build_win32.bat and it will do all the work for you.
-(It wont work on Linux)
-(It wont work on Macs)
-(It may not work with ActiveState Python)
-
-h2. Download
-
-Get the lastest binaries "here":https://github.com/fabiomdiniz/Gokya-2-The-Super-Gokya/downloads
+!http://fabiomdiniz.github.io/Frey/img/screenshot.gif!
