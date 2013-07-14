@@ -2,15 +2,14 @@
 from tanooki_utils import *
 from tanooki_utils import cover_size
 import json
-import os, datetime
+import os
+import datetime
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import APIC
 from mutagen import File
-from collections import defaultdict
 import StringIO
 from PyQt4 import Qt
 from PyQt4.QtCore import QCoreApplication
-
 
 
 def get_or_create_config():
@@ -21,7 +20,7 @@ def get_or_create_config():
             os.remove('conf.json')
             return get_or_create_config()
     else:
-        conf = {'library': {}, 'playlists': {}, 'folder':''}
+        conf = {'library': {}, 'playlists': {}, 'folder': ''}
         open('conf.json', 'w').write(json.dumps(conf))
         return get_or_create_config()
 

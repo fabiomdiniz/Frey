@@ -198,8 +198,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self._connectSlots()
         self.albums.setEditTriggers(QTableWidget.NoEditTriggers)
 
-        #self._cachePlaylists()
-
+        self._cachePlaylists()
 
     def config_overlays(self):
         self.editor_overlay = QtGui.QFrame(self.centralwidget)
@@ -1066,10 +1065,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         mode = self.channels.currentText()
         self.play_thread.terminate()
         vol = self.config.g2tsg.get_volume_tanooki()
-        if str(mode) == "Mono":
-            channels = 1
-        else:
-            channels = 2
+        channels = 1 if str(mode) == "Mono" else 2
         self.updateNowPlaying(name)
         self._setPlaying()
         print 'play no ', name.encode('ascii', 'ignore')
