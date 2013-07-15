@@ -871,13 +871,6 @@ background-position: right bottom;
              <enum>QLayout::SetFixedSize</enum>
             </property>
             <item>
-             <widget class="QPushButton" name="play_all">
-              <property name="text">
-               <string>Play ALL!</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <spacer name="horizontalSpacer_3">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -1168,7 +1161,7 @@ background-attachment: fixed;*/
               <item>
                <widget class="QPushButton" name="clear_button">
                 <property name="text">
-                 <string>Clear Playlist</string>
+                 <string>Clear Queue</string>
                 </property>
                </widget>
               </item>
@@ -1220,7 +1213,7 @@ background-attachment: fixed;*/
                </size>
               </property>
               <property name="text">
-               <string>Make Random Playlist</string>
+               <string>Add Random Songs</string>
               </property>
              </widget>
             </item>

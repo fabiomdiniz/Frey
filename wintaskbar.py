@@ -1,4 +1,4 @@
-# -*- coding: cp1251 -*-
+# -*- coding: utf-8 -*-
 
 #####################################################################
 ## Library for Windows 7 Taskbar features                          ##

@@ -262,14 +262,8 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def lbDropEvent(self, event):
         if event.mimeData().hasUrls():
-            links = []
-            #from PyQt4.QtCore import pyqtRemoveInputHook
-
-            #pyqtRemoveInputHook()
-            #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
-            for url in event.mimeData().urls():
-                links.append(unicode(url.toLocalFile()))
-            self.filesDropped(links)
+            links = [unicode(url.toLocalFile()) for url in event.mimeData().urls()]
+            self.filesDropped(links, event.source() is self.folder_tree)
 
     def appendAlbumEvent(self, event):
         not_playlist = not self.config.playlist
@@ -314,10 +308,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.load_library.clicked.connect(self._loadLibrary)
         self.rescan_library.clicked.connect(self.rescanLibrary)
 
-        self.play_all.clicked.connect(self.playAllSongs)
-
         self.albums.cellClicked.connect(self._clickAlbum)
-        self.albums.cellDoubleClicked.connect(self._doubleClickAlbum)
         self.albums.resizeEvent = self.albumsResize
         self.albums.keyPressEvent = self.ignoreKeyAlbums
 
@@ -390,23 +381,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         root_path = os.path.abspath(os.path.join(conf['folder'], os.path.pardir))
         self.folder_tree.setRootIndex(self.tree_filter.mapFromSource(self.file_model.index(root_path)))
 
-        self.folder_tree.expandToDepth(1) 
+        self.folder_tree.expandToDepth(1)
 
     def _setRootPath(self):
         self.current_path = self.file_model.filePath(self.tree_filter.mapToSource(self.folder_tree.currentIndex()))
         self._showLibrary()
-
-    @thread_this
-    def playAllSongs(self, *args):
-        conf = tanooki_library.get_or_create_config()
-        self._clearPlaylist()
-        for album in conf['library']:
-            self.appendAlbumPlaylist(album)
-        from random import shuffle
-        shuffle(self.config.playlist)
-        self.refreshPlaylist()
-        self.config.idx = 0
-        self._playIdx()
 
     def toggleNotification(self, ischecked):
         if not ischecked:
@@ -430,13 +409,17 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         conf = tanooki_library.get_or_create_config()
 
         random_songs = []
-        for i in range(15):
-            album = random.choice(conf['library'].values())
-            random_songs.append(random.choice(album['songs']))
+        for album in random.sample(conf['library'].values(), 30):
+            idx = random.choice(range(len(album['songs'])))
+            random_songs.append((album['songs'][idx], album['titles'][idx], album['cover']))
 
-        self.config.playlist += random_songs
-        for filename in random_songs:
-            self._addUrl(filename)
+        self.config.playlist += [r[0] for r in random_songs]
+
+        old_count = len(self.playlist)
+        self.playlist.addItems([r[1] for r in random_songs])
+
+        for idx, i in enumerate(range(old_count, old_count+len(random_songs))):
+            self.playlist.item(i).setIcon(QtGui.QIcon(random_songs[idx][2]))
 
         if not_playlist and self.config.playlist:
             self.config.idx = 0
@@ -658,9 +641,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         QListWidget.mousePressEvent(self.playlist, event)
 
     def _editSongsClick(self):
-        #from PyQt4.QtCore import pyqtRemoveInputHook
-        #pyqtRemoveInputHook()
-        #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
         self.config.songs_to_edit = []
         for i in range(self.playlist.count()):
             item = self.playlist.item(i)
@@ -686,9 +666,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             if len(tags_dict[tag]) == 1:
                 field.setText(_fromUtf8(tags_dict[tag].pop()))
 
-        #from PyQt4.QtCore import pyqtRemoveInputHook
-        #pyqtRemoveInputHook()
-        #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
         if len(tags_dict[tags[-1]]) == 1:
             data = tags_dict[tags[-1]].pop()
             if data:
@@ -740,10 +717,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def deleteSong(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
-            self.search_name.setText('')
-            self.search_artist.setText('')
-            self.search_album.setText('')
-            self.search_name.setFocus()
+            self.checkEsc(event)
         elif event.key() == QtCore.Qt.Key_Delete:
             to_delete = []
             for i in range(self.playlist.count()):
@@ -757,9 +731,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
     def checkEsc(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
-            #if self.overlay.isVisible():
-            #    self.overlay_frame.hide()
-            #else:
             self.search_name.setText('')
             self.search_artist.setText('')
             self.search_album.setText('')
@@ -796,7 +767,7 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.cache_playlists = {}
         conf = tanooki_library.get_or_create_config()
         for playlist_name, files in conf['playlists'].iteritems():
-            self.cache_playlists[playlist_name] = {'urls': files, 
+            self.cache_playlists[playlist_name] = {'urls': files,
                                                    'names': [getSongName(url) for url in files],
                                                    'icons': [getCoverArtPixmap(url) for url in files]}
 
@@ -812,10 +783,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.config.playlist = self.cache_playlists[playlist_name]['urls']
         self.playlist.addItems(self.cache_playlists[playlist_name]['names'])
         self._updatePlaylistIcons(self.cache_playlists[playlist_name]['icons'])
-        #for filename in conf['playlists'][playlist_name]:
-        #    self.config.playlist.append(filename)
-        #    self._addUrl(filename)
-        #self._paintCurrentPlaylist(self.playlists.currentRow())
         self.config.idx = 0
         self._playIdx()
 
@@ -845,17 +812,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
                 if unicode(self.search_name.text()).lower() in name.lower():
                     self.config.playlist.append(filename)
                     self._addUrl(filename)
-
-    def load_album(self, album):
-        self._clearPlaylist()
-        self.appendAlbumPlaylist(album)
-
-    def _doubleClickAlbum(self, i, j):
-        if self.albums.item(i, j).text():
-            album = self.config.albumslist[i*self.config.num_col+j]
-            self.load_album(album)
-            self.config.idx = 0
-            self._playIdx()
 
     def _clickAlbum(self, i, j):
         if not self.albums.item(i, j).text():
@@ -953,9 +909,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
 
         for album in album_sorted:
             self.config.albumslist.append(album)
-            #item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), album)
-            #item.setStyleSheet("padding-top: 110px;")
-            #item = QtGui.QTableWidgetItem(QtGui.QIcon(conf['library'][album]['cover']), '<br>'+album)
             html = '<img src="'+conf['library'][album]['cover']+'" /><br>'+album
             item = QtGui.QTableWidgetItem(html)
             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsDragEnabled)
@@ -968,10 +921,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
             self.albums.setItem(i, j, item)
             j += 1
-
-        #from PyQt4.QtCore import pyqtRemoveInputHook
-        #pyqtRemoveInputHook()
-        #from IPython.Shell import IPShellEmbed; IPShellEmbed()()
 
     def _clearPlaylist(self):
         self.config.playlist = []
@@ -988,19 +937,30 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         item.setIcon(icon)
 
     @thread_this
-    def filesDropped(self, l):
+    def filesDropped(self, urls, internal_drop=False):
         valid_urls = []
         not_playlist = not self.config.playlist
-        for url in l:
-            if os.path.isdir(url):
-                for filename in dirEntries(url, True, 'mp3'):
-                    filename = os.path.join(url, filename)
-                    valid_urls.append(filename)
-                    self._addUrl(filename)
-            elif os.path.exists(url) and url[url.rfind('.'):] == '.mp3':
-                valid_urls.append(url)
-                self._addUrl(url)
-        self.config.playlist += valid_urls
+        print urls
+        if internal_drop:
+            conf = tanooki_library.get_or_create_config()
+            for album in [album for album in conf['library'].itervalues() if os.path.abspath(album['folder']).startswith(os.path.abspath(urls[0]))]:
+                valid_urls = True
+                self.config.playlist += album['songs']
+                old_count = len(self.playlist)
+                self.playlist.addItems(album['titles'])
+                for i in range(old_count, old_count+len(album['songs'])):
+                    self.playlist.item(i).setIcon(QtGui.QIcon(album['cover']))
+        else:
+            for url in urls:
+                if os.path.isdir(url):
+                    for filename in dirEntries(url, True, 'mp3'):
+                        filename = os.path.join(url, filename)
+                        valid_urls.append(filename)
+                        self._addUrl(filename)
+                elif os.path.exists(url) and url[url.rfind('.'):] == '.mp3':
+                    valid_urls.append(url)
+                    self._addUrl(url)
+            self.config.playlist += valid_urls
         if not_playlist and valid_urls:
             self.config.idx = 0
             self._playIdx()
@@ -1011,24 +971,12 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             for i in range(self.playlist.count()):
                 self.playlist.item(i).setBackgroundColor(QtGui.QColor(255, 255, 255, 0))
             self.playlist.item(self.config.idx).setBackgroundColor(QtGui.QColor(150, 150, 150, 90))
-            #from PyQt4.QtCore import pyqtRemoveInputHook
-            #pyqtRemoveInputHook()
-
-    def _paintCurrentPlaylist(self, idx):
-        time.sleep(0.1)
-        for i in range(self.playlists.count()):
-            self.playlists.item(i).setBackgroundColor(QtGui.QColor(255, 255, 255))
-        if idx >= 0:
-            self.playlists.item(idx).setBackgroundColor(QtGui.QColor(150, 150, 150))
 
     def _playIdx(self):
         self.disconThread()
-        #self._paintCurrent()
         self._playSong(self.config.playlist[self.config.idx])
 
-    def _slotPausePlay(self, force_pause=False):
-        if force_pause:
-            self.config.paused = False
+    def _slotPausePlay(self):
         if not self.config.paused:
             self._togglePausePlay()
             self.config.g2tsg.pause_tanooki()
@@ -1037,7 +985,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.config.g2tsg.unpause_tanooki()
 
     def _slotPrevSong(self):
-        #g2tsg.quit_tanooki()
         self.config.idx -= 1
         if self.config.idx < 0:
             self.config.idx = len(self.config.playlist)-1
@@ -1045,11 +992,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self._setPlaying()
 
     def _slotNextSong(self):
-        #g2tsg.quit_tanooki()
         self.config.idx = (self.config.idx+1) % len(self.config.playlist)
         self._playIdx()
         self._setPlaying()
 
+    @thread_this
     def updateNowPlaying(self, name):
         title, album, artist = get_song_info(name)
         self.song_name.setText(_fromUtf8(title))
@@ -1061,7 +1008,6 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
             self.icon.setIcon(QtGui.QIcon(getCoverArtPixmap(name)))
 
     def _playSong(self, name):
-        #self.seeker.setEnabled(True)
         mode = self.channels.currentText()
         self.play_thread.terminate()
         vol = self.config.g2tsg.get_volume_tanooki()
@@ -1074,14 +1020,11 @@ class MyForm(QtGui.QMainWindow, Ui_MainWindow):
         self.conThread()
         self.paint_thread.run = lambda: self._paintCurrent()
         self.paint_thread.start()
-        #self.playlist.setStyleSheet("""
-        #    QListWidget::item:nth-of-type(2) {background-color: rgba(255, 255, 255, 40%);}
-        #    QListWidget::item {background-color: transparent;}""")
-
 
 if __name__ == "__main__":
     try:
-        os.system('mkdir cover_cache')
+        if not os.path.exists('cover_cache'):
+            os.system('mkdir cover_cache')
         app = QtGui.QApplication(sys.argv)
         myapp = MyForm(taskbar=get_taskbar(), g2tsg=g2tsg_bass)
         myapp.show()
