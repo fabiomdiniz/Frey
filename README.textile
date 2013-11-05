@@ -11,4 +11,4 @@ h2. Based on
 * python-lastfm
 * bottlenose
 
-!http://fabiomdiniz.github.io/Frey/img/screenshot.gif!
+!https://raw.github.com/fabiomdiniz/Frey/gh-pages/img/screenshot.gif
